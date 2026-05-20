@@ -1,5 +1,4 @@
-// Quantity math — WS-0-owned permanently (DR-1). Stub form for the TDD red
-// pass; impl agent fills in the body per plan/packing-engine.md.
+// Quantity math — WS-0-owned permanently (DR-1). Per plan/packing-engine.md.
 
 import type { TripItem } from '../db/types'
 
@@ -9,9 +8,24 @@ import type { TripItem } from '../db/types'
 export const TENT_CAPACITY = 2
 
 export function requiredQty(
-  _item: TripItem,
-  _participantCount: number,
-  _tentCapacity: number = TENT_CAPACITY,
+  item: TripItem,
+  participantCount: number,
+  tentCapacity: number = TENT_CAPACITY,
 ): number {
-  throw new Error('requiredQty not implemented (WS-0.7 — impl phase)')
+  const n = Math.max(1, participantCount)
+  const cap = Math.max(1, tentCapacity)
+  switch (item.scope) {
+    case 'per_person':
+      return item.baseQty * n
+    case 'per_tent':
+      return item.baseQty * Math.ceil(n / cap)
+    case 'shared':
+      return item.baseQty
+    default: {
+      // Exhaustiveness — if a new ItemScope is added without a case, this
+      // line fails to compile.
+      const _never: never = item.scope
+      return _never
+    }
+  }
 }

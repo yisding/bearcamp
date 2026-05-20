@@ -16,6 +16,10 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'node',
+    // The Prisma schema test shells out to `pnpm exec prisma validate`,
+    // which on a cold pnpm cache reliably takes 5–7 seconds. Other tests
+    // remain fast — the higher timeout costs nothing on green runs.
+    testTimeout: 20000,
     include: [
       '**/__tests__/**/*.test.ts',
       '**/__tests__/**/*.test.tsx',

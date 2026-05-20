@@ -1,13 +1,125 @@
-// WS-0-owned schema contract. Stub for the TDD red pass — impl agent fills
-// in the models per plan/data-model.md (DR-32: Prisma 7.x is GA for driver
-// adapters; previewFeatures is a no-op and is omitted).
+// WS-0-owned schema contract — per plan/data-model.md.
+// Prisma 7.x is GA for driver adapters; previewFeatures is a no-op and is
+// omitted (DR-32). WS-2 migrates from this schema (incl. pg_trgm GIN
+// indexes + Trip.tentCapacity CHECK constraint) and must not edit it.
 
 generator client {
   provider = "prisma-client-js"
 }
 
+// Datasource connection URLs live in prisma.config.ts (Prisma 7.x — DR-32).
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
+  provider = "postgresql"
+}
+
+enum TripStyle {
+  car
+  backpacking
+}
+
+enum ItemScope {
+  per_person
+  shared
+  per_tent
+}
+
+enum ItemSource {
+  template
+  amenity
+  custom
+}
+
+// Prisma enum members can't contain spaces/`&`, so DB uses
+// Health_Safety/Tools_Repair/Personal_Misc; repositories map to/from the
+// display DTO values ('Health & Safety', etc.).
+enum ItemCategory {
+  Shelter
+  Sleep
+  Kitchen
+  Water
+  Food
+  Clothing
+  Navigation
+  Health_Safety
+  Hygiene
+  Tools_Repair
+  Personal_Misc
+}
+
+model Campsite {
+  id          String   @id
+  name        String
+  agency      String?
+  state       String?  @db.Char(2)
+  lat         Float?
+  lng         Float?
+  description String?
+  amenities   Json
+  activities  String[]
+  source      String
+  updatedAt   DateTime @updatedAt
+
+  @@index([state])
+  @@index([agency])
+}
+
+model Trip {
+  id               String        @id
+  name             String
+  campsiteId       String
+  campsiteSnapshot Json
+  style            TripStyle
+  ownerToken       String        @unique
+  tentCapacity     Int           @default(2) @db.SmallInt
+  createdAt        DateTime      @default(now())
+  items            TripItem[]
+  participants     Participant[]
+  claims           Claim[]
+}
+
+model TripItem {
+  id        String       @id @default(cuid())
+  tripId    String
+  trip      Trip         @relation(fields: [tripId], references: [id], onDelete: Cascade)
+  category  ItemCategory
+  name      String
+  scope     ItemScope
+  baseQty   Int          @default(1)
+  unit      String?
+  note      String?
+  source    ItemSource
+  sortOrder Int
+  removed   Boolean      @default(false)
+  claims    Claim[]
+
+  @@index([tripId])
+}
+
+model Participant {
+  id       String   @id @default(cuid())
+  tripId   String
+  trip     Trip     @relation(fields: [tripId], references: [id], onDelete: Cascade)
+  name     String
+  token    String
+  isOwner  Boolean  @default(false)
+  joinedAt DateTime @default(now())
+  claims   Claim[]
+
+  // Composite index covers tripId-only filters via left-prefix matching;
+  // no separate @@index([tripId]) (DR-55).
+  @@index([tripId, token])
+}
+
+model Claim {
+  tripId        String
+  trip          Trip        @relation(fields: [tripId], references: [id], onDelete: Cascade)
+  itemId        String
+  item          TripItem    @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  participantId String
+  participant   Participant @relation(fields: [participantId], references: [id], onDelete: Cascade)
+  qty           Int         @default(1)
+  updatedAt     DateTime    @updatedAt
+
+  @@id([itemId, participantId])
+  @@index([tripId])
 }
