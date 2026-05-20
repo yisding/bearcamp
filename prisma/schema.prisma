@@ -1,0 +1,13 @@
+// WS-0-owned schema contract. Stub for the TDD red pass — impl agent fills
+// in the models per plan/data-model.md (DR-32: Prisma 7.x is GA for driver
+// adapters; previewFeatures is a no-op and is omitted).
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
