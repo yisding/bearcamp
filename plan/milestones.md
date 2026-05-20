@@ -26,11 +26,14 @@ Phased and checkable. Each phase is independently demoable. Read the relevant
 
 - [ ] `data/campsites.seed.json` — curated US public campgrounds with
       normalized `Amenities` (target ≥150 across NPS/USFS/BLM/USACE/state).
-- [ ] `lib/campsites/source.ts` interface + `seed.ts` loader; seed-into-DB on
-      startup if `campsites` empty.
+- [ ] `lib/campsites/source.ts` interface + `seed.ts` loader exposing
+      `loadSeed()`. **DB seeding is `prisma db seed` (WS-2.11), not a
+      startup hook** — review-2 G-stale.
 - [ ] `lib/campsites/search.ts` — `'use cache'` + `cacheTag('campsites')` +
-      `cacheLife('hours')`; Postgres `pg_trgm`/`ILIKE` over name/description;
-      filters: state, agency, amenities.
+      `cacheLife('hours')`; Postgres `pg_trgm` (with `gin_trgm_ops` GIN
+      index + `CREATE EXTENSION` in the migration) / `ILIKE` over
+      name/description; filters: state, agency, amenities; `pageSize`
+      default 20, max 50 (review-2 G-page).
 - [ ] `/campsites` page + `SearchBar` (client, debounced → `?q=`) +
       `CampsiteCard`; results stream under `<Suspense>`;
       `unstable_instant = { prefetch: 'static' }`; verify in Instant Navs
@@ -56,20 +59,28 @@ Phased and checkable. Each phase is independently demoable. Read the relevant
 - [ ] `buildTripView(tripId)` join + quantity/shortfall computation.
 - [ ] `/trips/[tripId]` page under `<Suspense>`: header (name, campsite,
       style), `PackingList` grouped by category, owner edit affordances.
-- [ ] Server Actions: `renameTrip`, `addItem`, `updateItem`, `removeItem`,
-      `reorderItem` — guarded, validated, `updateTag('trip:<id>')`. Editable
-      item fields: name/category/scope/baseQty/unit/note; `scope`/`baseQty`
-      edits recompute `requiredQty`. Show "why on list" for amenity items.
+- [ ] Server Actions: `renameTrip`, `updateTripSettings` (tentCapacity),
+      `deleteTrip` (hard-delete + redirect), `addItem`, `updateItem`,
+      `removeItem`, `restoreItem`, `reorderItem` — guarded, validated,
+      `updateTag('trip:<id>')`. Editable item fields:
+      name/category/scope/baseQty/unit/note; `scope`/`baseQty` edits
+      recompute `requiredQty`. Show "why on list" for amenity items.
 - [ ] Tests for editing: rename, re-quantity, scope change → `requiredQty`
-      recomputes; trip `notFound()` on unknown id (review G1, G8).
-- [ ] Edit UI states via `useActionState` pending.
+      recomputes; restore puts an item back with its prior claims; trip
+      `notFound()` on unknown id (review G1, G8; review-2 G-soft).
+- [ ] Server Action error envelope: `{ ok, error }` typed return + UI
+      Toaster surface (review-2 G-log); `useActionState` pending state.
 
 ## Phase 4 — Sharing, joining, claiming
 
 - [ ] `ShareLink` (client) — copy `location.href`; UI copy noting the link is
       the access key.
 - [ ] `JoinTripDialog` — name → `joinTrip` action; participant cookie;
-      owner auto-added as participant at creation.
+      owner auto-added as participant at creation. **Visitor with a
+      `bc_participant` cookie for a different trip is treated as new
+      here** (cookie path scope; review-2 G-otherCookie). `joinTrip`
+      rejects with a typed error when `participants.count(tripId) ≥ 50`
+      (review-2 G-rate).
 - [ ] `ItemRow` claim/unclaim with qty (default = shortfall); `claimItem` /
       `unclaimItem` actions guarded by `assertParticipant`.
 - [ ] `StillNeeded` (shortfall list) + "Who's bringing what" (claims by
@@ -86,7 +97,12 @@ Phased and checkable. Each phase is independently demoable. Read the relevant
       `pnpm` script; documented, off by default.
 - [ ] Build check: `next build` passes; `unstable_instant` validation green;
       no "uncached data outside Suspense" errors.
-- [ ] README: run instructions, data-source/identity/liveness caveats (D1–D4).
+- [ ] Trip page `generateMetadata` returns `robots: { index:false,
+      follow:false }` (review-2 G-robots).
+- [ ] `next.config.ts` pins `experimental.serverActions.allowedOrigins` for
+      production (review-2 G-csrf).
+- [ ] README: run instructions, data-source/identity/liveness caveats
+      (D1–D9).
 
 ## Definition of done (maps to the 6 requirements)
 
@@ -111,14 +127,19 @@ Phased and checkable. Each phase is independently demoable. Read the relevant
   generation only in Server Actions; WS-8.3 audits `lib/ids.ts`/`randomUUID`
   are unreachable from any `'use cache'` scope (review B5).
 - **Concurrent claims** → Postgres handles concurrency; atomic multi-writes
-  via `prisma.$transaction`; claim is a composite-id `upsert`; shortfall
-  always recomputed, never stored (review G6 — no WAL/`busy_timeout`
-  needed).
+  via `prisma.$transaction([...])` (**array form only** — Neon HTTP driver
+  does not support interactive callback transactions; review-2 G-tx);
+  claim is a composite-id `upsert`; shortfall always recomputed, never
+  stored (review G6 — no WAL/`busy_timeout` needed).
+- **Concurrent owner edits (two devices)** → last-write-wins (D8); no
+  version column in v1. Documented in UI copy.
 - **Neon connection mgmt** → `PrismaClient` global singleton (dev
   hot-reload guard); pooled URL for queries, `DIRECT_URL` for migrations
   (serverless-safe via the Neon driver).
-- **Catalog cache staleness** → importer/reseed pings dev-only
-  `revalidate-campsites` Route Handler → `revalidateTag('campsites')`;
+- **Catalog cache staleness** → importer/reseed (only when `BC_DEV_URL`
+  is set — review-3 DR-57) pings dev-only `revalidate-campsites` Route
+  Handler → `revalidateTag('campsites', { expire: 0 })` (immediate
+  refresh, not the `'max'` stale-for-30-days profile — review-3 DR-50)
   otherwise restart refreshes catalog in v1 (review I-A).
 - **Seed dataset realism** → explicit RIDB→`Amenities` mapping table +
   `bearRegions` list; best-effort accuracy stated in README; RIDB importer is

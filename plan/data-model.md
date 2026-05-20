@@ -64,7 +64,7 @@ enum ItemCategory { Shelter Sleep Kitchen Water Food Clothing Navigation
                     Health_Safety Hygiene Tools_Repair Personal_Misc }
 
 model Campsite {
-  id          String   @id                       // source-prefixed, e.g. "ridb:12345"
+  id          String   @id                       // source-prefixed: 'seed:<slug>', 'fixture:<slug>', 'ridb:<RecAreaID>', 'osm:<node-id>' — never bare
   name        String
   agency      String?
   state       String?  @db.Char(2)
@@ -86,7 +86,8 @@ model Trip {
   campsiteId       String
   campsiteSnapshot Json                            // name/amenities frozen at creation
   style            TripStyle
-  ownerToken       String                          // ≥128-bit; matches bc_owner cookie
+  ownerToken       String     @unique              // ≥128-bit; matches bc_owner cookie. @unique is belt-and-braces (collision probability is cryptographically negligible) — not used for query optimization; owner lookup is by Trip.id + cookie compare. Review-3 DR-53.
+  tentCapacity     Int        @default(2) @db.SmallInt // per-trip; per_tent shortfall = ceil(n / tentCapacity). SmallInt + CHECK constraint in migration enforces [1,12] at DB layer (review-3 DR-54; app validation is lib/validation/actions.ts).
   createdAt        DateTime   @default(now())
   items            TripItem[]
   participants     Participant[]
@@ -119,7 +120,7 @@ model Participant {
   isOwner  Boolean  @default(false)                // creator row: isOwner=true AND is a participant
   joinedAt DateTime @default(now())
   claims   Claim[]
-  @@index([tripId])
+  @@index([tripId, token])                          // byToken(tripId,token) lookup hot-path; left-prefix covers tripId-only filters too, so no separate @@index([tripId]) (review-3 DR-55).
 }
 
 model Claim {
@@ -138,28 +139,68 @@ model Claim {
 
 Notes:
 - `campsiteSnapshot` freezes amenities used to generate the list, so later
-  catalog re-imports don't change an existing trip.
+  catalog re-imports don't change an existing trip. **A WS-2 test
+  asserts** that mutating the live `Campsite` row after `createTrip` does
+  not change the trip's rendered amenities (T2.14, review-2 G-snap).
 - `@@id([itemId, participantId])` makes claim an `upsert`; delete = unclaim.
-- `removed` soft-delete keeps historical claims valid and supports undo.
+- `removed` soft-delete keeps historical claims valid and supports undo via
+  `restoreItem` (owner-only, WS-7.5b). **Render contract:** items with
+  `removed=true` are excluded from the packing list and "still needed"; any
+  claims on them surface under a separate **"No longer needed (claimed)"**
+  section so participants aren't surprised that their claim disappeared
+  (review-2 G-soft, WS-6.8b).
 - **Cascade deletes** handled by Prisma relations (no manual FK SQL).
 - `crypto.randomUUID()` (trip slug) and token generation run **only in
   Server Actions** (request-time) — never a `'use cache'`/prerendered scope
   (Cache Components; review B5, WS-8.3 audit).
 - **Editable item fields (owner only):** `name`, `category`, `scope`,
-  `baseQty`, `unit`, `note`. `id/tripId/source/removed` not user-editable;
-  `scope`/`baseQty` edits recompute `requiredQty` on the next render
-  (req 3, review G1).
+  `baseQty`, `unit`, `note`. `id/tripId/source/removed` not user-editable
+  (restore is its own action); `scope`/`baseQty` edits recompute
+  `requiredQty` on the next render (req 3, review G1).
 - **Solo-creator math:** creator is a `Participant` row (`isOwner=true`), so
   `participantCount ≥ 1`; solo `per_person` `requiredQty` is 1 (review B6).
+- **`tentCapacity` is a per-trip field** (default 2; bounds `[1, 12]`
+  from `lib/limits.ts`'s `TENT_CAPACITY_MIN`/`TENT_CAPACITY_MAX` —
+  review-3 DR-43). `per_tent` shortfall uses the trip's value, not a
+  module constant. Owner-editable via the `updateTripSettings` Server
+  Action with patch `{ tentCapacity? }` (WS-7.4b — review-3 DR-56 fixes
+  the earlier `updateTrip` typo). The schema's `@default(2)` mirrors the
+  packing module's `TENT_CAPACITY` constant — Prisma can't import TS, so
+  the literal `2` appears in both places; documented here as the rule.
+- **`ownerToken @unique`** lets the DB reject any accidental token
+  collision; combined with ≥128-bit entropy this is belt-and-braces.
+- **Owner recovery (v1):** if the owner clears their `bc_owner` cookie,
+  the trip is **non-recoverable from the browser**. UI copy warns at
+  creation: *"Keep this link — it's the only way back as the owner."*
+  v2 may add a one-time download of the owner token (review-2 G-owner).
+- **Concurrency model (v1):** **last-write-wins.** No `version` column.
+  Two owner devices editing the same item → the later write overwrites.
+  Claim `upsert` is composite-id, so concurrent claims by the same
+  participant on the same item collapse to one row with the later `qty`.
+  Documented in UI copy / README D8 (review-2 G-concurrency).
 
 ## Search (replaces SQLite FTS5)
 
-A migration enables the `pg_trgm` extension and adds **GIN trigram indexes**
-on `Campsite.name` / `description`. `search()` filters with
-`contains` + `mode: 'insensitive'` (Prisma) over name/description plus
-equality filters on `state`/`agency`/amenities-JSON; ranking via
-`prisma.$queryRaw` `similarity()` when needed. Upgrade path: a generated
-`tsvector` column + `to_tsvector` query, same repository signature.
+A migration runs **`CREATE EXTENSION IF NOT EXISTS pg_trgm;`** and adds
+**GIN trigram indexes** on `Campsite.name` / `description` with the
+`gin_trgm_ops` operator class so `Prisma.contains` (`ILIKE %q%`) can use
+them — without `gin_trgm_ops` the planner falls back to a sequential scan.
+Raw SQL in the migration:
+
+```sql
+CREATE EXTENSION IF NOT EXISTS pg_trgm;
+CREATE INDEX IF NOT EXISTS campsite_name_trgm_idx
+  ON "Campsite" USING GIN ("name" gin_trgm_ops);
+CREATE INDEX IF NOT EXISTS campsite_description_trgm_idx
+  ON "Campsite" USING GIN ("description" gin_trgm_ops);
+```
+
+`search()` filters with `contains` + `mode: 'insensitive'` (Prisma) over
+name/description plus equality filters on `state`/`agency`/amenities-JSON;
+ranking via `prisma.$queryRaw` `similarity()` when needed. **Pagination is
+mandatory:** `pageSize` defaults to **20**, max **50** (review-2 G-page).
+Upgrade path: a generated `tsvector` column + `to_tsvector` query, same
+repository signature.
 
 ## TypeScript domain DTOs (`lib/db/types.ts`, Prisma-free)
 
@@ -172,14 +213,14 @@ export type ItemCategory =
   | 'Hygiene' | 'Tools & Repair' | 'Personal & Misc'
 
 export interface Campsite {
-  id: string; name: string; agency?: string; state?: string
+  id: string; name: string; agency?: string; state?: string  // state: validated 2-char US code via zod (review-2 G-state)
   lat?: number; lng?: number; description?: string
   amenities: Amenities; activities: string[]; source: string
 }
 export interface TripItem {
   id: string; tripId: string; category: ItemCategory; name: string
   scope: ItemScope; baseQty: number; unit?: string; note?: string
-  source: 'template' | 'amenity' | 'custom'; sortOrder: number
+  source: 'template' | 'amenity' | 'custom'; sortOrder: number; removed: boolean
 }
 export interface Participant {
   id: string; tripId: string; name: string; isOwner: boolean; joinedAt: number
@@ -188,7 +229,7 @@ export interface Claim { itemId: string; participantId: string; qty: number }
 export interface Trip {
   id: string; name: string; campsiteId: string
   campsite: Pick<Campsite, 'name' | 'amenities' | 'state' | 'agency'>
-  style: TripStyle; createdAt: number
+  style: TripStyle; tentCapacity: number; createdAt: number
 }
 export interface TripView {
   trip: Trip
@@ -215,7 +256,8 @@ satisfy it. Prisma calls are async-native; the fake wraps values in
 ```
 campsites:    upsertMany(Campsite[]) ; search(SearchArgs) ; getById(id)
 trips:        create(input) ; getById(id) ; rename(id, name)
-items:        listByTrip(tripId) ; add(item) ; update(id, patch) ; softRemove(id)
+              ; updateSettings(id, { tentCapacity? }) ; delete(id)
+items:        listByTrip(tripId) ; add(item) ; update(id, patch) ; softRemove(id) ; restore(id)
               ; reorder(tripId, itemId, { beforeItemId?: string; newIndex?: number })
 participants: listByTrip(tripId) ; add(tripId, name, isOwner) ; byToken(tripId, token)
               ; count(tripId)
@@ -225,13 +267,21 @@ view:         buildTripView(tripId) -> TripView | null
 
 `items.update` `patch` is restricted to
 `Partial<Pick<TripItem,'name'|'category'|'scope'|'baseQty'|'unit'|'note'>>`.
+`trips.updateSettings` patch is restricted to `{ tentCapacity? }`
+(future-extensible for per-trip prefs). `trips.delete` cascades via the
+schema relations (owner-only, hard-delete; v1 has no soft-delete on trips).
+`items.restore(id)` flips `removed=false` (owner-only, WS-7.5b).
 `buildTripView` returns `null` for an unknown `tripId` (trip page →
 `notFound()`, review G8). Multi-write operations that must be atomic
-(`createTrip` = trip + items + owner participant) use a single
-`prisma.$transaction([...])`; the in-memory fake performs them
-synchronously. `SearchArgs = { q?, state?, agency?, amenities?: (keyof
-Amenities)[], page?, pageSize? }`. `search()` is wrapped by the `'use cache'`
-helper in `lib/campsites/search.ts` (`cacheTag('campsites')`,
-`cacheLife('hours')`; detail uses the same tag with `cacheLife('days')`);
-the importer/reseed pings the dev `revalidate-campsites` Route Handler
-(review I-A).
+(`createTrip` = trip + items + owner participant) use the **array form**
+`prisma.$transaction([...])` — required because the Neon serverless **HTTP**
+driver does not support interactive `$transaction(async (tx)=>{...})`
+callbacks (review-2 G-tx); the in-memory fake performs them synchronously.
+`SearchArgs = { q?, state?, agency?, amenities?: (keyof Amenities)[],
+page?, pageSize? }`; `pageSize` defaults to **20**, max **50**
+(review-2 G-page). `search()` is wrapped by the `'use cache'` helper in
+`lib/campsites/search.ts` (`cacheTag('campsites')`, `cacheLife('hours')`;
+detail uses the same tag with `cacheLife('days')`); the importer/reseed
+pings the dev `revalidate-campsites` Route Handler which calls
+**`revalidateTag('campsites', 'max')`** — the two-arg form (the single-arg
+overload is deprecated in Next 16, review-2 G-revalidate).

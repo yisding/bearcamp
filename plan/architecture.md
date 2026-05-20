@@ -23,9 +23,18 @@ Next.js — these are load-bearing):
     *"Uncached data was accessed outside of `<Suspense>`"*.
   - Cache with the `'use cache'` directive + `cacheLife(profile)` +
     `cacheTag(tag)`. Invalidate with `updateTag` (Server Actions only,
-    immediate, read-your-own-writes) or `revalidateTag` (Server Actions
-    **and Route Handlers**, stale-while-revalidate). `refresh()` from
-    `next/cache` refreshes the client router without touching tagged caches.
+    immediate, read-your-own-writes) or `revalidateTag(tag, 'max')`
+    (Server Actions **and Route Handlers**, stale-while-revalidate; the
+    single-arg `revalidateTag(tag)` overload is deprecated in Next 16 —
+    always pass the profile, normally `'max'`).
+  - **Two distinct refresh APIs — don't conflate (review-2 G-refresh):**
+    - `refresh()` imported from **`next/cache`** is **Server-Actions only**
+      and re-renders the current route on the server after a mutation. We
+      do not need it: `updateTag('trip:<id>')` already invalidates
+      read-your-own-writes, and the trip page is uncached anyway.
+    - `useRouter().refresh()` (client-side, from `next/navigation`) is what
+      `RefreshPoller.tsx` calls on an interval — it re-fetches the route
+      from the server without unmounting the page tree.
   - **Non-deterministic ops** (`crypto.randomUUID()`, `Date.now()`,
     `Math.random()`) are **forbidden in a `'use cache'` or
     prerendered scope** — they must be deferred to request time. In this app
@@ -48,7 +57,7 @@ Next.js — these are load-bearing):
 |---|---|
 | Campsite catalog & detail | `'use cache'` + `cacheTag('campsites')` + **`cacheLife('days')`** (pinned, incl. `/campsites/[id]`). Effectively static; re-imported rarely. |
 | Campsite search results | Cached function keyed by normalized query args; `cacheTag('campsites')` + `cacheLife('hours')`. |
-| Catalog invalidation | Importer/reseed pings dev-only `app/api/revalidate-campsites/route.ts` which calls `revalidateTag('campsites')` (Route Handlers may; scripts run outside the request lifecycle so cannot call it directly). v1 limitation: otherwise a restart refreshes the catalog. (Resolves review I-A.) |
+| Catalog invalidation | Importer/reseed pings dev-only `app/api/revalidate-campsites/route.ts` which calls **`revalidateTag('campsites', { expire: 0 })`** — the dev route wants *immediate* refresh, not the `'max'` profile (`'max'` is `stale 5min / revalidate 30 days`, which leaves stale data visible to existing tabs; review-3 DR-50). The two-arg form is still required (single-arg overload is deprecated, review-2 G-revalidate). Route Handlers may call `revalidateTag`; scripts run outside the request lifecycle so cannot call it directly. v1 limitation: otherwise a restart refreshes the catalog. (Resolves review I-A.) |
 | Trip (items, participants, claims) | **Never cached.** Rendered per request under `<Suspense>`. Mutations call `updateTag('trip:<id>')`. |
 | Packing template + amenity rules | Pure data/computation — runs in the static shell, no cache needed. |
 
@@ -84,14 +93,17 @@ app/
     layout.tsx               unstable_instant = false
     [tripId]/
       page.tsx               The trip. Sections: header (name, campsite, style,
-                             share button), Join banner (if not a participant),
-                             Packing list grouped by category, "Still needed",
-                             "Who's bringing what". Wrapped in <Suspense>.
+                             tentCapacity, share button), Join banner (if not a
+                             participant), Packing list grouped by category,
+                             "Still needed", "Who's bringing what", "No longer
+                             needed (claimed)" (removed-with-claims items).
+                             Wrapped in <Suspense>. Exports generateMetadata
+                             returning robots:{index:false,follow:false}.
       not-found.tsx          Unknown / bad trip id
 
   api/
     health/route.ts          (optional, owned by WS-8) readiness
-    revalidate-campsites/route.ts  dev-only — revalidateTag('campsites') (WS-3)
+    revalidate-campsites/route.ts  dev-only — revalidateTag('campsites','max') (WS-3)
 
 components/
   ui/*                       shadcn primitives (button exists; add as needed)
@@ -100,11 +112,13 @@ components/
   campsites/AmenityGrid.tsx  server component
   trips/StylePicker.tsx      form → createTrip
   trips/PackingList.tsx      grouped list; owner edit affordances
-  trips/ItemRow.tsx          'use client' — claim/unclaim, qty, edit/remove
+  trips/ItemRow.tsx          'use client' — claim/unclaim, qty, edit/remove, restore (owner)
   trips/JoinTripDialog.tsx   'use client' — name input → joinTrip action
   trips/ShareLink.tsx        'use client' — copy URL (navigator.clipboard)
-  trips/StillNeeded.tsx      computed shortfall list
-  trips/RefreshPoller.tsx    'use client' — periodic refresh() for liveness
+  trips/StillNeeded.tsx      computed shortfall list (visible items only)
+  trips/NoLongerNeeded.tsx   removed items with live claims (owner can restore)
+  trips/RefreshPoller.tsx    'use client' — useRouter().refresh() poll for liveness
+  trips/TripSettings.tsx     'use client' — owner edits name + tentCapacity; danger-zone deleteTrip
 
 lib/
   db/
@@ -162,7 +176,7 @@ scripts/
 2. Generate the packing list: `generate(style, campsite.amenities)` →
    categorized items with `scope` flags.
 3. Insert `trip` (new UUID slug) + `trip_items`. **Auto-join the creator as
-   participant #1** (`is_owner=1`). Set **both** cookies: `bc_owner` and
+   participant #1** (`isOwner=true`). Set **both** cookies: `bc_owner` and
    `bc_participant` (httpOnly, sameSite=lax, path `/trips/<id>`, ≥128-bit
    tokens). The creator is therefore owner *and* a participant — so the
    solo-trip `participantCount` is 1 and per-person `requiredQty` is correct
@@ -174,17 +188,27 @@ that participant placing ordinary claims — they persist into the shared trip
 and show under "who's bringing what" (design decision DR-4, review G2).
 
 ### Edit list (owner)
-`addItem` / `updateItem` / `removeItem` / `reorderItem` / `renameTrip` Server
-Actions → `assertOwner(tripId)` → validate → DB write →
-`updateTag('trip:'+tripId)`. **Owner-editable item fields:** `name`,
-`category`, `scope`, `baseQty`, `unit`, `note` (changing `scope`/`baseQty`
-recomputes `requiredQty`). `reorderItem` takes `{ tripId, itemId,
-beforeItemId | newIndex }`. (Resolves review G1 / minor reorder-signature.)
+`addItem` / `updateItem` / `removeItem` / `restoreItem` / `reorderItem` /
+`renameTrip` / `updateTripSettings` / `deleteTrip` Server Actions →
+`assertOwner(tripId)` → validate → DB write → `updateTag('trip:'+tripId)`.
+**Owner-editable item fields:** `name`, `category`, `scope`, `baseQty`,
+`unit`, `note` (changing `scope`/`baseQty` recomputes `requiredQty`).
+`reorderItem` takes `{ tripId, itemId, beforeItemId | newIndex }`.
+**`updateTripSettings`** patches `{ tentCapacity? }`. **`deleteTrip`**
+hard-deletes (cascade) and `redirect('/')` (v1 has no soft-delete on
+trips; review-2 G-delete). **`restoreItem`** flips `removed=false` on a
+previously soft-removed item (review-2 G-soft). (Resolves review G1 +
+review-2 G-tent/G-soft/G-delete.)
 
 ### Share & join
 `ShareLink` copies `location.href`. A new visitor without a participant token
+(including someone who holds a `bc_participant` cookie for a **different**
+trip — the cookie is path-scoped to `/trips/<id>`, so it isn't sent here)
 sees `JoinTripDialog`; `joinTrip(tripId, name)` inserts a `participant`, sets
-the participant-token cookie, `updateTag('trip:'+tripId)`.
+the participant-token cookie, `updateTag('trip:'+tripId)`. **Participant
+cap (v1 abuse-control):** `joinTrip` rejects with a typed error once
+`participants.count(tripId) ≥ 50` (review-2 G-rate). Per-cookie token-bucket
+rate limiting is v2.
 
 ### Claim items & "still needed"
 `claimItem({ tripId, itemId, qty })` / `unclaimItem({ tripId, itemId })` →
@@ -198,32 +222,95 @@ needed" lists items with `shortfall > 0`; "Who's bringing what" groups claims
 by participant. See `packing-engine.md` for the multiplier math.
 
 ### Liveness
-`RefreshPoller` calls `router.refresh()` on an interval; because the trip page
-is uncached, the re-render reflects others' claims/joins. Manual "Refresh"
-button does the same on demand. With Cache Components, recently-visited routes
-stay mounted (React `<Activity>`) and client state is preserved across
-refresh — so the poller must **not clobber in-progress input** (open
-claim-qty field, Join dialog). WS-6.10 follows
-`02-guides/preserving-ui-state.md` and tests this (resolves review G3).
+`RefreshPoller` (client) calls **`useRouter().refresh()`** (imported from
+`next/navigation` — *not* `refresh` from `next/cache`, which is Server-
+Actions only; review-2 G-refresh) on an interval; because the trip page is
+uncached, the re-render reflects others' claims/joins. **Cadence:** 15 s
+default, paused when `document.hidden`, manual "Refresh" button for
+on-demand (review-2 G-poller). Optional v2: short-circuit via an
+`If-Modified-Since`-style `trip:<id>:updatedAt` header. With Cache
+Components, recently-visited routes stay mounted (React `<Activity>`) and
+client state is preserved across refresh — so the poller must **not
+clobber in-progress input** (open claim-qty field, Join dialog). WS-6.10
+follows `02-guides/preserving-ui-state.md` and tests this (resolves review
+G3).
 
 ## Security notes (per Next.js mutation guidance)
 
 - Every Server Action starts by resolving identity from cookies and asserting
   the caller is the **owner** (edit list / rename) or a **participant** (claim)
   for that exact `tripId`. Direct POSTs without the right token are rejected.
+  A WS-7 test asserts that a `bc_owner` cookie for trip *A* cannot mutate
+  trip *B* — the cookie path scope makes this physically unreachable in
+  the browser, and the assertion is a belt-and-braces server-side check
+  (T7.8 extended; review-2 G-cross).
 - Trip ids are unguessable (`crypto.randomUUID()`, 122-bit); owner/participant
   tokens are ≥128-bit (`lib/ids.ts` `token()`). The link *is* the capability,
   so links should be treated as secrets by users (documented in UI copy).
   Possession of a link granting join is accepted (D3).
+- **Crawler indexing:** trip pages export `generateMetadata` returning
+  `{ robots: { index: false, follow: false } }` (emits
+  `<meta name="robots" content="noindex, nofollow">` per
+  `generate-metadata.md`). **Belt-and-braces (review-3 DR-51):**
+  `next.config.ts` also sets an HTTP-header rule via the
+  `async headers()` config — `{ source: '/trips/:tripId*', headers:
+  [{ key: 'X-Robots-Tag', value: 'noindex, nofollow' }] }` — so even
+  CDN configs that strip `<meta>` still emit the header. Trip URLs are
+  capability tokens — they must not appear in search engines (review-2
+  G-robots). **`generateMetadata` stays static** — no DB reads, no
+  `cookies()` reads (which would force the DynamicMarker pattern from
+  `generate-metadata.md` lines 1275–1314); review-3 DR-52.
+- **CSRF:** Next 16 Server Actions have built-in origin protection. In
+  production we pin allowed origins via `next.config.ts`
+  `experimental.serverActions.allowedOrigins` to the deployment's host
+  (WS-8.3c, review-2 G-csrf).
+- **Slug length (v1):** trip slug is the full 36-char `crypto.randomUUID()`
+  (122-bit entropy, easy to spot in URLs, no extra encoding). A shorter
+  url-safe slug is deferred — UUID is fine for clipboards/links, the
+  bandwidth cost is negligible (review-2 G-slug).
 - No secrets reach the client: DB access, `DATABASE_URL`, and the RIDB key
   stay in Server Components / Server Actions / scripts only. `@prisma/client`
   is imported **only** under `lib/db/*`.
 
+## Observability (lean v1)
+
+- Every Server Action emits one structured
+  `console.error('[bc.action]', { action, tripId, participantId?, code,
+  err })` line on failure. No external telemetry in v1 (review-2 G-log).
+  Actions return the typed `Result<T>` envelope from
+  `lib/trips/result.ts` so the UI can surface a Toaster message — never
+  throws into React render. **`redirect()` and `notFound()` throw
+  framework errors and must NOT be caught by the envelope** — either
+  call them *outside* the try/catch (Form A in WS-7.8) or use
+  `unstable_rethrow(err)` from `next/navigation` as the first line of
+  the catch block (Form B in WS-7.8). The earlier "allowed to bubble"
+  wording was insufficient — review-3 DR-45 pins the template.
+- **`cookies()` is async in Next 16** — every action and identity helper
+  begins with `const jar = await cookies()` before `.get`/`.set`/`.delete`
+  (review-3 DR-42).
+- **Cookie clearing:** to expire a path-scoped cookie use
+  `jar.set(name, '', { path, maxAge: 0 })`. **Do NOT use
+  `jar.delete(name)`** — per `cookies.md` it ignores the path attribute
+  and would leave a `path=/trips/<id>` cookie alive (review-3 DR-40
+  fixes the `deleteTrip` bug).
+
 ## Deployment (Neon + Prisma — D2/DR-6)
 
-Persistence is Neon serverless Postgres, reachable over HTTP/WebSocket via
-`@prisma/adapter-neon`, so the SQLite single-node constraint is gone and the
-earlier "can't use Vercel" problem is resolved.
+Persistence is Neon serverless Postgres, reachable via `@prisma/adapter-neon`.
+**Driver mode:** the Neon **HTTP** driver is the default — it works
+everywhere (Node, Vercel, Cloudflare) but supports only the **array form**
+`prisma.$transaction([...])` (no interactive callback transactions, no
+`SET LOCAL`). All our multi-write operations are array-form (review-2
+G-tx). If a future feature needs interactive transactions, swap to the
+Neon **WebSocket** driver — same adapter, opt-in via `webSocketConstructor`.
+The SQLite single-node constraint is gone and the earlier "can't use
+Vercel" problem is resolved.
+
+**Prisma `driverAdapters` preview feature:** the schema lists
+`previewFeatures = ["driverAdapters"]` for Prisma 5.x compatibility; on
+Prisma 6.x (GA) the flag is a no-op and can be removed. WS-0.1 pins the
+exact Prisma version and WS-0.2b drops the flag if 6.x is selected
+(review-2 G-prisma).
 
 | Target | Status | Notes |
 |---|---|---|

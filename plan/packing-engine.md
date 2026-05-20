@@ -133,29 +133,37 @@ The user requirement: some items multiply with the number of people; others
 stay shared. Encoded by `scope`:
 
 ```ts
-function requiredQty(item: TripItem, participantCount: number): number {
+function requiredQty(
+  item: TripItem,
+  participantCount: number,
+  tentCapacity: number = TENT_CAPACITY, // module default = 2; per-trip override read from Trip.tentCapacity
+): number {
   const n = Math.max(1, participantCount)
+  const cap = Math.max(1, tentCapacity)
   switch (item.scope) {
-    case 'per_person': return item.baseQty * n            // sleeping bag, pad, eating kit
-    case 'per_tent':   return item.baseQty * Math.ceil(n / TENT_CAPACITY) // TENT_CAPACITY = 2
-    case 'shared':     return item.baseQty                 // stove, filter, first-aid kit
+    case 'per_person': return item.baseQty * n               // sleeping bag, pad, eating kit
+    case 'per_tent':   return item.baseQty * Math.ceil(n / cap) // cap defaults to 2; owner can change per trip
+    case 'shared':     return item.baseQty                    // stove, filter, first-aid kit
   }
 }
 ```
 
 - **`per_person`** → multiplies linearly with people. This is the
   sleeping-bags-and-mats requirement.
-- **`per_tent`** → multiplies stepwise (1 tent per 2 people, `Math.ceil`).
-  `TENT_CAPACITY` is a constant (could become a per-trip setting later).
+- **`per_tent`** → multiplies stepwise (1 tent per `tentCapacity` people,
+  `Math.ceil`). **`tentCapacity` is a per-trip field on `Trip`** (default
+  2; owner-editable). One 6-person tent → owner sets `tentCapacity=6` and
+  the shortfall stays at 1 tent (review-2 G-tent).
 - **`shared`** → constant regardless of group size.
 
 `participantCount` = number of `participants` rows for the trip (the owner is
 also a participant). When the trip has no joiners yet, `n` floors at 1 so the
-solo list is sensible.
+solo list is sensible. `buildTripView` passes the trip's `tentCapacity` to
+`requiredQty`.
 
 ### Shortfall / "still needed"
 
-For each visible (`removed = 0`) item:
+For each visible (`removed === false`) item:
 
 ```
 needed    = requiredQty(item, participantCount)
@@ -163,11 +171,19 @@ claimed   = Σ claims.qty for that item
 shortfall = max(0, needed - claimed)
 ```
 
-- **Still needed** view = items with `shortfall > 0`, showing
-  `claimed / needed` (e.g. "Sleeping bag — 2 of 4").
+- **Still needed** view = items with `shortfall > 0` (visible items only),
+  showing `claimed / needed` (e.g. "Sleeping bag — 2 of 4").
 - **Who's bringing what** = claims grouped by participant, with item + qty.
 - An item with `shortfall === 0` renders as fully covered (checkmark) but is
   still editable.
+- **Over-claim** (`claimed > needed`): allowed; displayed as
+  `"claimed of needed — covered (extra)"` (e.g. "5 of 3 — covered (extra)").
+  `shortfall = max(0, needed − claimed)`, so over-claim never goes
+  negative. A test asserts the display string (T6.3b, review-2 G-overclaim).
+- **Removed items with live claims** render under a dedicated
+  **"No longer needed (claimed)"** section so participants see why a claim
+  they previously made has disappeared. Restoring the item (owner action
+  `restoreItem`) moves the claim back to the main list (review-2 G-soft).
 
 ### Claim UX rules
 

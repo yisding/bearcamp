@@ -19,7 +19,7 @@ This folder is the plan only. No app code is written yet.
 | `milestones.md` | Phased, checkable implementation steps |
 | `workstreams.md` | Parallelizable workstream split, contracts, ownership, waves |
 | `tasks/` | One detailed, checkable task file per workstream (`tasks/README.md` indexes them + integration seams) |
-| `review-remediation.md` | Decisions + fixes applied from the plan review (traces each to a review finding) |
+| `review-remediation.md` | Decisions + fixes applied from the plan reviews (review-1 DR-1…DR-6; review-2 DR-7…DR-38; review-3 DR-39…DR-58 — traces each to a review finding) |
 
 ## Product requirements (from the request)
 
@@ -123,16 +123,68 @@ Reuse the installed `components.json` setup. Add shadcn primitives as needed
 `sonner`/toast, `skeleton`). Outdoorsy olive theme is already the base color.
 
 ### D6 — Validation & ids
-Add `zod` for parsing Server Action `FormData`/JSON. Ids: `TripItem`/
-`Participant` use Prisma `@default(cuid())`; the public trip slug is
-`crypto.randomUUID()`; owner/participant tokens are ≥128-bit
-`crypto.getRandomValues`. (No `nanoid` — cuid covers short ids.)
-`crypto.randomUUID()` and token generation run **only inside Server
-Actions** (request-time) — never in a `'use cache'`/prerendered scope, which
-Cache Components forbids for non-deterministic ops (WS-8.3 audit; review B5).
-Deps: `prisma`, `@prisma/client`, `@prisma/adapter-neon`,
-`@neondatabase/serverless`, `zod` (+ test stack) — see `milestones.md`
-Phase 0 / WS-0.1.
+Add `zod` for parsing Server Action `FormData`/JSON. Ids:
+- `TripItem`/`Participant` use Prisma `@default(cuid())`.
+- The public trip slug is `crypto.randomUUID()` (36 chars, 122-bit; kept
+  full-length in v1 for clarity — shorter base64url is a v2 nice-to-have,
+  review-2 G-slug).
+- Owner/participant tokens are ≥128-bit `crypto.getRandomValues`.
+- `Campsite.id` is **source-prefixed**: `seed:<slug>` (WS-3 dataset),
+  `fixture:<slug>` (WS-0 in-memory fixtures), `ridb:<RecAreaID>` (RIDB
+  importer), `osm:<node-id>` (optional Overpass adapter). Never bare
+  (review-2 G-prefix).
+
+(No `nanoid` — cuid covers short ids.) `crypto.randomUUID()` and token
+generation run **only inside Server Actions** (request-time) — never in a
+`'use cache'`/prerendered scope, which Cache Components forbids for
+non-deterministic ops (WS-8.3 audit; review B5). Deps: `prisma`,
+`@prisma/client`, `@prisma/adapter-neon`, `@neondatabase/serverless`, `zod`
+(+ test stack) — see `milestones.md` Phase 0 / WS-0.1.
+
+### D7 — Abuse control & retention (v1 minimum)
+- **Participant cap per trip:** `joinTrip` rejects once a trip has
+  `PARTICIPANT_CAP_PER_TRIP` (=50, from `lib/limits.ts` — review-3
+  DR-43) participants. Typed `participant_cap_reached` error envelope
+  → canonical UI toast *"This trip is full (50 people)."* (string lives
+  in WS-7.6, asserted verbatim by T6.4; review-3 DR-46). Per-cookie
+  rate limiting is v2.
+- **Trip retention:** trips persist until the owner runs `deleteTrip`
+  (hard-delete, cascades items/participants/claims). v1 has no auto-
+  expiry. When the owner deletes, other participants on the trip page
+  hit the 15-s poll, get a `null` `TripView`, and render the unified
+  not-found page: *"This trip doesn't exist, or the owner deleted it."*
+  No tombstone row, no targeted message (review-3 DR-47).
+- **Cookie clearing on delete:** `deleteTrip` uses `jar.set(name, '',
+  { path, maxAge: 0 })` to expire owner + participant cookies for the
+  trip path. **Not `jar.delete(name)`** — that API ignores the `path`
+  attribute and would leave the path-scoped cookies alive (review-3
+  DR-40). Other participants' `bc_participant` cookies remain set on
+  their devices (the action only sees the actor's cookies), but the
+  path no longer resolves, so they're harmless.
+- **Crawler indexing:** `/trips/<id>` exports `generateMetadata` with
+  `robots: { index: false, follow: false }` AND the production
+  `next.config.ts` sets `X-Robots-Tag: noindex, nofollow` via the
+  `headers()` config for `/trips/:tripId*` (belt-and-braces against
+  CDN configs that strip head metas — review-3 DR-51). Trip URLs are
+  capability tokens; they must not be indexed.
+
+### D8 — Concurrency & owner recovery (deliberate v1 punts)
+- **Last-write-wins.** No `version` column on `TripItem`/`Claim`. Two
+  owner devices editing the same item race-write and the later one wins.
+  Claim `upsert` is composite-id, so concurrent claims by the same
+  participant collapse to one row at the later qty. Documented in UI copy
+  near the editor.
+- **Owner cookie cleared = trip non-recoverable from this browser** in
+  v1. UI copy at creation warns: *"Keep this link — it's the only way
+  back as the owner."* A "download owner token" affordance is v2.
+
+### D9 — Soft-delete on items + restore
+`TripItem.removed` is a real soft-delete. Items with `removed=true` are
+excluded from the visible packing list and "Still needed". Any claims on
+them surface under a dedicated **"No longer needed (claimed)"** section.
+`restoreItem` (owner-only) flips `removed=false`; the item rejoins the
+list with its prior claims intact. `deleteTrip`, by contrast, is a
+hard-delete.
 
 ## Open questions for the user (do not block planning)
 

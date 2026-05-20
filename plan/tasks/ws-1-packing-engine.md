@@ -4,7 +4,9 @@
 **Depends on:** WS-0 types · **Start when:** WS-0 merged
 
 **Owned paths:** `lib/packing/templates.ts`, `lib/packing/rules.ts`,
-`lib/packing/generate.ts`, `lib/packing/__tests__/*`.
+`lib/packing/generate.ts` *(temporal handoff from WS-0's stub — WS-1
+replaces only this one file behind the unchanged barrel; review-2 DR-12)*,
+`lib/packing/__tests__/*`.
 **Do NOT own/edit:** `lib/packing/index.ts` and `lib/packing/quantities.ts`
 are **WS-0-owned, permanently** (review B1/B2).
 
@@ -21,12 +23,13 @@ are **WS-0-owned, permanently** (review B1/B2).
   CC-only fire items). **DoD:** every row present with correct
   `category/scope/styles/baseQty`.
 - [ ] **WS-1.2** Quantity math — **verify only, do NOT edit**
-  `quantities.ts` (WS-0-owned). Confirm `requiredQty(item, n)`: `per_person`
-  ×n; `per_tent` ×`ceil(n/TENT_CAPACITY)` (`TENT_CAPACITY=2`); `shared`
-  constant; `n` floors at 1 — matches `../packing-engine.md`. If wrong, file
-  it back to WS-0 (do not patch it here). Add coverage in your `__tests__/`.
-  **DoD:** behavior confirmed; if a defect is found it is fixed in WS-0, not
-  WS-1 (review B1).
+  `quantities.ts` (WS-0-owned). Confirm `requiredQty(item, n,
+  tentCapacity?)`: `per_person` ×n; `per_tent` ×`ceil(n / tentCapacity)`
+  (default 2, owner-configurable per trip — review-2 DR-21); `shared`
+  constant; `n` floors at 1; `tentCapacity` floors at 1 — matches
+  `../packing-engine.md`. If wrong, file it back to WS-0 (do not patch it
+  here). Add coverage in your `__tests__/`. **DoD:** behavior confirmed;
+  if a defect is found it is fixed in WS-0, not WS-1 (review B1).
 - [ ] **WS-1.3** Amenity rules — `rules.ts`: ordered
   `(items, amenities) => items` transforms for every row in the "Amenity
   rules" table. Each **idempotent** (lookup by `name` before add), mutates in
@@ -54,10 +57,12 @@ are **WS-0-owned, permanently** (review B1/B2).
 vitest; `lib/packing/__tests__/`. Author first; they fail until the mapped
 task lands.
 
-- [ ] **T1.1** `requiredQty` coverage — `per_person`×n; `per_tent`=
-  `ceil(n/2)`; `shared`=baseQty; n≤0 floors to 1. (Behavior is WS-0-owned;
-  this is WS-1's confirming coverage — defects route back to WS-0.)
-  _(WS-1.2 verify-only)_
+- [ ] **T1.1** `requiredQty` coverage — `per_person`×n;
+  `per_tent`=`ceil(n / tentCapacity)` for `tentCapacity ∈ {2 (default),
+  6 (family tent)}`; `shared`=baseQty; n≤0 floors to 1; `tentCapacity≤0`
+  floors to 1 (review-2 DR-21). (Behavior is WS-0-owned; this is WS-1's
+  confirming coverage — defects route back to WS-0.) _(WS-1.2
+  verify-only)_
 - [ ] **T1.2** templates content — car & backpacking lists include the
   revised rows and **exclude** canopy/cot/all-clothing/GPS/whistle; chairs &
   lantern `per_person`; fire starter/firewood/roasting forks present and

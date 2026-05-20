@@ -41,10 +41,15 @@ at a personal Neon branch (`neonctl branches create`). Identical workflow
 | Preview (per PR) | **Neon branch** (auto-created) | pooled `DATABASE_URL` + `DIRECT_URL` |
 | Production | Neon primary | pooled `DATABASE_URL` + `DIRECT_URL` |
 
-- App queries use the **pooled** Neon URL via `@prisma/adapter-neon`
-  (HTTP/WebSocket driver — serverless-safe, no connection-pool exhaustion).
+- App queries use the **pooled** Neon URL via `@prisma/adapter-neon` —
+  default is the **HTTP** driver (serverless-safe, no connection-pool
+  exhaustion). HTTP supports array-form `$transaction([...])` only — no
+  interactive callback transactions; our code does not need them
+  (review-2 G-tx).
 - Prisma **migrations** use `DIRECT_URL` (unpooled) — required by
-  `prisma migrate`.
+  `prisma migrate`. The first migration runs
+  `CREATE EXTENSION IF NOT EXISTS pg_trgm;` and creates GIN trigram
+  indexes with `gin_trgm_ops` (WS-2.3, review-2 G-trgm).
 - `prisma generate` runs in `postinstall` and in the build; `prisma migrate
   deploy` runs as a release step (CI), never at request time.
 

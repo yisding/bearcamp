@@ -17,11 +17,14 @@ WS-4 primitives (soft — can stub) · **Start when:** WS-0 merged
   **DoD:** static shell; instant nav validated.
 - [ ] **WS-5.2** Search shell — `app/campsites/layout.tsx`: persistent search
   region across child nav. **DoD:** layout preserved on sibling nav.
-- [ ] **WS-5.3** Browse page — `app/campsites/page.tsx`: `await searchParams`;
-  call cached `search()` (WS-3 surface, fixture-backed for now); render
-  results in `<Suspense fallback={<ListSkeleton/>}>`; pagination;
-  `export const unstable_instant = { prefetch: 'static' }`. **DoD:** static
-  parts in shell, results stream; no "uncached data outside `<Suspense>`".
+- [ ] **WS-5.3** Browse page — `app/campsites/page.tsx`: `await
+  searchParams`; call cached `search()` (WS-3 surface, fixture-backed
+  for now); render results in `<Suspense fallback={<ListSkeleton/>}>`;
+  pagination uses the server-clamped `pageSize` (≤50, default 20 —
+  review-2 DR-23); `export const unstable_instant = { prefetch:
+  'static' }`. **DoD:** static parts in shell, results stream; no
+  "uncached data outside `<Suspense>`"; manipulating
+  `?pageSize=500` does not return more than 50 rows.
 - [ ] **WS-5.4** Search bar — `components/campsites/SearchBar.tsx`
   (`'use client'`): debounced; writes `?q=&state=&agency=&amenities[]`;
   reads current params; uses `URLSearchParams` in the handler to avoid
