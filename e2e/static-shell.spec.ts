@@ -1,5 +1,10 @@
 // T4.5 — Playwright e2e stub for the "static shell intact" check.
 //
+// TODO(WS-8): wire Playwright. This file is an inert stub kept in-tree so the
+// acceptance criteria stay co-located with the spec they're verifying.
+// Activating it is intentionally deferred to WS-8 (the e2e workstream), where
+// the Playwright tooling and CI lanes will be set up together.
+//
 // STATUS: Playwright is NOT installed in this repo at the time WS-4's red
 // phase was authored. The implementer turning this green is expected to:
 //   1. `pnpm add -D @playwright/test`

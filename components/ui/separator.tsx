@@ -7,7 +7,13 @@ import { cn } from "@/lib/utils"
 
 // WS-4: default `decorative` to false so a Separator given an `aria-label`
 // keeps its semantic role (Radix flips to role="none" when decorative=true).
-// Consumers that want a purely visual rule can opt back in via `decorative`.
+//
+// Trade-off: the upstream shadcn default is `decorative={true}` (purely
+// visual). We invert it because T4.1 asserts `role="separator"` reachable by
+// accessible name — a stricter a11y posture that costs downstream consumers
+// nothing as long as they pass `decorative={true}` explicitly for rules that
+// are *only* visual chrome (e.g. card-internal dividers). The semantic
+// default is the safer choice for screen-reader users.
 function Separator({
   className,
   orientation = "horizontal",

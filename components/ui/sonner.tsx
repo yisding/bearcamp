@@ -10,23 +10,6 @@ import {
   Loader2Icon,
 } from "lucide-react"
 
-// jsdom doesn't implement matchMedia; sonner reads it during mount to pick
-// system theme. Polyfill at module-eval time (no-op when the real API is
-// present). Guarded so SSR (no `window`) stays untouched.
-if (typeof window !== "undefined" && typeof window.matchMedia !== "function") {
-  window.matchMedia = (query: string): MediaQueryList =>
-    ({
-      matches: false,
-      media: query,
-      onchange: null,
-      addListener: () => {},
-      removeListener: () => {},
-      addEventListener: () => {},
-      removeEventListener: () => {},
-      dispatchEvent: () => false,
-    }) as unknown as MediaQueryList
-}
-
 // WS-4: we do not (yet) ship a ThemeProvider, so don't pull in `next-themes`.
 // Callers may pass `theme` explicitly via `<Toaster theme="dark"/>`.
 const Toaster = ({ ...props }: ToasterProps) => {

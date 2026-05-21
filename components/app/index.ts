@@ -13,6 +13,9 @@
 //   - ListSkeleton  — loading placeholder for list fallbacks (`role=status`).
 //   - Section       — labelled `<section>` region with `<h2>` + actions slot.
 
+// The `*Props` interfaces re-exported below are part of the I-6 contract:
+// downstream workstreams type their consumers against them, so changes to
+// these shapes require a coordinated I-6 update (see file header).
 export { Header } from "./Header"
 export { PageHeader } from "./PageHeader"
 export type { PageHeaderProps } from "./PageHeader"

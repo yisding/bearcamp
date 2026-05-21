@@ -5,17 +5,6 @@ import { Tooltip as TooltipPrimitive } from "radix-ui"
 
 import { cn } from "@/lib/utils"
 
-// jsdom doesn't implement ResizeObserver; Radix's positioning hooks read it
-// during mount. Polyfill at module-eval time (no-op when the real API is
-// present). Guarded so SSR (no `window`) stays untouched.
-if (typeof window !== "undefined" && typeof window.ResizeObserver === "undefined") {
-  window.ResizeObserver = class {
-    observe(): void {}
-    unobserve(): void {}
-    disconnect(): void {}
-  } as unknown as typeof window.ResizeObserver
-}
-
 function TooltipProvider({
   delayDuration = 0,
   ...props
