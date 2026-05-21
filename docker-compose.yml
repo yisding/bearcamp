@@ -1,0 +1,27 @@
+# Local Postgres for Bearcamp development — WS-2.1.
+#
+# Single `postgres:16` container, named volume, bearcamp/bearcamp creds.
+# Mirrors the contract in `.env.example` (DATABASE_URL / DIRECT_URL).
+# See plan/local-dev.md.
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: bearcamp-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: bearcamp
+      POSTGRES_PASSWORD: bearcamp
+      POSTGRES_DB: bearcamp
+    ports:
+      - '5432:5432'
+    volumes:
+      - bearcamp-postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U bearcamp -d bearcamp']
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  bearcamp-postgres-data:
