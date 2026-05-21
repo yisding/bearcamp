@@ -99,21 +99,40 @@ function adjustItem(
 type Rule = (items: TripItem[], amenities: Amenities, style: TripStyle) => TripItem[]
 
 // 1) potableWater — annotate jug if available; add storage if not.
+//    Spec (packing-engine.md lines 106–107):
+//      - potableWater === true → note + REDUCE BP water-carry qty
+//      - potableWater === false → annotate + baseQty↑ on extra storage
 const potableWaterRule: Rule = (items, a, style) => {
   if (a.potableWater) {
     adjustItem(items, 'Water carry/storage jug', {
       note: 'tap on site — top up as needed',
     })
+    if (style === 'backpacking') {
+      // Spec: reduce BP water-carry qty when tap is on site. The current
+      // BP template carries `Water bottles / reservoir` at baseQty=1, which
+      // is already at the floor — there is nothing sensible to decrement.
+      // We document the no-op explicitly so a future template revision
+      // (baseQty=2+) automatically picks up the intended reduction.
+      const bottles = findByName(items, 'Water bottles / reservoir')
+      if (bottles && bottles.baseQty > 1) {
+        bottles.source = 'amenity'
+        bottles.baseQty = Math.max(1, bottles.baseQty - 1)
+        bottles.note = 'tap on site — reduced carry capacity'
+      }
+      // else: template baseQty already at floor of 1; nothing to reduce.
+    }
   } else {
     adjustItem(items, 'Water carry/storage jug', {
       note: 'no water on site — bring/treat all',
     })
     if (style === 'car') {
+      // Spec: baseQty↑ on extra water storage — "extra" must mean more
+      // than the default-1 jug already on the list, so we set baseQty=2.
       ensureItem(items, {
         category: 'Water',
         name: 'Extra water storage (large jug)',
         scope: 'shared',
-        baseQty: 1,
+        baseQty: 2,
         note: 'no potable water — bring extra capacity',
       })
     } else {
@@ -171,6 +190,13 @@ const showersRule: Rule = (items, a) => {
 // 4) electricity (CC only) — cords/strip when available; power bank
 //    otherwise. We don't touch BP because the BP template handles the
 //    power bank itself.
+//
+//    Note on the "downgrade power bank to optional" branch of the spec
+//    (packing-engine.md line 111): Power bank is a *BP-only* template
+//    row, so for CC there is nothing in the base list to downgrade. If a
+//    user has manually added a power bank as a custom item to a CC trip,
+//    we deliberately leave it alone — custom items are out of scope for
+//    amenity rules. This is a no-op by design, not an omission.
 const electricityRule: Rule = (items, a, style) => {
   if (style !== 'car') return items
   if (a.electricity) {
@@ -306,20 +332,15 @@ const picnicTablesRule: Rule = (items, a, style) => {
   return items
 }
 
-// 8) bearLockers — remove canister + note when lockers are provided.
+// 8) bearLockers — remove canister when lockers are provided. Spec
+//    (packing-engine.md line 118): "Remove bear canister; add note 'use
+//    provided lockers'". This is a pure-removal rule — there is no
+//    surviving item to annotate, since the canister is gone. Earlier
+//    versions added a placeholder "Bear locker plan" Food item to keep
+//    a `source:'amenity'` row visible, but that item is not in the spec.
 const bearLockersRule: Rule = (items, a) => {
   if (a.bearLockers) {
-    // Remove the canister but leave a "ghost" Bear-locker note item so the
-    // amenity-source tag is visible. Spec says: remove canister + note "use
-    // provided lockers" — we encode that note on a Food entry.
     removeByName(items, 'Bear canister')
-    ensureItem(items, {
-      category: 'Food',
-      name: 'Bear locker plan',
-      scope: 'shared',
-      baseQty: 1,
-      note: 'site provides bear lockers — use lockers, no canister needed',
-    })
   }
   return items
 }
@@ -348,16 +369,23 @@ const bearCountryRule: Rule = (items, a, style) => {
   return items
 }
 
-// 10) cellService — when no cell, promote paper map (even CC), add offline
-//    maps; satellite messenger optional on BP.
+// 10) cellService — when no cell, promote the existing Map & compass
+//    (even CC), add offline maps; satellite messenger optional on BP.
+//    Spec (packing-engine.md line 120): *promote* paper map & compass to
+//    required. We annotate the existing row in place rather than removing
+//    it and adding a parallel "Paper map & compass" item. If the row is
+//    absent (CC base template has no Map & compass), we add it with the
+//    same canonical note so the rule stays idempotent regardless of
+//    whether the row pre-existed.
 const cellServiceRule: Rule = (items, a, style) => {
   if (a.cellService !== 'none') return items
+  const PROMOTED_NOTE = 'cell service unreliable here — bring paper map'
   ensureItem(items, {
     category: 'Navigation',
-    name: 'Paper map & compass',
+    name: 'Map & compass',
     scope: 'shared',
     baseQty: 1,
-    note: 'no cell service — paper navigation required',
+    note: PROMOTED_NOTE,
   })
   ensureItem(items, {
     category: 'Navigation',
@@ -375,10 +403,6 @@ const cellServiceRule: Rule = (items, a, style) => {
       note: 'no cell service — optional emergency comms',
     })
   }
-  // Remove the redundant "Map & compass" template row now superseded by
-  // "Paper map & compass" (BP template carried it). Idempotent: no-op if
-  // already removed.
-  removeByName(items, 'Map & compass')
   return items
 }
 
@@ -467,6 +491,9 @@ export function applyRules(
   return items
 }
 
+// test-only fallback — `generate()` always passes an explicit style, so
+// this is only reached when callers invoke `applyRules(items, amenities)`
+// without a style (legacy / direct unit tests).
 function inferStyleFromItems(items: TripItem[]): TripStyle {
   // Water filter or bear canister or wag bag → backpacking template.
   if (

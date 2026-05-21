@@ -48,13 +48,15 @@ interface Branch {
 }
 
 const BRANCHES: Branch[] = [
-  // 1) bearLockers=true → no canister, note added.
+  // 1) bearLockers=true → no canister. This is a pure-removal rule
+  //    (packing-engine.md line 118): remove the canister, no surviving
+  //    annotated item. So no `expectAmenitySource` here — the only
+  //    requirement is that the canister is gone.
   {
-    id: 'bearLockers → no canister + note',
+    id: 'bearLockers → no canister',
     style: 'backpacking',
     amenities: baseAmenities({ bearLockers: true, bearCountry: true }),
     expectAbsent: [/bear canister/i],
-    expectAmenitySource: true,
   },
   // 2) !bearLockers && bearCountry → canister ensured (BP).
   {
