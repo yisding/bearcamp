@@ -16,6 +16,10 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'node',
+    // WS-4: jsdom-based suites (e.g. shadcn primitives, sonner, tooltip) need
+    // `matchMedia` and `ResizeObserver` polyfills; centralised here so the
+    // shipped component source stays free of test infrastructure.
+    setupFiles: ['./vitest.setup.ts'],
     // The Prisma schema test shells out to `pnpm exec prisma validate`,
     // which on a cold pnpm cache reliably takes 5–7 seconds. Other tests
     // remain fast — the higher timeout costs nothing on green runs.
