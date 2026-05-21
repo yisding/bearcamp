@@ -12,9 +12,7 @@
 
 import { describe, it, expect } from 'vitest'
 import { generate } from '../index'
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-expect-error — rules.ts is owned by WS-1 implementer; not present in
-// the red phase. The implementer must export `applyRules(items, amenities)`.
+// rules.ts (WS-1.3) exports `applyRules(items, amenities)`.
 import { applyRules } from '../rules'
 import { baseAmenities } from './_helpers'
 import type { Amenities, TripItem } from '../../db/types'

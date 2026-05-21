@@ -16,9 +16,7 @@
 // expected red.
 
 import { describe, it, expect } from 'vitest'
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-expect-error — templates.ts is owned by WS-1 implementer; not present
-// in the red phase. Resolves once WS-1.1 lands.
+// templates.ts is owned by WS-1 (WS-1.1).
 import { templates } from '../templates'
 import type { TripStyle, ItemCategory, ItemScope } from '../../db/types'
 
