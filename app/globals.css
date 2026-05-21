@@ -2,6 +2,19 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
+/*
+ * WS-4 — Theme tokens.
+ *
+ * Base palette is `olive` (components.json -> tailwind.baseColor), styled
+ * against the radix-maia shadcn registry. Hues sit around 106–107 in OKLCH
+ * to keep the olive cast consistent across surfaces.
+ *
+ * Light tokens live in `:root`; dark overrides in `.dark` — the
+ * `@custom-variant dark` declaration below routes Tailwind's `dark:`
+ * modifier at any `.dark` ancestor. T4.6 asserts that --background,
+ * --foreground, --primary, --card, and --muted each differ between the two
+ * blocks; touch them in pairs.
+ */
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
