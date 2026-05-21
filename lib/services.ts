@@ -1,10 +1,29 @@
-// Composition root / swap seam — WS-0.12.
-// Defaults to memory + fixtures; WS-8 flips defaults via BEARCAMP_BACKEND.
+// Composition root / swap seam — WS-0.12 (default) + WS-8.1 (flip).
+//
+// Defaults to memory + fixtures. When `BEARCAMP_BACKEND=prisma` is set,
+// `getStorage()` returns a Prisma-backed adapter (built via
+// `createPrismaStorage()` from `lib/db/storage.prisma`) and
+// `getCampsiteSource()` returns the seed-backed source
+// (`createSeedSource()` from `lib/campsites/seed`).
+//
+// The prisma + seed factory modules are imported statically — they're
+// import-safe even without a live DB (the Prisma client is lazily
+// instantiated via a Proxy, see `lib/db/prisma.ts`; the seed source
+// only loads `data/campsites.seed.json` when its methods are called).
+// Tests that don't want to hit Prisma / seed code can keep the default
+// memory + fixtures by leaving `BEARCAMP_BACKEND` unset.
+//
+// Tests in `lib/__tests__/services.flip.test.ts` `vi.doMock(...)` the
+// factory modules then `await import('../services')`, so the static
+// imports below resolve to the mocks (Vitest hoists doMock + clears
+// the module registry per `vi.resetModules()`).
 
 import type { StorageAdapter } from './db/storage'
 import type { CampsiteSource } from './campsites/source'
 import { memoryStorage } from './db/storage.memory'
 import { createFixtureSource } from './campsites/fixtures'
+import { createPrismaStorage } from './db/storage.prisma'
+import { createSeedSource } from './campsites/seed'
 
 export type Backend = 'memory' | 'prisma'
 
@@ -14,69 +33,26 @@ export function getBackend(): Backend {
 }
 
 let prismaStorageSingleton: StorageAdapter | null = null
-
-// Prisma factory is intentionally a not-configured throw at WS-0 — WS-2
-// wires the real implementation. Returns a distinct object identity from
-// the memory singleton so the services seam test (T0.8) sees a different
-// factory selection rather than silently falling through to memory.
-function makePrismaStorage(): StorageAdapter {
-  const notWired = (method: string) => () => {
-    throw new Error(
-      `prisma storage backend not configured in WS-0 (WS-2 wires this); called ${method}`,
-    )
-  }
-  return {
-    campsites: {
-      upsertMany: notWired('campsites.upsertMany'),
-      search: notWired('campsites.search'),
-      getById: notWired('campsites.getById'),
-    },
-    trips: {
-      create: notWired('trips.create'),
-      getById: notWired('trips.getById'),
-      rename: notWired('trips.rename'),
-      updateSettings: notWired('trips.updateSettings'),
-      delete: notWired('trips.delete'),
-      byOwnerToken: notWired('trips.byOwnerToken'),
-    },
-    items: {
-      listByTrip: notWired('items.listByTrip'),
-      add: notWired('items.add'),
-      update: notWired('items.update'),
-      softRemove: notWired('items.softRemove'),
-      restore: notWired('items.restore'),
-      reorder: notWired('items.reorder'),
-    },
-    participants: {
-      listByTrip: notWired('participants.listByTrip'),
-      add: notWired('participants.add'),
-      byToken: notWired('participants.byToken'),
-      count: notWired('participants.count'),
-    },
-    claims: {
-      listByTrip: notWired('claims.listByTrip'),
-      upsert: notWired('claims.upsert'),
-      remove: notWired('claims.remove'),
-    },
-    view: {
-      buildTripView: notWired('view.buildTripView'),
-    },
-  }
-}
+let fixtureSourceSingleton: CampsiteSource | null = null
+let seedSourceSingleton: CampsiteSource | null = null
 
 export function getStorage(): StorageAdapter {
   if (getBackend() === 'prisma') {
     if (!prismaStorageSingleton) {
-      prismaStorageSingleton = makePrismaStorage()
+      prismaStorageSingleton = createPrismaStorage()
     }
     return prismaStorageSingleton
   }
   return memoryStorage
 }
 
-let fixtureSourceSingleton: CampsiteSource | null = null
-
 export function getCampsiteSource(): CampsiteSource {
+  if (getBackend() === 'prisma') {
+    if (!seedSourceSingleton) {
+      seedSourceSingleton = createSeedSource()
+    }
+    return seedSourceSingleton
+  }
   if (!fixtureSourceSingleton) {
     fixtureSourceSingleton = createFixtureSource()
   }

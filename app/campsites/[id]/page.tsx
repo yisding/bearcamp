@@ -1,4 +1,4 @@
-// WS-5.6 — Campsite detail page.
+// WS-5.6 + WS-8.2 — Campsite detail page.
 //
 // Cache strategy: the detail content is cached via a `'use cache'` child
 // (`cacheTag('campsites')` + `cacheLife('days')` per review I-A). The
@@ -11,14 +11,29 @@
 // `'use cache'` cannot access request-time APIs and its arguments must
 // be serialisable, so passing the string id (not the Promise) is
 // required.
+//
+// WS-8.2 swaps the WS-5 `StylePickerPlaceholder` for the real WS-6
+// `StylePicker` client component (seam I-1) and wires its
+// `createTripAction` prop to the WS-7 `createTrip` Server Action (via
+// the FormData adapter in `./actions.ts`).
+//
+// WS-8.5 adds the `unstable_instant` route export so Cache Components
+// validates the static shell for this navigation.
 
 import { Suspense } from "react"
 import { notFound } from "next/navigation"
 import { cacheLife, cacheTag } from "next/cache"
 import { ListSkeleton, PageHeader, Section } from "@/components/app"
 import { AmenityGrid } from "@/components/campsites/AmenityGrid"
-import { StylePickerPlaceholder } from "@/components/campsites/StylePickerPlaceholder"
+import { StylePicker } from "@/components/trips/StylePicker"
 import { getCampsiteSource } from "@/lib/services"
+import { createTripFromForm } from "./actions"
+
+// WS-8.4 / WS-8.5 — opt this route into instant-navigation validation.
+// The static shell (PageHeader + Suspense fallback) is prerendered;
+// the cached `<CampsiteDetail>` child renders behind the Suspense
+// boundary.
+export const unstable_instant = { prefetch: "static" }
 
 // Instant-navigation validation (WS-5.6/5.9/T5.6). Next 16's instant
 // validator wraps `params`/`searchParams` in an EXHAUSTIVE proxy keyed by
@@ -97,8 +112,9 @@ async function CampsiteDetail({ id }: { id: string }) {
       ) : null}
 
       <Section title="Plan a trip">
-        <StylePickerPlaceholder
-          campsite={{ id: campsite.id, name: campsite.name }}
+        <StylePicker
+          campsiteId={campsite.id}
+          createTripAction={createTripFromForm}
         />
       </Section>
     </div>

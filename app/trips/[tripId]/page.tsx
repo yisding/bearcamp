@@ -1,12 +1,20 @@
-// WS-6.2 — Trip page.
+// WS-6.2 + WS-8.2 — Trip page.
 //
 // Async params (Next 16). Loads `TripView` via the services storage; if
 // `buildTripView` returns `null`, calls `notFound()` (G8 / DR-47).
-// Resolves identity from the `bc_owner` / `bc_participant` cookies (WS-0
-// stub at I-2; WS-8.2 swaps to WS-7's real `lib/trips/identity`).
+// Resolves identity from the `bc_owner` / `bc_participant` cookies via
+// the real WS-7 identity helper (`lib/trips/identity`). WS-6 originally
+// imported from `lib/trips/identity.stub`; WS-8.2 (seam I-2) flips this
+// to the production module so the cookie path and clearing semantics
+// match the real Server Actions.
+//
+// Server Actions are imported directly from `lib/trips/actions` (seam
+// I-4) — the local `./actions.ts` shim was retired at WS-8.2 so there
+// is exactly one definition of every Server Action in the codebase.
 //
 // Exports `generateMetadata` with `robots: { index:false, follow:false }`
-// (DR-17) so trip URLs aren't crawled.
+// (DR-17) so trip URLs aren't crawled. The body must remain STATIC:
+// no `cookies()`, no `headers()`, no DB calls (DR-52 / T8.4(h)).
 
 import type { Metadata, ResolvingMetadata } from "next"
 import { Suspense } from "react"
@@ -15,7 +23,7 @@ import { cookies } from "next/headers"
 
 import { PageHeader, Section } from "@/components/app"
 import { getStorage } from "@/lib/services"
-import { OWNER_COOKIE, PARTICIPANT_COOKIE } from "@/lib/trips/identity.stub"
+import { OWNER_COOKIE, PARTICIPANT_COOKIE } from "@/lib/trips/identity"
 
 import { JoinTripDialog } from "@/components/trips/JoinTripDialog"
 import { NoLongerNeeded } from "@/components/trips/NoLongerNeeded"
@@ -37,7 +45,7 @@ import {
   unclaimItem,
   updateItem,
   updateTripSettings,
-} from "./actions"
+} from "@/lib/trips/actions"
 
 interface PageProps {
   params: Promise<{ tripId: string }>
