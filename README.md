@@ -29,9 +29,12 @@ pnpm dev
 
 Open <http://localhost:3000>. The dev server is on port 3000.
 
-Memory backend (no Postgres required) is the default for `pnpm test`. To
-exercise the full Prisma path against the local Docker Postgres set
-`BEARCAMP_BACKEND=prisma` in your `.env` (the default value is `memory`).
+The default backend is `prisma` (real Prisma/Neon Postgres + the seed
+catalog), so running the app locally requires the Postgres setup above —
+`docker compose up -d`, `pnpm prisma migrate dev`, `pnpm prisma db seed`.
+For a quick DB-free run set `BEARCAMP_BACKEND=memory` in your `.env`
+(in-memory fake repos + fixture campsites). `pnpm test` always runs on the
+`memory` backend regardless of `.env`.
 
 ## Scripts
 
@@ -56,7 +59,7 @@ exercise the full Prisma path against the local Docker Postgres set
 | --- | --- | --- |
 | `DATABASE_URL` | when `BEARCAMP_BACKEND=prisma` | Pooled URL used by the app at runtime. Neon HTTP driver is auto-selected when the host ends with `.neon.tech`; otherwise `@prisma/adapter-pg` is used. |
 | `DIRECT_URL` | for migrations | Unpooled URL used by `prisma migrate` only. |
-| `BEARCAMP_BACKEND` | optional | `memory` (default — fake repos + fixture campsites) or `prisma` (real DB + seed dataset). Tests stay on `memory` unless explicitly opted in. |
+| `BEARCAMP_BACKEND` | optional | `prisma` (default — real DB + seed dataset) or `memory` (in-process fake repos + fixture campsites, no DB needed). The vitest suite is always pinned to `memory` (`vitest.config.ts`). |
 | `BEARCAMP_ALLOWED_ORIGINS` | production | Comma-separated list of CSRF-allowed origins for Server Actions in `NODE_ENV=production`. Defaults to a placeholder; override in your deploy env. |
 | `RIDB_API_KEY` | optional | Used by the WS-3 importer script to refresh the seed file from RIDB; not consumed at runtime. |
 | `BC_DEV_URL` | optional | If set, `prisma db seed` pings `${BC_DEV_URL}/api/revalidate-campsites` to refresh the cached catalog (DR-50 / DR-57). Leave unset for CLI / CI seed runs. |

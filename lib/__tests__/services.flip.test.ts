@@ -1,12 +1,15 @@
-// WS-8 T8.1 — services flip (red phase).
+// WS-8 T8.1 — services flip.
 //
-// Spec (plan/tasks/ws-8-integration-validation-hardening.md, T8.1):
-//   When `BEARCAMP_BACKEND=prisma`:
+// Spec (plan/tasks/ws-8-integration-validation-hardening.md, T8.1 + WS-8.1):
+//   The default backend is `prisma`:
 //     - `getStorage()` returns the Prisma adapter (built via
 //       `createPrismaStorage()` from `lib/db/storage.prisma`).
 //     - `getCampsiteSource()` returns the seed source (built via
 //       `createSeedSource()` from `lib/campsites/seed`).
-//   Without the env var, defaults remain memory + fixtures.
+//   An explicit `BEARCAMP_BACKEND=memory` selects memory + fixtures (the
+//   test fallback). The vitest run pins `memory` globally via
+//   `vitest.config.ts` `test.env`; these tests set `process.env`
+//   explicitly so they don't depend on that ambient default.
 //
 // At WS-8 red:
 //   - `getStorage()` still returns a not-wired stub (throws on call) — fine
@@ -37,18 +40,25 @@ describe('T8.1 services flip — BEARCAMP_BACKEND=prisma selects real factories'
     else process.env.BEARCAMP_BACKEND = originalEnv
   })
 
-  it('without the env var, getStorage() returns the in-memory singleton', async () => {
+  it('with BEARCAMP_BACKEND=memory, getStorage() returns the in-memory singleton', async () => {
+    process.env.BEARCAMP_BACKEND = 'memory'
     const services = await import('../services')
     const { memoryStorage } = await import('../db/storage.memory')
     expect(services.getStorage()).toBe(memoryStorage)
   })
 
-  it('without the env var, getCampsiteSource() returns the fixtures source', async () => {
+  it("without the env var, getBackend() defaults to 'prisma' (WS-8.1 flip)", async () => {
+    const services = await import('../services')
+    expect(services.getBackend()).toBe('prisma')
+  })
+
+  it('with BEARCAMP_BACKEND=memory, getCampsiteSource() returns the fixtures source', async () => {
+    process.env.BEARCAMP_BACKEND = 'memory'
     // The fixtures source exposes `all`/`getById`/`search` — and crucially
     // is built from `createFixtureSource`, not `createSeedSource`. We can't
     // discriminate by identity alone (CampsiteSource is a plain object), so
     // we spy on the seed module's `createSeedSource` and assert it was NOT
-    // called when the flag is absent.
+    // called when memory is selected.
     const seedSpy = vi.fn()
     vi.doMock('../campsites/seed', async () => {
       const actual: typeof import('../campsites/seed') = await vi.importActual('../campsites/seed')

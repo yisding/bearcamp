@@ -1,6 +1,9 @@
-// T0.8 — services seam.
-// Default getStorage()/getCampsiteSource() returns memory/fixtures.
-// BEARCAMP_BACKEND=prisma switch selects a different factory pair.
+// T0.8 — services seam (updated by WS-8.1).
+// WS-8.1 flipped the default: when `BEARCAMP_BACKEND` is unset the backend
+// is `prisma`. An explicit `BEARCAMP_BACKEND=memory` selects the in-memory
+// fake + fixtures. The vitest run pins `memory` globally (vitest.config.ts
+// `test.env`); these tests set `process.env.BEARCAMP_BACKEND` explicitly so
+// they don't depend on that ambient default.
 
 import { describe, it, expect, beforeEach, afterEach } from 'vitest'
 
@@ -14,24 +17,25 @@ describe('T0.8 services seam', () => {
     else process.env.BEARCAMP_BACKEND = originalEnv
   })
 
-  it("default backend is 'memory'", async () => {
+  it("default backend (BEARCAMP_BACKEND unset) is 'prisma'", async () => {
     const mod = await import('../services')
-    expect(mod.getBackend()).toBe('memory')
+    expect(mod.getBackend()).toBe('prisma')
   })
 
-  it("BEARCAMP_BACKEND=prisma switches backend selection to 'prisma'", async () => {
+  it("BEARCAMP_BACKEND=prisma (explicit) selects 'prisma'", async () => {
     process.env.BEARCAMP_BACKEND = 'prisma'
     const mod = await import('../services')
     expect(mod.getBackend()).toBe('prisma')
   })
 
-  it("BEARCAMP_BACKEND=memory (explicit) stays 'memory'", async () => {
+  it("BEARCAMP_BACKEND=memory (explicit) selects 'memory'", async () => {
     process.env.BEARCAMP_BACKEND = 'memory'
     const mod = await import('../services')
     expect(mod.getBackend()).toBe('memory')
   })
 
-  it('default getStorage() returns a StorageAdapter (memory)', async () => {
+  it('getStorage() with BEARCAMP_BACKEND=memory returns a StorageAdapter (memory)', async () => {
+    process.env.BEARCAMP_BACKEND = 'memory'
     const { getStorage } = await import('../services')
     const s = getStorage()
     // Structural: must have all 6 sub-repos
@@ -43,7 +47,8 @@ describe('T0.8 services seam', () => {
     expect(s.view).toBeDefined()
   })
 
-  it('default getCampsiteSource() returns a CampsiteSource (fixtures)', async () => {
+  it('getCampsiteSource() with BEARCAMP_BACKEND=memory returns a CampsiteSource (fixtures)', async () => {
+    process.env.BEARCAMP_BACKEND = 'memory'
     const { getCampsiteSource } = await import('../services')
     const src = getCampsiteSource()
     expect(typeof src.all).toBe('function')

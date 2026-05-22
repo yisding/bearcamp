@@ -16,6 +16,14 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'node',
+    // WS-8.1: the app default backend is now `prisma`. The test suite must
+    // stay on the in-memory fake + fixtures (WS-8.1 DoD "tests still use
+    // fakes") — pin `BEARCAMP_BACKEND=memory` for the whole vitest run so
+    // no test reaches Prisma/Neon. Individual tests that exercise the flip
+    // (e.g. `services.flip.test.ts`) override this via `process.env`.
+    env: {
+      BEARCAMP_BACKEND: 'memory',
+    },
     // WS-4: jsdom-based suites (e.g. shadcn primitives, sonner, tooltip) need
     // `matchMedia` and `ResizeObserver` polyfills; centralised here so the
     // shipped component source stays free of test infrastructure.
