@@ -773,6 +773,21 @@ describe('T7.7 claim/unclaim', () => {
     expect(item.shortfall).toBe(item.baseQty)
   })
 
+  it('claimItem against an unknown itemId returns not_found (via mapThrown)', async () => {
+    const tripId = await setupOwnedTrip()
+    const r = await claimItem({ tripId, itemId: 'item_missing', qty: 1 })
+    expect(r.ok).toBe(false)
+    if (!r.ok) expect(r.error.code).toBe('not_found')
+  })
+
+  it('unclaimItem against an unknown itemId returns not_found (via mapThrown)', async () => {
+    const tripId = await setupOwnedTrip()
+    const r = await unclaimItem({ tripId, itemId: 'item_missing' })
+    // claims.remove is idempotent for an unknown row; if no error is thrown
+    // this resolves ok. The assertion is that it never returns `internal`.
+    if (!r.ok) expect(r.error.code).toBe('not_found')
+  })
+
   it('claimItem schema rejects input that tries to inject participantId at runtime', async () => {
     const tripId = await setupOwnedTrip()
     const items = await memoryStorage.items.listByTrip(tripId)

@@ -493,12 +493,10 @@ export async function claimItem(
   input: ClaimItemInput,
 ): Promise<ClaimItemResult> {
   let tripId: string | undefined
-  let participantId: string | undefined
   try {
     const parsed = ClaimItemSchema.parse(input)
     tripId = parsed.tripId
     const participant = await assertParticipant(parsed.tripId)
-    participantId = participant.id
     const claim = await getStorage().claims.upsert(
       parsed.itemId,
       participant.id,
@@ -508,16 +506,7 @@ export async function claimItem(
     return ok(claim)
   } catch (e) {
     await rethrowControlFlow(e)
-    if (e instanceof z.ZodError) {
-      logFailure({ action: 'claimItem', tripId, code: 'validation_failed', err: e })
-      return err('validation_failed', 'Invalid input.')
-    }
-    if (isUnauthorizedError(e)) {
-      logFailure({ action: 'claimItem', tripId, code: 'unauthorized', err: e })
-      return err('unauthorized', 'You do not have permission to do that.')
-    }
-    logFailure({ action: 'claimItem', tripId, participantId, code: 'internal', err: e })
-    return err('internal', 'Could not claim.')
+    return mapThrown('claimItem', tripId, e)
   }
 }
 
@@ -525,26 +514,15 @@ export async function unclaimItem(
   input: UnclaimItemInput,
 ): Promise<UnclaimItemResult> {
   let tripId: string | undefined
-  let participantId: string | undefined
   try {
     const parsed = UnclaimItemSchema.parse(input)
     tripId = parsed.tripId
     const participant = await assertParticipant(parsed.tripId)
-    participantId = participant.id
     await getStorage().claims.remove(parsed.itemId, participant.id)
     await touchTripTag(parsed.tripId)
     return ok({ itemId: parsed.itemId })
   } catch (e) {
     await rethrowControlFlow(e)
-    if (e instanceof z.ZodError) {
-      logFailure({ action: 'unclaimItem', tripId, code: 'validation_failed', err: e })
-      return err('validation_failed', 'Invalid input.')
-    }
-    if (isUnauthorizedError(e)) {
-      logFailure({ action: 'unclaimItem', tripId, code: 'unauthorized', err: e })
-      return err('unauthorized', 'You do not have permission to do that.')
-    }
-    logFailure({ action: 'unclaimItem', tripId, participantId, code: 'internal', err: e })
-    return err('internal', 'Could not unclaim.')
+    return mapThrown('unclaimItem', tripId, e)
   }
 }
