@@ -101,11 +101,14 @@ function searchKey(args: NormalizedSearchArgs): string {
   })
 }
 
-export async function __cachedSearchForTest(
+// Internal memoizing twin — mirrors production `cachedSearchNormalized`:
+// its parameter is the ALREADY-NORMALIZED args, and the memo key derives
+// from that normalized object. This is the test analogue of the `'use
+// cache'` boundary, so memoization genuinely keys on the normalized value.
+async function searchNormalizedForTest(
   source: CampsiteSource,
-  args: SearchArgs,
+  normalized: NormalizedSearchArgs,
 ): Promise<SearchResult> {
-  const normalized = normalizeSearchArgs(args)
   const key = searchKey(normalized)
   let bucket = searchTestCache.get(source)
   if (!bucket) {
@@ -117,6 +120,16 @@ export async function __cachedSearchForTest(
   const result = await source.search(normalized)
   bucket.set(key, result)
   return result
+}
+
+// Public twin — mirrors production `cachedSearch`: normalize FIRST (outside
+// the memo boundary), then delegate to the memoizing helper.
+export async function __cachedSearchForTest(
+  source: CampsiteSource,
+  args: SearchArgs,
+): Promise<SearchResult> {
+  const normalized = normalizeSearchArgs(args)
+  return searchNormalizedForTest(source, normalized)
 }
 
 export async function __cachedGetByIdForTest(
@@ -137,22 +150,42 @@ export async function __cachedGetByIdForTest(
 // ---- Production helpers (Cache Components) -----------------------------
 //
 // `'use cache'` is a Next 16 directive that marks the function output as
-// cacheable. We tag every call with 'campsites' so the dev
+// cacheable. Per the use-cache.md "Cache keys" rule, the cache key is the
+// SERIALIZED ARGUMENTS of the cached function — so normalization MUST run
+// OUTSIDE the cache boundary, otherwise `{q:'Pine',state:'CA'}` and
+// `{state:'CA',q:'pine'}` would key distinct entries despite normalizing
+// identically (WS-3.3: "normalize/whitelist SearchArgs for a stable cache
+// key"). The public `cachedSearch` therefore normalizes first, then
+// delegates to the internal `'use cache'` helper whose single argument is
+// the already-normalized object — the normalized value is what becomes the
+// key. We tag every call with 'campsites' so the dev
 // /api/revalidate-campsites Route Handler can purge with
 // `revalidateTag('campsites', { expire: 0 })` (DR-50). List uses
 // `cacheLife('hours')`; the detail page shares the tag but lives longer
 // (`cacheLife('days')`) so individual detail pages stay snappy.
 
-export async function cachedSearch(args: SearchArgs): Promise<SearchResult> {
+// Internal cached helper — its single parameter is the ALREADY-NORMALIZED
+// args object, so the stable normalized value (not the raw caller input)
+// becomes the cache key.
+async function cachedSearchNormalized(
+  normalized: NormalizedSearchArgs,
+): Promise<SearchResult> {
   'use cache'
   cacheTag(CAMPSITES_CACHE_TAG)
   cacheLife('hours')
-  const normalized = normalizeSearchArgs(args)
   const source = getCampsiteSource()
   return source.search(normalized)
 }
 
+export async function cachedSearch(args: SearchArgs): Promise<SearchResult> {
+  // Normalize OUTSIDE the cache boundary so the cache key is the stable
+  // normalized object, not the raw caller input.
+  const normalized = normalizeSearchArgs(args)
+  return cachedSearchNormalized(normalized)
+}
+
 export async function cachedGetById(id: string): Promise<Campsite | null> {
+  // `id` is a primitive, already a stable cache key — no normalization needed.
   'use cache'
   cacheTag(CAMPSITES_CACHE_TAG)
   cacheLife('days')

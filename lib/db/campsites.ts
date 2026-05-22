@@ -6,7 +6,14 @@
 // Search: name/description filtered via `Prisma.contains` + `mode:'insensitive'`
 // (ILIKE %q% → hits the pg_trgm GIN index, T2.2b). State and agency are
 // equality filters. Amenities filters are JSON-path predicates on the
-// `amenities` JSON column (each requested key must be truthy).
+// `amenities` JSON column (each requested key must equal `true`).
+//
+// IMPORTANT: only the *boolean* amenity keys are filterable. `SearchArgs`
+// types `amenities` as `(keyof Amenities)[]`, but `Amenities` also has
+// non-boolean keys (`toilets`, `cellService`, `accessLevel`,
+// `potableWaterNote`). A `{ equals: true }` predicate on those would never
+// match, so non-boolean keys are filtered out below rather than silently
+// matching nothing. See `BOOLEAN_AMENITY_KEYS`.
 //
 // pageSize is server-side capped at `SEARCH_PAGE_SIZE_MAX` (lib/limits.ts)
 // regardless of caller input — DR-23 / T2.2.
@@ -84,6 +91,23 @@ function toRow(c: Campsite): {
   }
 }
 
+// The subset of `Amenities` keys whose values are `boolean`. The amenities
+// search filter applies `{ equals: true }`, which is only meaningful for
+// these — non-boolean keys (`toilets`, `cellService`, `accessLevel`,
+// `potableWaterNote`) are not supported as filters and are ignored.
+const BOOLEAN_AMENITY_KEYS: ReadonlySet<keyof Amenities> = new Set([
+  'potableWater',
+  'showers',
+  'electricity',
+  'fireRings',
+  'firewoodAvailable',
+  'picnicTables',
+  'bearLockers',
+  'bearCountry',
+  'trashService',
+  'dumpStation',
+])
+
 function clampPageSize(pageSize: number | undefined): number {
   const requested = pageSize ?? SEARCH_PAGE_SIZE_DEFAULT
   return Math.max(1, Math.min(requested, SEARCH_PAGE_SIZE_MAX))
@@ -129,11 +153,18 @@ export function createCampsitesRepo(prisma: PrismaClient): CampsitesRepo {
       if (args.state) where.state = args.state
       if (args.agency) where.agency = args.agency
       if (args.amenities && args.amenities.length > 0) {
-        // AND across requested amenity keys; each key must be truthy on the
-        // `amenities` JSON column.
-        where.AND = args.amenities.map((k) => ({
-          amenities: { path: [k as string], equals: true },
-        }))
+        // AND across requested amenity keys; each key must equal `true` on
+        // the `amenities` JSON column. Only boolean keys are filterable —
+        // see BOOLEAN_AMENITY_KEYS — so non-boolean keys are dropped here
+        // instead of producing a predicate that never matches.
+        const booleanKeys = args.amenities.filter((k) =>
+          BOOLEAN_AMENITY_KEYS.has(k),
+        )
+        if (booleanKeys.length > 0) {
+          where.AND = booleanKeys.map((k) => ({
+            amenities: { path: [k as string], equals: true },
+          }))
+        }
       }
 
       const [total, rows] = await p.$transaction([

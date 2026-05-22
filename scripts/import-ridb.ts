@@ -14,6 +14,7 @@
 import type { Campsite } from '@/lib/db/types'
 import { fetchRidb } from '@/lib/campsites/ridb'
 import { getStorage } from '@/lib/services'
+import { CampsiteSchema } from '@/lib/validation/domain'
 
 export interface ImportRidbOptions {
   // Override the storage adapter (tests inject via vi.mock; production
@@ -38,14 +39,40 @@ export async function importRidb(
     return { inserted: 0, skipped: true }
   }
 
+  // Validate fail-soft — RIDB data is untrusted upstream, so unlike the
+  // curated seed (which fails fast in `loadSeed`) we drop + log invalid rows
+  // rather than abort the whole import. Mirrors `loadSeed`'s CampsiteSchema
+  // gate so only schema-valid rows reach `upsertMany`.
+  const validated: Campsite[] = []
+  for (const row of rows) {
+    const parsed = CampsiteSchema.safeParse(row)
+    if (!parsed.success) {
+      const id =
+        row && typeof row === 'object' && 'id' in row
+          ? String((row as { id: unknown }).id)
+          : '<unknown>'
+      console.warn(
+        `[import-ridb] dropping invalid row ${id}: ${parsed.error.message}`,
+      )
+      continue
+    }
+    validated.push(parsed.data as Campsite)
+  }
+
   // Dedupe by id — RIDB occasionally returns duplicates across paginated
   // batches when a record straddles pages.
   const seen = new Set<string>()
   const deduped: Campsite[] = []
-  for (const row of rows) {
+  for (const row of validated) {
     if (seen.has(row.id)) continue
     seen.add(row.id)
     deduped.push(row)
+  }
+
+  if (deduped.length === 0) {
+    // Every fetched row failed validation — nothing safe to write.
+    console.log('[import-ridb] no valid rows to upsert after validation')
+    return { inserted: 0, skipped: true }
   }
 
   const storage = options.storage ?? getStorage()
