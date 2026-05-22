@@ -95,15 +95,51 @@ export function SearchBar() {
   // immediately rewrite the URL on mount with the same values.
   const hasInteracted = React.useRef(false)
 
+  // Remember the last href this component itself pushed, so the back/forward
+  // re-sync effect below can tell an external URL change (browser nav) apart
+  // from the URL update it just wrote — and not fight its own debounced write.
+  const lastPushedHref = React.useRef<string | null>(null)
+
   React.useEffect(() => {
     if (!hasInteracted.current) return
     const handle = setTimeout(() => {
-      router.replace(
-        buildHref({ q, state: stateValue, agency, amenities }),
-      )
+      const href = buildHref({ q, state: stateValue, agency, amenities })
+      lastPushedHref.current = href
+      router.replace(href)
     }, DEBOUNCE_MS)
     return () => clearTimeout(handle)
   }, [q, stateValue, agency, amenities, router])
+
+  // Re-sync controls when `searchParams` changes for a reason *other* than
+  // this component's own write — e.g. browser back/forward. The route does
+  // not remount on history nav, so without this the controls go stale.
+  // Guard: if the incoming params match the href we last pushed, the change
+  // is our own debounced write-back echoing — skip it so we don't clobber
+  // in-flight typing or loop.
+  React.useEffect(() => {
+    const incomingQ = searchParams.get("q") ?? ""
+    const incomingState = searchParams.get("state") ?? ""
+    const incomingAgency = searchParams.get("agency") ?? ""
+    const incomingAmenities = searchParams.getAll("amenities")
+
+    const incomingHref = buildHref({
+      q: incomingQ,
+      state: incomingState,
+      agency: incomingAgency,
+      amenities: incomingAmenities,
+    })
+    if (incomingHref === lastPushedHref.current) return
+
+    setQ((prev) => (prev === incomingQ ? prev : incomingQ))
+    setStateValue((prev) => (prev === incomingState ? prev : incomingState))
+    setAgency((prev) => (prev === incomingAgency ? prev : incomingAgency))
+    setAmenities((prev) => {
+      const same =
+        prev.length === incomingAmenities.length &&
+        prev.every((a, i) => a === incomingAmenities[i])
+      return same ? prev : incomingAmenities
+    })
+  }, [searchParams])
 
   function markInteracted() {
     hasInteracted.current = true

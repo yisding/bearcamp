@@ -38,8 +38,14 @@ async function readFileIfExists(p: string): Promise<string | null> {
   }
 }
 
+// `unstable_instant` must be exported with `prefetch: 'static'`. Routes that
+// read `params`/`searchParams` additionally carry a `samples` array (Next 16's
+// instant validator wraps request data in an exhaustive proxy keyed by
+// `samples[].params` / `.searchParams`), so the object is not always the bare
+// `{ prefetch: 'static' }` literal. The marker we assert is the export plus
+// `prefetch: 'static'`; the optional `samples` field is allowed after it.
 const INSTANT_RE =
-  /export\s+const\s+unstable_instant\s*=\s*\{\s*prefetch\s*:\s*['"]static['"]\s*,?\s*\}/
+  /export\s+const\s+unstable_instant\s*=\s*\{\s*prefetch\s*:\s*['"]static['"]/
 
 describe('T5.7 instant + Suspense markers (build-gate proxy)', () => {
   it('app/page.tsx exports `unstable_instant = { prefetch: "static" }`', async () => {

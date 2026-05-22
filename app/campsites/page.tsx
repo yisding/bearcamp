@@ -28,7 +28,36 @@ import {
 } from "@/lib/limits"
 import { campsites as campsitesRoute } from "@/lib/routes"
 
-export const unstable_instant = { prefetch: "static" }
+// Instant-navigation validation. Next 16's instant validator wraps
+// `searchParams` in an EXHAUSTIVE proxy keyed by `samples[].searchParams`:
+// reading any key not enumerated in a sample throws INSTANT_VALIDATION_ERROR
+// at build time. `samples` must therefore list EVERY searchParam key this
+// route (and the shared `campsites/layout.tsx` SearchBar) reads — here:
+// `q`, `state`, `agency`, `amenities`, `page`, `pageSize`. Values are
+// representative string fixtures. `samples` is an optional field on the
+// `prefetch: 'static'` variant (InstantConfigStaticSchema in
+// node_modules/next/dist/build/segment-config/app/app-segment-config.js);
+// the draft instant.md TS type omits it and is out of sync — trust the schema.
+export const unstable_instant = {
+  prefetch: "static",
+  samples: [
+    {
+      // Representative request-time fixtures only — these are NOT the
+      // route's defaults/bounds (those live in lib/limits.ts; DR-43/T0.15).
+      // Next's segment-config parser requires plain literals here, so the
+      // value cannot be `String(SEARCH_PAGE_SIZE_DEFAULT)`; any valid
+      // page-size string suffices for the instant proxy to enumerate the key.
+      searchParams: {
+        q: "",
+        state: "",
+        agency: "",
+        amenities: "",
+        page: "1",
+        pageSize: "10",
+      },
+    },
+  ],
+}
 
 type SearchParams = {
   q?: string

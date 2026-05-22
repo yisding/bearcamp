@@ -20,6 +20,37 @@ import { AmenityGrid } from "@/components/campsites/AmenityGrid"
 import { StylePickerPlaceholder } from "@/components/campsites/StylePickerPlaceholder"
 import { getCampsiteSource } from "@/lib/services"
 
+// Instant-navigation validation (WS-5.6/5.9/T5.6). Next 16's instant
+// validator wraps `params`/`searchParams` in an EXHAUSTIVE proxy keyed by
+// `samples[].params` / `.searchParams`: reading any key not enumerated in a
+// sample throws INSTANT_VALIDATION_ERROR at build time. So `samples` must
+// list every key read:
+//   - `params.id` — this dynamic segment. The fixture id below is a REAL id
+//     from the WS-0 fixture source `getCampsiteSource()` returns on this
+//     branch (`fixtures` in lib/campsites/fixtures.ts, built via
+//     `campsiteId('fixture', 'big-sur-state')` → `"fixture:big-sur-state"`).
+//   - `searchParams` keys — the shared `campsites/layout.tsx` renders
+//     `SearchBar`, which reads `q`/`state`/`agency`/`amenities` from
+//     `useSearchParams()`; they must be enumerated for the layout proxy too.
+// `samples` is an optional field on the `prefetch: 'static'` variant
+// (InstantConfigStaticSchema in
+// node_modules/next/dist/build/segment-config/app/app-segment-config.js);
+// the draft instant.md TS type omits it and is out of sync — trust the schema.
+export const unstable_instant = {
+  prefetch: "static",
+  samples: [
+    {
+      params: { id: "fixture:big-sur-state" },
+      searchParams: {
+        q: "",
+        state: "",
+        agency: "",
+        amenities: "",
+      },
+    },
+  ],
+}
+
 async function CampsiteDetail({ id }: { id: string }) {
   "use cache"
   cacheTag("campsites")
