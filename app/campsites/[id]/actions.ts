@@ -20,16 +20,24 @@ function readStyle(form: FormData): CreateTripInput["style"] {
   return "car"
 }
 
+// `form.get` returns `""` (not `null`) for an empty text field. Passing
+// `""` straight through produces e.g. `ownerName: ""`, which trips
+// CreateTripSchema's `.min(1)` with a confusing "string too small" error
+// rather than the intended "optional, omitted" path. Coerce empty /
+// whitespace-only strings to `undefined` so optional fields stay optional.
+function readOptional(form: FormData, key: string): string | undefined {
+  const v = form.get(key)
+  return typeof v === "string" && v.trim() ? v : undefined
+}
+
 export async function createTripFromForm(
   _prev: CreateTripResult | null,
   form: FormData,
 ): Promise<CreateTripResult> {
   const campsiteId = String(form.get("campsiteId") ?? "")
   const style = readStyle(form)
-  const ownerName =
-    form.get("ownerName") != null ? String(form.get("ownerName")) : undefined
-  const tripName =
-    form.get("name") != null ? String(form.get("name")) : undefined
+  const ownerName = readOptional(form, "ownerName")
+  const tripName = readOptional(form, "name")
   // createTrip is Form A — on success it `redirect()`s and never returns.
   // The Result envelope only surfaces here for the failure path.
   return createTrip({

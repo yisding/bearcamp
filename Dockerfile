@@ -1,9 +1,14 @@
 # WS-8.9 — Production image for Bearcamp.
 #
 # Multi-stage build:
-#   1. deps   — install (frozen) production deps for the final image.
-#   2. build  — install dev deps + run `next build` to produce .next.
-#   3. runner — copy only the standalone output + static assets.
+#   1. deps   — install the full (frozen) dependency set; reused by build.
+#   2. build  — run `next build` to produce the regular `.next` output.
+#   3. runner — copy the regular build output (`.next` + node_modules +
+#               public) and run plain `next start`.
+#
+# Note: this is a plain `next start` image — `next.config.ts` does NOT set
+# `output: 'standalone'`, so there is no trimmed standalone bundle and the
+# final image carries the full `node_modules`.
 #
 # Assumes the consumer provides `DATABASE_URL` + `DIRECT_URL` +
 # `BEARCAMP_BACKEND=prisma` + `BEARCAMP_ALLOWED_ORIGINS` at runtime.
@@ -50,10 +55,9 @@ ENV HOSTNAME=0.0.0.0
 RUN addgroup --system --gid 1001 nodejs && \
     adduser --system --uid 1001 nextjs
 
-# If next.config sets `output: 'standalone'`, the build emits
-# `.next/standalone`. We try to copy it; if it isn't emitted (no
-# explicit output config), fall back to the default `next start` from
-# the regular build output.
+# Copy the regular build output. `next.config.ts` does not set
+# `output: 'standalone'`, so there is no `.next/standalone` bundle —
+# the runner needs the full `.next`, `node_modules`, and `public`.
 COPY --from=build --chown=nextjs:nodejs /app/public ./public
 COPY --from=build --chown=nextjs:nodejs /app/.next ./.next
 COPY --from=build --chown=nextjs:nodejs /app/node_modules ./node_modules

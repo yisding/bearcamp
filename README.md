@@ -107,8 +107,11 @@ SQLite single-node constraint is gone:
 
 ### Docker
 
-The repo ships a multi-stage `Dockerfile` that builds the Next.js standalone
-output and runs `next start` on port 3000:
+The repo ships a multi-stage `Dockerfile` that runs `next build` and then
+serves the regular build output with plain `next start` on port 3000. The
+config does not set `output: 'standalone'`, so the image carries the full
+`.next` output and `node_modules` (one moving part fewer, slightly larger
+image):
 
 ```bash
 docker build -t bearcamp .
@@ -177,16 +180,17 @@ clone has the full picture without re-reading the plan.
   multi-instance consistency benefits from a shared `cacheHandlers` backend
   per the Next.js deploying guide; the default in-memory cache handler is
   fine for single-instance deploys.
-- **Instant-navigation `samples` on dynamic routes.** A route opted into
-  `unstable_instant = { prefetch: 'static' }` has its `params` /
-  `searchParams` wrapped in an exhaustive proxy during build-time
-  validation: accessing any key not declared in `unstable_instant.samples`
-  throws `INSTANT_VALIDATION_ERROR` and fails `next build`. Dynamic routes
-  and routes that read search params must therefore declare a representative
-  `samples` entry enumerating every key they touch. `/campsites/[id]` pins a
-  fixed seed campsite id (`seed:upper-pines-campground-ca`) and the
-  layout-level `SearchBar` keys; `/campsites` enumerates its full
-  `searchParams` set. The favicon ships via the static `metadata.icons`
+- **Instant-navigation `samples` on dynamic routes.** `pnpm build` is fully
+  green today; this entry documents a constraint future contributors must
+  keep satisfying. A route opted into `unstable_instant = { prefetch:
+  'static' }` has its `params` / `searchParams` wrapped in an exhaustive
+  proxy during build-time validation: accessing any key not declared in
+  `unstable_instant.samples` throws `INSTANT_VALIDATION_ERROR` and fails
+  `next build`. Dynamic routes and routes that read search params must
+  therefore declare a representative `samples` entry enumerating every key
+  they touch. `/campsites/[id]` already pins a fixed seed campsite id
+  (`seed:upper-pines-campground-ca`) and the layout-level `SearchBar` keys;
+  `/campsites` enumerates its full `searchParams` set — so the build passes. The favicon ships via the static `metadata.icons`
   field (`public/favicon.ico`) instead of the `app/favicon.ico` file
   convention — Next 16's file-based icon metadata is validated as a dynamic
   metadata route and otherwise fails instant validation on the static `/`
