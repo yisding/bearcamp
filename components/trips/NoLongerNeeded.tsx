@@ -46,6 +46,7 @@ export function NoLongerNeeded({
         toast.error(result.error.message)
         return
       }
+      toast.success("Item restored")
       router.refresh()
     })
   }

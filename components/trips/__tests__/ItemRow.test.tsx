@@ -34,6 +34,7 @@ import type {
   UpdateItemResult,
   RemoveItemResult,
   RestoreItemResult,
+  ReorderItemResult,
 } from '@/lib/trips/action-types'
 import type {
   TripViewItem,
@@ -115,7 +116,22 @@ function makeActions() {
   const restoreItem = vi.fn<(input: unknown) => Promise<RestoreItemResult>>(
     async () => ok(mkItem({ removed: false })),
   )
-  return { claimItem, unclaimItem, updateItem, removeItem, restoreItem }
+  const reorderItem = vi.fn<(input: {
+    tripId: string
+    itemId: string
+    beforeItemId?: string
+    newIndex?: number
+  }) => Promise<ReorderItemResult>>(async (input) =>
+    ok({ tripId: input.tripId, itemId: input.itemId }),
+  )
+  return {
+    claimItem,
+    unclaimItem,
+    updateItem,
+    removeItem,
+    restoreItem,
+    reorderItem,
+  }
 }
 
 beforeEach(() => {
@@ -436,5 +452,87 @@ describe('T6.12 ItemRow — restore for NoLongerNeeded (owner)', () => {
       tripId: 'trip_x',
       itemId: 'i_removed',
     })
+  })
+})
+
+describe('ItemRow — owner-only reorder (Up/Down)', () => {
+  it('does NOT render Move up / Move down for non-owners', async () => {
+    const ItemRow = await loadItemRow()
+    const actions = makeActions()
+    render(
+      <ItemRow
+        item={mkItem()}
+        currentParticipant={me}
+        isOwner={false}
+        actions={actions}
+        prevItemId="i_above"
+        nextItemId="i_below"
+      />,
+    )
+    expect(screen.queryByRole('button', { name: /move up/i })).toBeNull()
+    expect(screen.queryByRole('button', { name: /move down/i })).toBeNull()
+  })
+
+  it('Move up reorders the item before its previous sibling', async () => {
+    const ItemRow = await loadItemRow()
+    const actions = makeActions()
+    const user = userEvent.setup()
+    render(
+      <ItemRow
+        item={mkItem()}
+        currentParticipant={{ ...me, isOwner: true }}
+        isOwner={true}
+        actions={actions}
+        prevItemId="i_above"
+        nextItemId="i_below"
+      />,
+    )
+    await user.click(screen.getByRole('button', { name: /move up/i }))
+    await waitFor(() => expect(actions.reorderItem).toHaveBeenCalledTimes(1))
+    expect(actions.reorderItem).toHaveBeenCalledWith({
+      tripId: 'trip_x',
+      itemId: 'i_tent',
+      beforeItemId: 'i_above',
+    })
+  })
+
+  it('Move down reorders the next sibling before this item', async () => {
+    const ItemRow = await loadItemRow()
+    const actions = makeActions()
+    const user = userEvent.setup()
+    render(
+      <ItemRow
+        item={mkItem()}
+        currentParticipant={{ ...me, isOwner: true }}
+        isOwner={true}
+        actions={actions}
+        prevItemId="i_above"
+        nextItemId="i_below"
+      />,
+    )
+    await user.click(screen.getByRole('button', { name: /move down/i }))
+    await waitFor(() => expect(actions.reorderItem).toHaveBeenCalledTimes(1))
+    expect(actions.reorderItem).toHaveBeenCalledWith({
+      tripId: 'trip_x',
+      itemId: 'i_below',
+      beforeItemId: 'i_tent',
+    })
+  })
+
+  it('disables Move up at the top and Move down at the bottom', async () => {
+    const ItemRow = await loadItemRow()
+    const actions = makeActions()
+    render(
+      <ItemRow
+        item={mkItem()}
+        currentParticipant={{ ...me, isOwner: true }}
+        isOwner={true}
+        actions={actions}
+        prevItemId={null}
+        nextItemId={null}
+      />,
+    )
+    expect(screen.getByRole('button', { name: /move up/i })).toBeDisabled()
+    expect(screen.getByRole('button', { name: /move down/i })).toBeDisabled()
   })
 })

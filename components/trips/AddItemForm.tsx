@@ -93,6 +93,7 @@ export function AddItemForm({ tripId, addItemAction }: AddItemFormProps) {
       }
       reset()
       setOpen(false)
+      toast.success("Item added")
       router.refresh()
     })
   }

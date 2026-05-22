@@ -45,6 +45,7 @@ import {
   joinTrip,
   removeItem,
   renameTrip,
+  reorderItem,
   restoreItem,
   unclaimItem,
   updateItem,
@@ -75,6 +76,7 @@ const itemActions = {
   updateItem,
   removeItem,
   restoreItem,
+  reorderItem,
 }
 
 /**
