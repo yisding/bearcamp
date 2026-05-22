@@ -5,9 +5,20 @@
 // so the page satisfies Cache Components' "uncached data inside Suspense"
 // contract.
 //
-// `unstable_instant = { prefetch: 'static' }` opts the route into
-// instant-navigation validation (see
+// `unstable_instant` opts the route into instant-navigation validation
+// (see
 // node_modules/next/dist/docs/01-app/03-api-reference/03-file-conventions/02-route-segment-config/instant.md).
+//
+// WHY `samples` IS REQUIRED (WS-8.4 fix):
+// The validator wraps `searchParams` in an *exhaustive proxy* keyed by the
+// keys present in `unstable_instant.samples[].searchParams`. Reading any
+// searchParam key NOT enumerated in a sample throws
+// `INSTANT_VALIDATION_ERROR` at build time. `CampsiteResults` reads `q`,
+// `state`, `agency`, `amenities`, `page` and `pageSize`, so the sample
+// below enumerates exactly those keys. The `samples` field is an OPTIONAL
+// part of the static-prefetch zod schema (`InstantConfigStaticSchema` in
+// `node_modules/next/dist/build/segment-config/app/app-segment-config.js`);
+// the draft `instant.md` TS type omits it and is out of sync.
 //
 // IMPORTANT: `searchParams` is request-time data. Reading it (even via
 // `await`) at the page level makes the entire route dynamic and trips
@@ -20,7 +31,7 @@ import Link from "next/link"
 import { Suspense } from "react"
 import { EmptyState, ListSkeleton, PageHeader } from "@/components/app"
 import { CampsiteCard } from "@/components/campsites/CampsiteCard"
-import { getCampsiteSource } from "@/lib/services"
+import { cachedSearch } from "@/lib/campsites/search"
 import type { Amenities } from "@/lib/db/types"
 import {
   SEARCH_PAGE_SIZE_DEFAULT,
@@ -113,17 +124,20 @@ function buildPageUrl(
   return qs ? `${campsitesRoute()}?${qs}` : campsitesRoute()
 }
 
-// Streamed results — uncached, lives inside <Suspense>. Awaits the
-// searchParams promise here (not in the page) so the page's static
-// shell stays prerenderable. WS-3's `cachedSearch` wrapper is not
-// present on this branch yet (PR #4); WS-8 rewires this to use it.
-// For now we call the WS-0 fixture source directly.
+// Streamed results — lives inside <Suspense>. The parent resolves the
+// `searchParams` Promise inline via the JSX-thenable pattern and hands
+// us the plain object, mirroring the `params.then(({ id }) => …)` idiom
+// in `node_modules/next/dist/docs/01-app/02-guides/instant-navigation.md`.
+// Search results themselves are cached via the WS-3 `cachedSearch`
+// helper (`'use cache'` + `cacheTag('campsites')` +
+// `cacheLife('hours')`), so the dynamic searchParams read flows through
+// the documented cache boundary instead of through the raw fixture
+// source.
 async function CampsiteResults({
-  searchParams,
+  searchParams: sp,
 }: {
-  searchParams: Promise<SearchParams>
+  searchParams: SearchParams
 }) {
-  const sp = await searchParams
   const q = sp.q?.trim() || undefined
   const stateFilter = sp.state?.trim() || undefined
   const agency = sp.agency?.trim() || undefined
@@ -131,8 +145,7 @@ async function CampsiteResults({
   const page = clampPage(sp.page)
   const pageSize = clampPageSize(sp.pageSize)
 
-  const source = getCampsiteSource()
-  const result = await source.search({
+  const result = await cachedSearch({
     q,
     state: stateFilter,
     agency,
@@ -235,8 +248,11 @@ async function CampsiteResults({
 export default function CampsitesBrowsePage({
   searchParams,
 }: {
-  // Next 16: `searchParams` is a Promise. We pass it through, unawaited,
-  // into the Suspense child so the page's static shell prerenders.
+  // Next 16: `searchParams` is a Promise. Resolve it inline via the
+  // JSX-thenable pattern so the cached child receives a plain object
+  // — the canonical Next 16 idiom for handing request-time values
+  // through a Suspense boundary without tripping
+  // `INSTANT_VALIDATION_ERROR`.
   searchParams: Promise<SearchParams>
 }) {
   return (
@@ -248,7 +264,9 @@ export default function CampsitesBrowsePage({
       <Suspense
         fallback={<ListSkeleton rows={6} label="Loading campsites…" />}
       >
-        <CampsiteResults searchParams={searchParams} />
+        {searchParams.then((sp) => (
+          <CampsiteResults searchParams={sp} />
+        ))}
       </Suspense>
     </div>
   )

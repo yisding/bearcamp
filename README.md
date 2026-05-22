@@ -177,6 +177,20 @@ clone has the full picture without re-reading the plan.
   multi-instance consistency benefits from a shared `cacheHandlers` backend
   per the Next.js deploying guide; the default in-memory cache handler is
   fine for single-instance deploys.
+- **Instant-navigation `samples` on dynamic routes.** A route opted into
+  `unstable_instant = { prefetch: 'static' }` has its `params` /
+  `searchParams` wrapped in an exhaustive proxy during build-time
+  validation: accessing any key not declared in `unstable_instant.samples`
+  throws `INSTANT_VALIDATION_ERROR` and fails `next build`. Dynamic routes
+  and routes that read search params must therefore declare a representative
+  `samples` entry enumerating every key they touch. `/campsites/[id]` pins a
+  fixed seed campsite id (`seed:upper-pines-campground-ca`) and the
+  layout-level `SearchBar` keys; `/campsites` enumerates its full
+  `searchParams` set. The favicon ships via the static `metadata.icons`
+  field (`public/favicon.ico`) instead of the `app/favicon.ico` file
+  convention — Next 16's file-based icon metadata is validated as a dynamic
+  metadata route and otherwise fails instant validation on the static `/`
+  route.
 
 ## Architecture
 

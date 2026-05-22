@@ -15,8 +15,17 @@ import { resolve } from 'node:path'
 
 const ROOT = resolve(__dirname, '..', '..')
 
+// Matches `export const unstable_instant = { prefetch: "static", ... }`.
+// The object MAY carry additional fields beyond `prefetch` — notably the
+// optional `samples` array, which dynamic routes (`/campsites/[id]`) and
+// searchParam-reading routes (`/campsites`) MUST declare so the
+// instant-navigation validator's exhaustive params/searchParams proxy can
+// enumerate every key the route accesses (see WS-8.4; the zod
+// `InstantConfigStaticSchema` in
+// `node_modules/next/dist/build/segment-config/app/app-segment-config.js`
+// accepts an optional `samples` alongside `prefetch: 'static'`).
 const INSTANT_STATIC_RE =
-  /export\s+const\s+unstable_instant\s*=\s*\{\s*prefetch\s*:\s*['"]static['"]\s*,?\s*\}/
+  /export\s+const\s+unstable_instant\s*=\s*\{\s*prefetch\s*:\s*['"]static['"]/
 
 describe('T8.5 instant validation — required route exports', () => {
   it('app/page.tsx (landing) exports unstable_instant = { prefetch: "static" }', () => {
