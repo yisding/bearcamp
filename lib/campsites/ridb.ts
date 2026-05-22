@@ -43,7 +43,10 @@ const RIDB_BASE_URL =
 // Pure mapper. Schema-validated by the caller (CampsiteSchema).
 export function mapRidbToCampsite(raw: RidbRawRow): Campsite {
   const recId = String(raw.RecAreaID)
-  const state = raw.AddressStateCode
+  // RIDB data isn't guaranteed uppercase/trimmed — normalize so it satisfies
+  // CampsiteSchema's `^[A-Z]{2}$` and matches the `bearRegions` lookup.
+  const rawState = raw.AddressStateCode?.trim().toUpperCase()
+  const state = rawState && rawState.length > 0 ? rawState : undefined
   const amenities = mapRidbAttributesToAmenities(raw.ATTRIBUTES, { state })
   const name = raw.RecAreaName ?? raw.FacilityName ?? `RIDB ${recId}`
   const description = raw.RecAreaDescription ?? raw.FacilityDescription
