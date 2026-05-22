@@ -1,23 +1,25 @@
 // WS-5.6 + WS-8.2 — Campsite detail page.
 //
-// Cache strategy: the detail content is cached via a `'use cache'` child
-// (`cacheTag('campsites')` + `cacheLife('days')` per review I-A). The
-// outer page resolves the `params` Promise *inline* via the JSX-thenable
-// pattern (`params.then(({ id }) => <CampsiteDetail id={id} />)`) — this
-// is the canonical Next 16 idiom for handing a plain value to a cached
-// child (see `node_modules/next/dist/docs/01-app/02-guides/instant-navigation.md`
+// Cache strategy: the detail content is cached via the shared
+// `cachedGetById(id)` helper (`lib/campsites/search.ts` — `'use cache'` +
+// `cacheTag('campsites')` + `cacheLife('days')` per review I-A), the same
+// way the browse page uses `cachedSearch`. The outer page resolves the
+// `params` Promise *inline* via the JSX-thenable pattern
+// (`params.then(({ id }) => <CampsiteDetail id={id} />)`) — this is the
+// canonical Next 16 idiom for handing a plain value to a cached child
+// (see `node_modules/next/dist/docs/01-app/02-guides/instant-navigation.md`
 // lines 36–46). An async wrapper that `await`s `params` outside the
 // cached function trips the `INSTANT_VALIDATION_ERROR` guard because
 // the validator can't enumerate the awaited value at build time.
 //
-// `'use cache'` cannot access request-time APIs and its arguments must
-// be serialisable, so passing the string id (not the Promise) is
-// required.
+// `cachedGetById` returns the campsite-or-null; `notFound()` is called by
+// the caller OUTSIDE the cached helper (request-time control flow must
+// not live inside `'use cache'`).
 //
-// WS-8.2 swaps the WS-5 `StylePickerPlaceholder` for the real WS-6
-// `StylePicker` client component (seam I-1) and wires its
-// `createTripAction` prop to the WS-7 `createTrip` Server Action (via
-// the FormData adapter in `./actions.ts`).
+// WS-8.2 wires the real WS-6 `StylePicker` client component into the
+// trip-style slot (seam I-1) and wires its `createTripAction` prop to the
+// WS-7 `createTrip` Server Action (via the FormData adapter in
+// `./actions.ts`).
 //
 // WS-8.5 adds the `unstable_instant` route export so Cache Components
 // validates the static shell for this navigation.
@@ -47,11 +49,10 @@
 
 import { Suspense } from "react"
 import { notFound } from "next/navigation"
-import { cacheLife, cacheTag } from "next/cache"
 import { ListSkeleton, PageHeader, Section } from "@/components/app"
 import { AmenityGrid } from "@/components/campsites/AmenityGrid"
 import { StylePicker } from "@/components/trips/StylePicker"
-import { getCampsiteSource } from "@/lib/services"
+import { cachedGetById } from "@/lib/campsites/search"
 import { createTripFromForm } from "./actions"
 
 // WS-8.4 / WS-8.5 — opt this route into instant-navigation validation.
@@ -100,12 +101,10 @@ export const unstable_instant = {
 }
 
 async function CampsiteDetail({ id }: { id: string }) {
-  "use cache"
-  cacheTag("campsites")
-  cacheLife("days")
-
-  const source = getCampsiteSource()
-  const campsite = await source.getById(id)
+  // `cachedGetById` is the shared `'use cache'` helper (cacheTag/cacheLife
+  // applied inside it). `notFound()` is request-time control flow, so it
+  // runs HERE — outside the cached helper — on a null result.
+  const campsite = await cachedGetById(id)
   if (!campsite) {
     notFound()
   }

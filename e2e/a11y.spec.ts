@@ -1,46 +1,19 @@
-// WS-8 T8.7 — accessibility (axe) scan on key pages (red).
+// WS-8 T8.7 — accessibility (axe) scan on key pages.
 //
 // Spec (plan/tasks/ws-8-integration-validation-hardening.md, T8.7):
 //   Automated axe scan on key pages: no critical violations.
 //
-// Implementation: `@axe-core/playwright` is NOT installed at the time
-// this red phase is authored. The impl agent (WS-8) should:
-//   1. `pnpm add -D @axe-core/playwright`
-//   2. Replace the dynamic import / try-block below with a static
-//      `import AxeBuilder from '@axe-core/playwright'`.
-//   3. Wire the trip-flow into the scan (needs Postgres + seed).
-//
-// The current spec runs in two modes:
-//   - If `@axe-core/playwright` resolves at runtime → scan executes and
-//     fails on any *critical* violation.
-//   - Otherwise → the test fails with a clear message naming the dep to
-//     add. This keeps T8.7 visibly red until the impl wires the package.
+// `@axe-core/playwright` is a dev dependency; it is imported statically
+// below. Each scan fails on any *critical* violation.
 
 import { test, expect, type Page } from '@playwright/test'
+import AxeBuilder from '@axe-core/playwright'
 
-async function tryAxe(page: Page) {
-  // Dynamic import so this file compiles whether or not the package is
-  // installed. We obscure the specifier from the TS module resolver via
-  // a string variable so `tsc --noEmit` doesn't fail when the dep is
-  // absent. At runtime, Node resolves the specifier normally.
-  try {
-    const specifier = '@axe-core/playwright'
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const mod: any = await import(/* @vite-ignore */ specifier)
-    const AxeBuilder = mod.default ?? mod.AxeBuilder
-    if (!AxeBuilder) throw new Error('AxeBuilder not exported')
-    const builder = new AxeBuilder({ page })
-    const results = await builder
-      .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
-      .analyze()
-    return { results, available: true as const }
-  } catch (err) {
-    return {
-      results: null,
-      available: false as const,
-      err: (err as Error).message,
-    }
-  }
+async function runAxe(page: Page) {
+  const results = await new AxeBuilder({ page })
+    .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
+    .analyze()
+  return results
 }
 
 const PAGES = [
@@ -51,26 +24,15 @@ const PAGES = [
 for (const p of PAGES) {
   test(`T8.7 axe — ${p.name} has no critical violations`, async ({ page }) => {
     await page.goto(p.path)
-    const axe = await tryAxe(page)
-    if (!axe.available) {
-      throw new Error(
-        `[T8.7] @axe-core/playwright is not installed. ` +
-          `Add it with \`pnpm add -D @axe-core/playwright\` and re-run. ` +
-          `Inner error: ${axe.err ?? '<none>'}`,
-      )
-    }
-    const critical = axe.results!.violations.filter(
-      (v: { impact?: string; id?: string; help?: string }) =>
-        v.impact === 'critical',
+    const results = await runAxe(page)
+    const critical = results.violations.filter(
+      (v) => v.impact === 'critical',
     )
     expect(
       critical,
       `critical a11y violations on ${p.path}: ` +
         JSON.stringify(
-          critical.map((v: { id?: string; help?: string }) => ({
-            id: v.id,
-            help: v.help,
-          })),
+          critical.map((v) => ({ id: v.id, help: v.help })),
           null,
           2,
         ),
@@ -88,15 +50,9 @@ test('T8.7 axe — campsite detail page has no critical violations', async ({
     .first()
   await firstCard.getByRole('link').first().click()
   await page.waitForURL(/\/campsites\/[^/]+$/)
-  const axe = await tryAxe(page)
-  if (!axe.available) {
-    throw new Error(
-      `[T8.7] @axe-core/playwright is not installed. ` +
-        `Add it with \`pnpm add -D @axe-core/playwright\` and re-run.`,
-    )
-  }
-  const critical = axe.results!.violations.filter(
-    (v: { impact?: string }) => v.impact === 'critical',
+  const results = await runAxe(page)
+  const critical = results.violations.filter(
+    (v) => v.impact === 'critical',
   )
   expect(critical).toEqual([])
 })
@@ -129,16 +85,9 @@ test.describe('T8.7 axe — trip page', () => {
       .click()
     await page.waitForURL(/\/trips\/[^/]+$/)
 
-    const axe = await tryAxe(page)
-    if (!axe.available) {
-      throw new Error(
-        `[T8.7] @axe-core/playwright is not installed. ` +
-          `Add it with \`pnpm add -D @axe-core/playwright\` and re-run.`,
-      )
-    }
-    const critical = axe.results!.violations.filter(
-      (v: { impact?: string; id?: string; help?: string }) =>
-        v.impact === 'critical',
+    const results = await runAxe(page)
+    const critical = results.violations.filter(
+      (v) => v.impact === 'critical',
     )
     expect(critical).toEqual([])
     await ctx.close()

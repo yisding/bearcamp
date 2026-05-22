@@ -2,11 +2,15 @@
 //
 // Async params (Next 16). Loads `TripView` via the services storage; if
 // `buildTripView` returns `null`, calls `notFound()` (G8 / DR-47).
-// Resolves identity from the `bc_owner` / `bc_participant` cookies via
-// the real WS-7 identity helper (`lib/trips/identity`). WS-6 originally
-// imported from `lib/trips/identity.stub`; WS-8.2 (seam I-2) flips this
-// to the production module so the cookie path and clearing semantics
-// match the real Server Actions.
+// Resolves identity by reading the `bc_owner` / `bc_participant` cookies
+// inline. It imports only the cookie-NAME constants (`OWNER_COOKIE` /
+// `PARTICIPANT_COOKIE`) from the production identity module
+// (`lib/trips/identity`); it deliberately does NOT use that module's
+// `assert*` helpers, because those throw on a missing cookie and this
+// page must tolerate a not-yet-joined visitor (and render the Join
+// dialog instead). WS-6 originally imported the constants from
+// `lib/trips/identity.stub`; WS-8.2 (seam I-2) flips this to the
+// production module so the cookie names match the real Server Actions.
 //
 // Server Actions are imported directly from `lib/trips/actions` (seam
 // I-4) — the local `./actions.ts` shim was retired at WS-8.2 so there

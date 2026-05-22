@@ -10,7 +10,7 @@
 // nothing is written.
 
 import type { PrismaClient } from '@prisma/client'
-import { randomUUID } from 'node:crypto'
+import { tripSlug } from '../ids'
 import type {
   CreateTripInput,
   CreateTripResult,
@@ -75,7 +75,7 @@ export function createTripsRepo(prisma: PrismaClient): TripsRepo {
 
   return {
     create: async (input: CreateTripInput): Promise<CreateTripResult> => {
-      const tripId = randomUUID()
+      const tripId = tripSlug()
       const tentCapacity = clampTentCapacity(input.tentCapacity)
 
       const snapshot: CampsiteSnapshot = {
