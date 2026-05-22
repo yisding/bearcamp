@@ -57,8 +57,24 @@ export async function generateMetadata(
   }
 }
 
-export default async function TripPage({ params }: PageProps) {
-  const { tripId } = await params
+const itemActions = {
+  claimItem,
+  unclaimItem,
+  updateItem,
+  removeItem,
+  restoreItem,
+}
+
+/**
+ * Async content component. Lives INSIDE the page's `<Suspense>` boundary so the
+ * uncached `buildTripView` fetch (WS-6.2 — "render inside `<Suspense>`") streams
+ * behind the loading fallback rather than blocking the whole page.
+ *
+ * `notFound()` is called here, on a null view, and is deliberately kept OUTSIDE
+ * any try/catch (DR-45) — `notFound()` throws the NEXT_NOT_FOUND sentinel and
+ * must propagate. Identity resolution (cookies) also happens here.
+ */
+async function TripContent({ tripId }: { tripId: string }) {
   const storage = getStorage()
   const view = await storage.view.buildTripView(tripId)
   if (!view) {
@@ -82,16 +98,8 @@ export default async function TripPage({ params }: PageProps) {
     : null
   const isParticipant = currentParticipant !== null
 
-  const itemActions = {
-    claimItem,
-    unclaimItem,
-    updateItem,
-    removeItem,
-    restoreItem,
-  }
-
   return (
-    <main className="mx-auto flex w-full max-w-4xl flex-col gap-8 p-6">
+    <>
       <PageHeader
         title={view.trip.name}
         description={
@@ -115,23 +123,17 @@ export default async function TripPage({ params }: PageProps) {
         joinTripAction={joinTrip}
       />
 
-      <Suspense fallback={null}>
-        <PackingList
-          view={view}
-          isOwner={isOwner}
-          currentParticipant={currentParticipant}
-          itemActions={itemActions}
-          addItemAction={addItem}
-        />
-      </Suspense>
+      <PackingList
+        view={view}
+        isOwner={isOwner}
+        currentParticipant={currentParticipant}
+        itemActions={itemActions}
+        addItemAction={addItem}
+      />
 
-      <Suspense fallback={null}>
-        <StillNeeded view={view} />
-      </Suspense>
+      <StillNeeded view={view} />
 
-      <Suspense fallback={null}>
-        <WhoIsBringing view={view} />
-      </Suspense>
+      <WhoIsBringing view={view} />
 
       <NoLongerNeeded
         items={view.removedItemsWithClaims}
@@ -150,6 +152,29 @@ export default async function TripPage({ params }: PageProps) {
           />
         </Section>
       ) : null}
+    </>
+  )
+}
+
+export default async function TripPage({ params }: PageProps) {
+  const { tripId } = await params
+
+  // The trip view is uncached/per-user — fetch it INSIDE the Suspense
+  // boundary (WS-6.2) via <TripContent>, so the `await buildTripView` streams
+  // behind the fallback instead of blocking the whole route.
+  return (
+    <main className="mx-auto flex w-full max-w-4xl flex-col gap-8 p-6">
+      <Suspense fallback={<TripLoading />}>
+        <TripContent tripId={tripId} />
+      </Suspense>
     </main>
+  )
+}
+
+function TripLoading() {
+  return (
+    <p className="text-sm text-muted-foreground" aria-busy="true">
+      Loading trip…
+    </p>
   )
 }

@@ -135,12 +135,27 @@ export function ItemRow({
   const [unit, setUnit] = React.useState<string>(item.unit ?? "")
   const [note, setNote] = React.useState<string>(item.note ?? "")
 
-  // Claim qty input — defaults to shortfall (or 1 if covered). We derive the
-  // default from props on every render and let React reset the input value by
-  // keying the `<Input>` to `shortfall`; that's cheaper (and lint-clean) vs.
-  // syncing via a setState-in-effect.
+  // Claim qty input — defaults to the current shortfall (or 1 if the item is
+  // already covered). The default MUST track `shortfall` across background
+  // refreshes (WS-6.5 DoD: "claim defaults qty = shortfall"). State alone
+  // doesn't re-derive, and keying the <Input> only remounts the DOM node — so
+  // we (a) reset to the shortfall when the user enters claim mode, and (b)
+  // sync via an effect when `shortfall` changes — but ONLY while the user is
+  // not actively editing (claim mode closed), so a background refresh never
+  // clobbers a qty the user is mid-edit on (review G3 / T6.7).
   const defaultClaimQty = Math.max(shortfall || 1, 1)
   const [claimQty, setClaimQty] = React.useState<number>(defaultClaimQty)
+
+  React.useEffect(() => {
+    if (!claimMode) {
+      setClaimQty(defaultClaimQty)
+    }
+  }, [claimMode, defaultClaimQty])
+
+  function enterClaimMode() {
+    setClaimQty(defaultClaimQty)
+    setClaimMode(true)
+  }
 
   function runClaim(qty: number) {
     startTransition(async () => {
@@ -193,8 +208,12 @@ export function ItemRow({
       ) {
         patch.baseQty = parsedBaseQty
       }
-      if ((unit || undefined) !== item.unit) patch.unit = unit
-      if ((note || undefined) !== item.note) patch.note = note
+      // Coerce empty / whitespace-only fields to `undefined` so clearing a
+      // field actually clears it (rather than persisting "").
+      const nextUnit = unit.trim() || undefined
+      const nextNote = note.trim() || undefined
+      if (nextUnit !== item.unit) patch.unit = nextUnit
+      if (nextNote !== item.note) patch.note = nextNote
       const result = await actions.updateItem({
         tripId: item.tripId,
         itemId: item.id,
@@ -321,7 +340,7 @@ export function ItemRow({
               type="button"
               size="sm"
               variant="outline"
-              onClick={() => setClaimMode(true)}
+              onClick={enterClaimMode}
               disabled={pending}
             >
               I&apos;ll bring
@@ -345,9 +364,12 @@ export function ItemRow({
               <Label className="flex items-center gap-2 text-sm">
                 qty
                 <Input
-                  key={shortfall}
                   type="number"
                   min={1}
+                  // Cap the input affordance at what the item needs (WS-6.5:
+                  // "capped via input"). Over-claim is still possible via
+                  // other paths; this is just the spinner's sensible ceiling.
+                  max={Math.max(needed, 1)}
                   step={1}
                   value={claimQty}
                   onChange={(e) =>

@@ -11,9 +11,11 @@
 //           comes from `generateMetadata()` returning `{ robots: { index:
 //           false, follow: false } }`.
 //
-// We import the page module dynamically and call it as a function (it's an
-// async server component returning JSX) with a mocked `params` Promise to
-// match Next 16's async params contract.
+// We import the page module dynamically and render it. The page is an async
+// server component that wraps its data fetch in a `<Suspense>` boundary (an
+// async `<TripContent>` child does the `buildTripView` await + `notFound()`),
+// so we render the page tree and let React resolve the suspended child rather
+// than calling the page as a bare function.
 
 import React from 'react'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
@@ -73,6 +75,32 @@ async function loadMetadata() {
   return mod.generateMetadata
 }
 
+// The page returns `<main><Suspense><TripContent tripId=… /></Suspense></main>`.
+// `TripContent` is the async server component that performs `buildTripView`
+// and calls `notFound()`. Walk the element tree the page produced and invoke
+// every async function-component we find, so the suspended data fetch (and any
+// `notFound()` it throws) actually runs — mirroring what React's RSC renderer
+// would do behind the `<Suspense>` boundary.
+async function resolveTree(node: unknown): Promise<unknown> {
+  if (node == null || typeof node !== 'object') return node
+  if (Array.isArray(node)) {
+    return Promise.all(node.map(resolveTree))
+  }
+  const el = node as {
+    type?: unknown
+    props?: { children?: unknown } & Record<string, unknown>
+  }
+  if (typeof el.type === 'function') {
+    // Async function component — invoke it (this may throw notFound()).
+    const out = await (el.type as (p: unknown) => unknown)(el.props ?? {})
+    return resolveTree(out)
+  }
+  if (el.props && 'children' in el.props) {
+    await resolveTree(el.props.children)
+  }
+  return node
+}
+
 beforeEach(() => {
   notFound.mockClear()
   redirect.mockClear()
@@ -84,9 +112,14 @@ describe('T6.10 trip page — not-found for unknown ids', () => {
     buildTripView.mockResolvedValue(null)
     const Page = await loadPage()
     // Next 16 async params: pass a Promise<{ tripId }> per AGENTS.md.
+    // The page wraps the data fetch in <Suspense>; resolving the tree drives
+    // the async <TripContent> child, which is where notFound() now lives.
     let threw: unknown
     try {
-      await Page({ params: Promise.resolve({ tripId: 'doesnotexist' }) })
+      const tree = await Page({
+        params: Promise.resolve({ tripId: 'doesnotexist' }),
+      })
+      await resolveTree(tree)
     } catch (e) {
       threw = e
     }
