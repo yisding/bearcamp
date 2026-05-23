@@ -23,7 +23,7 @@
 // isolation — they wrap the same `normalize+storage.search` pipeline as
 // the production helpers but with an injectable source.
 
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import type { CampsiteSource } from '../source'
 import type { SearchArgs, SearchResult } from '../../db/storage'
 import { SEARCH_PAGE_SIZE_MAX, SEARCH_PAGE_SIZE_DEFAULT } from '../../limits'
@@ -193,6 +193,22 @@ describe("T3.4 revalidate-campsites Route Handler (WS-3.3b)", () => {
   // The Route Handler must call `revalidateTag('campsites', { expire: 0 })`
   // (DR-50). We mock `next/cache` so the test never touches a real Next
   // runtime.
+  const originalNodeEnv = process.env.NODE_ENV
+  const originalSecret = process.env.BEARCAMP_REVALIDATE_SECRET
+
+  afterEach(() => {
+    const envMut = process.env as Record<string, string | undefined>
+    if (originalNodeEnv === undefined) delete envMut.NODE_ENV
+    else envMut.NODE_ENV = originalNodeEnv
+    if (originalSecret === undefined) {
+      delete process.env.BEARCAMP_REVALIDATE_SECRET
+    } else {
+      process.env.BEARCAMP_REVALIDATE_SECRET = originalSecret
+    }
+    vi.doUnmock('next/cache')
+    vi.resetModules()
+  })
+
   it("calls revalidateTag('campsites', { expire: 0 }) — the options form, not 'max'", async () => {
     const revalidateTag = vi.fn()
     vi.doMock('next/cache', () => ({ revalidateTag }))
@@ -215,6 +231,60 @@ describe("T3.4 revalidate-campsites Route Handler (WS-3.3b)", () => {
     expect(revalidateTag).toHaveBeenCalledWith('campsites', { expire: 0 })
     // Explicit anti-assertion: must NOT use the 'max' profile (DR-50).
     expect(revalidateTag).not.toHaveBeenCalledWith('campsites', 'max')
-    vi.doUnmock('next/cache')
+  })
+
+  // Spec WS-3.3b: "dev-only, guarded by env". Without a guard, a prod
+  // deploy exposes a public endpoint that can be hit in a loop to force
+  // cache misses on the campsites catalog (Codex review P1).
+  it("rejects unauthenticated requests in production (NODE_ENV=production, no secret)", async () => {
+    const revalidateTag = vi.fn()
+    vi.doMock('next/cache', () => ({ revalidateTag }))
+    ;(process.env as Record<string, string | undefined>).NODE_ENV = 'production'
+    delete process.env.BEARCAMP_REVALIDATE_SECRET
+    const route = await import('../../../app/api/revalidate-campsites/route')
+    const handler = (route.POST ?? route.GET) as (req: Request) => Promise<Response>
+    const res = await handler(
+      new Request('http://localhost/api/revalidate-campsites', {
+        method: 'POST',
+      }),
+    )
+    // Must NOT trigger a cache purge for an unauthenticated prod caller.
+    expect(revalidateTag).not.toHaveBeenCalled()
+    expect(res.status).toBe(404)
+  })
+
+  it("accepts production requests carrying the matching x-revalidate-secret header", async () => {
+    const revalidateTag = vi.fn()
+    vi.doMock('next/cache', () => ({ revalidateTag }))
+    ;(process.env as Record<string, string | undefined>).NODE_ENV = 'production'
+    process.env.BEARCAMP_REVALIDATE_SECRET = 'shh'
+    const route = await import('../../../app/api/revalidate-campsites/route')
+    const handler = (route.POST ?? route.GET) as (req: Request) => Promise<Response>
+    const res = await handler(
+      new Request('http://localhost/api/revalidate-campsites', {
+        method: 'POST',
+        headers: { 'x-revalidate-secret': 'shh' },
+      }),
+    )
+    expect(res.status).toBeGreaterThanOrEqual(200)
+    expect(res.status).toBeLessThan(300)
+    expect(revalidateTag).toHaveBeenCalledWith('campsites', { expire: 0 })
+  })
+
+  it("rejects production requests with the wrong secret", async () => {
+    const revalidateTag = vi.fn()
+    vi.doMock('next/cache', () => ({ revalidateTag }))
+    ;(process.env as Record<string, string | undefined>).NODE_ENV = 'production'
+    process.env.BEARCAMP_REVALIDATE_SECRET = 'shh'
+    const route = await import('../../../app/api/revalidate-campsites/route')
+    const handler = (route.POST ?? route.GET) as (req: Request) => Promise<Response>
+    const res = await handler(
+      new Request('http://localhost/api/revalidate-campsites', {
+        method: 'POST',
+        headers: { 'x-revalidate-secret': 'wrong' },
+      }),
+    )
+    expect(res.status).toBe(404)
+    expect(revalidateTag).not.toHaveBeenCalled()
   })
 })
