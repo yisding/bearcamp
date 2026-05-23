@@ -21,25 +21,30 @@
 ;(() => {
   if (typeof window === "undefined" || typeof navigator === "undefined") return
   const realDefineProperty = Object.defineProperty
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const navProto = Object.getPrototypeOf(navigator) as any
   // Most flexible: wrap globally; only intercept the very specific call path.
+  // We re-resolve `navigator`/its prototype lazily on every call: jsdom tears
+  // down the global between test files within a worker, so a captured
+  // reference can dangle and (worse) a bare `navigator` reference inside the
+  // wrapper throws `ReferenceError: navigator is not defined` during the
+  // brief window when jsdom is bootstrapping the next environment but the
+  // global hasn't been re-installed yet.
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   Object.defineProperty = function (target: any, prop: PropertyKey, descriptor: PropertyDescriptor) {
-    if (
-      (target === navigator || target === navProto) &&
-      prop === "clipboard"
-    ) {
-      // If a value descriptor (test-installed mock) is already present, keep
-      // it. user-event's stub install (which uses a getter descriptor) is
-      // ignored. Plain `value` descriptors (test mocks) pass through.
-      const existing = Object.getOwnPropertyDescriptor(target, "clipboard")
-      const userEventStubInstall =
-        descriptor &&
-        typeof descriptor.get === "function" &&
-        !("value" in descriptor)
-      if (existing && "value" in existing && userEventStubInstall) {
-        return target
+    if (prop === "clipboard") {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const nav: any = typeof globalThis !== "undefined" ? (globalThis as any).navigator : undefined
+      if (nav && (target === nav || target === Object.getPrototypeOf(nav))) {
+        // If a value descriptor (test-installed mock) is already present, keep
+        // it. user-event's stub install (which uses a getter descriptor) is
+        // ignored. Plain `value` descriptors (test mocks) pass through.
+        const existing = Object.getOwnPropertyDescriptor(target, "clipboard")
+        const userEventStubInstall =
+          descriptor &&
+          typeof descriptor.get === "function" &&
+          !("value" in descriptor)
+        if (existing && "value" in existing && userEventStubInstall) {
+          return target
+        }
       }
     }
     return realDefineProperty(target, prop, descriptor)
