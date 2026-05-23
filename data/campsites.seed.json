@@ -1,0 +1,5070 @@
+[
+  {
+    "id": "seed:upper-pines-campground-ca",
+    "name": "Upper Pines Campground",
+    "agency": "NPS",
+    "state": "CA",
+    "lat": 37.7411,
+    "lng": -119.5613,
+    "description": "Yosemite Valley CG with bear lockers, flush toilets.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": true,
+      "bearCountry": true,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "weak",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "hiking",
+      "climbing",
+      "photography"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:lower-pines-campground-ca",
+    "name": "Lower Pines Campground",
+    "agency": "NPS",
+    "state": "CA",
+    "lat": 37.7382,
+    "lng": -119.5666,
+    "description": "Riverside Yosemite CG; bear lockers required.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": true,
+      "bearCountry": true,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "none",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "hiking",
+      "fishing"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:tuolumne-meadows-campground-ca",
+    "name": "Tuolumne Meadows Campground",
+    "agency": "NPS",
+    "state": "CA",
+    "lat": 37.8736,
+    "lng": -119.3528,
+    "description": "High-elevation Yosemite CG; short season; bear country.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": false,
+      "picnicTables": true,
+      "bearLockers": true,
+      "bearCountry": true,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "none",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "hiking",
+      "backpacking"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:wawona-campground-ca",
+    "name": "Wawona Campground",
+    "agency": "NPS",
+    "state": "CA",
+    "lat": 37.5384,
+    "lng": -119.6587,
+    "description": "Yosemite South; near Mariposa Grove; bear lockers.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": true,
+      "bearCountry": true,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "none",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "hiking",
+      "fishing"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:madison-campground-wy",
+    "name": "Madison Campground",
+    "agency": "NPS",
+    "state": "WY",
+    "lat": 44.6463,
+    "lng": -110.8606,
+    "description": "Yellowstone west; flush toilets; bear country.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": true,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "none",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "wildlife viewing",
+      "fishing"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:norris-campground-wy",
+    "name": "Norris Campground",
+    "agency": "NPS",
+    "state": "WY",
+    "lat": 44.7261,
+    "lng": -110.7,
+    "description": "Yellowstone NPS CG near geyser basin.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": true,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "none",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "geysers",
+      "hiking"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:mammoth-campground-wy",
+    "name": "Mammoth Campground",
+    "agency": "NPS",
+    "state": "WY",
+    "lat": 44.9684,
+    "lng": -110.7,
+    "description": "Year-round Yellowstone CG; bear country.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": true,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": true,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "weak",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "wildlife viewing"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:bridge-bay-campground-wy",
+    "name": "Bridge Bay Campground",
+    "agency": "NPS",
+    "state": "WY",
+    "lat": 44.5358,
+    "lng": -110.4339,
+    "description": "Yellowstone Lake CG; flush; bear country.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": true,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "none",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "boating",
+      "fishing"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:many-glacier-campground-mt",
+    "name": "Many Glacier Campground",
+    "agency": "NPS",
+    "state": "MT",
+    "lat": 48.7969,
+    "lng": -113.6592,
+    "description": "Glacier NP east; grizzly country, vault toilets.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "vault",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": false,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": true,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "none",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "hiking"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:two-medicine-campground-mt",
+    "name": "Two Medicine Campground",
+    "agency": "NPS",
+    "state": "MT",
+    "lat": 48.4878,
+    "lng": -113.3654,
+    "description": "Glacier NP; grizzly country; rustic sites.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": true,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "none",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "hiking",
+      "fishing"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:apgar-campground-mt",
+    "name": "Apgar Campground",
+    "agency": "NPS",
+    "state": "MT",
+    "lat": 48.5278,
+    "lng": -113.9883,
+    "description": "Glacier NP west; Lake McDonald; bear country.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": true,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "none",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "hiking",
+      "swimming"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:riley-creek-campground-ak",
+    "name": "Riley Creek Campground",
+    "agency": "NPS",
+    "state": "AK",
+    "lat": 63.7252,
+    "lng": -148.9456,
+    "description": "Denali NP entrance CG; grizzly country.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": true,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "weak",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "hiking",
+      "wildlife viewing"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:teklanika-campground-ak",
+    "name": "Teklanika Campground",
+    "agency": "NPS",
+    "state": "AK",
+    "lat": 63.5,
+    "lng": -149.7,
+    "description": "Denali NP backcountry CG along park road.",
+    "amenities": {
+      "potableWater": false,
+      "toilets": "vault",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": false,
+      "picnicTables": false,
+      "bearLockers": false,
+      "bearCountry": true,
+      "trashService": false,
+      "dumpStation": false,
+      "cellService": "none",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "wildlife viewing"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:pine-springs-campground-tx",
+    "name": "Pine Springs Campground",
+    "agency": "NPS",
+    "state": "TX",
+    "lat": 31.8908,
+    "lng": -104.8278,
+    "description": "Guadalupe Mountains; high desert, no electricity.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": false,
+      "electricity": false,
+      "fireRings": false,
+      "firewoodAvailable": false,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "none",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "hiking",
+      "stargazing"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:fruita-campground-ut",
+    "name": "Fruita Campground",
+    "agency": "NPS",
+    "state": "UT",
+    "lat": 38.2825,
+    "lng": -111.246,
+    "description": "Capitol Reef NP orchard CG; flush toilets.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "none",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "hiking",
+      "cycling"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:watchman-campground-ut",
+    "name": "Watchman Campground",
+    "agency": "NPS",
+    "state": "UT",
+    "lat": 37.198,
+    "lng": -112.987,
+    "description": "Zion NP main CG; some hookup sites.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": false,
+      "electricity": true,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "weak",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "hiking",
+      "photography"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:south-rim-mather-campground-az",
+    "name": "South Rim Mather Campground",
+    "agency": "NPS",
+    "state": "AZ",
+    "lat": 36.0567,
+    "lng": -112.1389,
+    "description": "Grand Canyon South Rim main CG; flush toilets.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": false,
+      "electricity": true,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "weak",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "hiking",
+      "photography"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:north-rim-campground-az",
+    "name": "North Rim Campground",
+    "agency": "NPS",
+    "state": "AZ",
+    "lat": 36.215,
+    "lng": -112.058,
+    "description": "Grand Canyon North Rim CG; quieter season.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "none",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "hiking"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:devils-garden-campground-ut",
+    "name": "Devils Garden Campground",
+    "agency": "NPS",
+    "state": "UT",
+    "lat": 38.7794,
+    "lng": -109.5944,
+    "description": "Arches NP; vault toilets; high desert.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "vault",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": false,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "none",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "hiking"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:cedar-pass-campground-sd",
+    "name": "Cedar Pass Campground",
+    "agency": "NPS",
+    "state": "SD",
+    "lat": 43.7546,
+    "lng": -101.94,
+    "description": "Badlands NP; grasslands prairie sites.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": false,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "weak",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "wildlife viewing"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:sage-creek-primitive-campground-sd",
+    "name": "Sage Creek Primitive Campground",
+    "agency": "NPS",
+    "state": "SD",
+    "lat": 43.86,
+    "lng": -102.46,
+    "description": "Badlands NP backcountry; no facilities.",
+    "amenities": {
+      "potableWater": false,
+      "toilets": "vault",
+      "showers": false,
+      "electricity": false,
+      "fireRings": false,
+      "firewoodAvailable": false,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": false,
+      "dumpStation": false,
+      "cellService": "none",
+      "accessLevel": "walk-in"
+    },
+    "activities": [
+      "wildlife viewing"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:chisos-basin-campground-tx",
+    "name": "Chisos Basin Campground",
+    "agency": "NPS",
+    "state": "TX",
+    "lat": 29.27,
+    "lng": -103.3,
+    "description": "Big Bend NP basin sites; vault & flush.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "none",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "hiking",
+      "stargazing"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:cottonwood-campground-tx",
+    "name": "Cottonwood Campground",
+    "agency": "NPS",
+    "state": "TX",
+    "lat": 29.137,
+    "lng": -103.522,
+    "description": "Big Bend NP riverside CG; no generators.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "vault",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": false,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "none",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "birding",
+      "paddling"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:belle-campground-ca",
+    "name": "Belle Campground",
+    "agency": "NPS",
+    "state": "CA",
+    "lat": 33.9925,
+    "lng": -116.0203,
+    "description": "Joshua Tree NP small primitive CG.",
+    "amenities": {
+      "potableWater": false,
+      "toilets": "vault",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": false,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": false,
+      "cellService": "none",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "climbing"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:black-rock-campground-ca",
+    "name": "Black Rock Campground",
+    "agency": "NPS",
+    "state": "CA",
+    "lat": 34.072,
+    "lng": -116.388,
+    "description": "Joshua Tree NP family CG with water.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "weak",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "hiking",
+      "climbing"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:furnace-creek-campground-ca",
+    "name": "Furnace Creek Campground",
+    "agency": "NPS",
+    "state": "CA",
+    "lat": 36.4615,
+    "lng": -116.8636,
+    "description": "Death Valley NP main CG; flush; some hookups.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": true,
+      "electricity": true,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "weak",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "hiking"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:mesquite-spring-campground-ca",
+    "name": "Mesquite Spring Campground",
+    "agency": "NPS",
+    "state": "CA",
+    "lat": 37.04,
+    "lng": -117.367,
+    "description": "Death Valley north; quiet; flush toilets.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": false,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "none",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "stargazing"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:sunset-campground-ca",
+    "name": "Sunset Campground",
+    "agency": "NPS",
+    "state": "CA",
+    "lat": 36.46,
+    "lng": -116.86,
+    "description": "Death Valley big RV CG; pull-throughs.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": false,
+      "electricity": true,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "weak",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "stargazing"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:lehman-caves-campground-nv",
+    "name": "Lehman Caves Campground",
+    "agency": "NPS",
+    "state": "NV",
+    "lat": 38.99,
+    "lng": -114.222,
+    "description": "Great Basin NP; small mountain CG.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": false,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "none",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "caving",
+      "hiking"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:olympic-hoh-rainforest-campground-wa",
+    "name": "Olympic Hoh Rainforest Campground",
+    "agency": "NPS",
+    "state": "WA",
+    "lat": 47.86,
+    "lng": -123.93,
+    "description": "Olympic NP rainforest; bear country.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": true,
+      "bearCountry": true,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "none",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "hiking"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:kalaloch-campground-wa",
+    "name": "Kalaloch Campground",
+    "agency": "NPS",
+    "state": "WA",
+    "lat": 47.61,
+    "lng": -124.37,
+    "description": "Olympic coast; bear country.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": true,
+      "bearCountry": true,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "weak",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "beachcombing"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:mowich-lake-campground-wa",
+    "name": "Mowich Lake Campground",
+    "agency": "NPS",
+    "state": "WA",
+    "lat": 46.93,
+    "lng": -121.86,
+    "description": "Mt Rainier NP walk-in; bear country.",
+    "amenities": {
+      "potableWater": false,
+      "toilets": "vault",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": false,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": true,
+      "trashService": false,
+      "dumpStation": false,
+      "cellService": "none",
+      "accessLevel": "walk-in"
+    },
+    "activities": [
+      "hiking",
+      "backpacking"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:cougar-rock-campground-wa",
+    "name": "Cougar Rock Campground",
+    "agency": "NPS",
+    "state": "WA",
+    "lat": 46.768,
+    "lng": -121.79,
+    "description": "Mt Rainier NP forest CG.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": true,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "none",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "hiking"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:henry-lake-campground-or",
+    "name": "Henry Lake Campground",
+    "agency": "NPS",
+    "state": "OR",
+    "lat": 42.93,
+    "lng": -122,
+    "description": "Crater Lake area; bear country forest CG.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": true,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "none",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "hiking"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:mazama-campground-or",
+    "name": "Mazama Campground",
+    "agency": "NPS",
+    "state": "OR",
+    "lat": 42.86,
+    "lng": -122.17,
+    "description": "Crater Lake NP main CG; flush toilets.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": true,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": true,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "none",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "hiking"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:acadia-blackwoods-campground-me",
+    "name": "Acadia Blackwoods Campground",
+    "agency": "NPS",
+    "state": "ME",
+    "lat": 44.3,
+    "lng": -68.21,
+    "description": "Acadia NP main CG; forest sites.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "weak",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "hiking",
+      "biking"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:schoodic-woods-campground-me",
+    "name": "Schoodic Woods Campground",
+    "agency": "NPS",
+    "state": "ME",
+    "lat": 44.34,
+    "lng": -68.07,
+    "description": "Acadia NP Schoodic Peninsula CG.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": false,
+      "electricity": true,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "weak",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "biking",
+      "paddling"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:smokemont-campground-nc",
+    "name": "Smokemont Campground",
+    "agency": "NPS",
+    "state": "NC",
+    "lat": 35.563,
+    "lng": -83.31,
+    "description": "Great Smoky Mountains NP near Cherokee.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": true,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "weak",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "hiking"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:elkmont-campground-tn",
+    "name": "Elkmont Campground",
+    "agency": "NPS",
+    "state": "TN",
+    "lat": 35.66,
+    "lng": -83.58,
+    "description": "Great Smoky Mountains NP TN side.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": true,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "weak",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "hiking",
+      "fishing"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:cosby-campground-tn",
+    "name": "Cosby Campground",
+    "agency": "NPS",
+    "state": "TN",
+    "lat": 35.76,
+    "lng": -83.21,
+    "description": "Smokies quiet CG, bear country.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": false,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": true,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "none",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "hiking"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:loft-mountain-campground-va",
+    "name": "Loft Mountain Campground",
+    "agency": "NPS",
+    "state": "VA",
+    "lat": 38.244,
+    "lng": -78.66,
+    "description": "Shenandoah NP south district CG.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": true,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "weak",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "hiking"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:big-meadows-campground-va",
+    "name": "Big Meadows Campground",
+    "agency": "NPS",
+    "state": "VA",
+    "lat": 38.52,
+    "lng": -78.43,
+    "description": "Shenandoah NP central CG.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "weak",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "hiking",
+      "wildlife viewing"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:big-bear-pinecrest-campground-ca",
+    "name": "Big Bear Pinecrest Campground",
+    "agency": "USFS",
+    "state": "CA",
+    "lat": 34.255,
+    "lng": -116.95,
+    "description": "San Bernardino NF; alpine lake CG.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": true,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "weak",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "hiking",
+      "boating"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:wenatchee-lake-campground-wa",
+    "name": "Wenatchee Lake Campground",
+    "agency": "USFS",
+    "state": "WA",
+    "lat": 47.84,
+    "lng": -120.81,
+    "description": "Okanogan-Wenatchee NF; lakeside CG.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": true,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "none",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "boating",
+      "fishing"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:cascade-river-campground-wa",
+    "name": "Cascade River Campground",
+    "agency": "USFS",
+    "state": "WA",
+    "lat": 48.51,
+    "lng": -121.34,
+    "description": "Mt Baker-Snoqualmie NF; backcountry access.",
+    "amenities": {
+      "potableWater": false,
+      "toilets": "vault",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": false,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": true,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "none",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "hiking"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:diamond-lake-campground-or",
+    "name": "Diamond Lake Campground",
+    "agency": "USFS",
+    "state": "OR",
+    "lat": 43.18,
+    "lng": -122.13,
+    "description": "Umpqua NF lakeside CG; bear country.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": true,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "weak",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "boating"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:trillium-lake-campground-or",
+    "name": "Trillium Lake Campground",
+    "agency": "USFS",
+    "state": "OR",
+    "lat": 45.27,
+    "lng": -121.74,
+    "description": "Mt Hood NF; iconic Mt Hood views.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": true,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "weak",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "fishing",
+      "photography"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:lost-lake-campground-or",
+    "name": "Lost Lake Campground",
+    "agency": "USFS",
+    "state": "OR",
+    "lat": 45.49,
+    "lng": -121.82,
+    "description": "Mt Hood NF; small lakeside CG.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": true,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "none",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "paddling"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:sandy-beach-campground-ca",
+    "name": "Sandy Beach Campground",
+    "agency": "USFS",
+    "state": "CA",
+    "lat": 39.21,
+    "lng": -120.18,
+    "description": "Tahoe NF lakeside CG; bear country.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": true,
+      "bearCountry": true,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "weak",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "swimming",
+      "fishing"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:plaskett-meadows-campground-ca",
+    "name": "Plaskett Meadows Campground",
+    "agency": "USFS",
+    "state": "CA",
+    "lat": 39.74,
+    "lng": -122.85,
+    "description": "Mendocino NF remote CG.",
+    "amenities": {
+      "potableWater": false,
+      "toilets": "vault",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": false,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": true,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "none",
+      "accessLevel": "drive-in",
+      "potableWaterNote": "pack-in"
+    },
+    "activities": [
+      "hiking"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:lewis-and-clark-campground-mt",
+    "name": "Lewis & Clark Campground",
+    "agency": "USFS",
+    "state": "MT",
+    "lat": 47.16,
+    "lng": -110.96,
+    "description": "Lewis and Clark NF; grizzly country.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": true,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "none",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "hiking"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:holland-lake-campground-mt",
+    "name": "Holland Lake Campground",
+    "agency": "USFS",
+    "state": "MT",
+    "lat": 47.45,
+    "lng": -113.59,
+    "description": "Flathead NF; grizzly country lakeside.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": true,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "none",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "paddling"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:sawtooth-stanley-lake-campground-id",
+    "name": "Sawtooth Stanley Lake Campground",
+    "agency": "USFS",
+    "state": "ID",
+    "lat": 44.25,
+    "lng": -115.06,
+    "description": "Sawtooth NF Stanley Lake; bear country.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": true,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "none",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "paddling"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:redfish-lake-campground-id",
+    "name": "Redfish Lake Campground",
+    "agency": "USFS",
+    "state": "ID",
+    "lat": 44.13,
+    "lng": -114.92,
+    "description": "Sawtooth NF; flagship lake CG.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": true,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "weak",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "paddling",
+      "swimming"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:targhee-reunion-flat-campground-wy",
+    "name": "Targhee Reunion Flat Campground",
+    "agency": "USFS",
+    "state": "WY",
+    "lat": 43.78,
+    "lng": -110.99,
+    "description": "Caribou-Targhee NF; grand teton west.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": true,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "none",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "hiking"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:bridger-pole-creek-campground-wy",
+    "name": "Bridger Pole Creek Campground",
+    "agency": "USFS",
+    "state": "WY",
+    "lat": 43.18,
+    "lng": -109.69,
+    "description": "Bridger-Teton NF; bear country.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": false,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": true,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "none",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "hiking",
+      "fishing"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:roosevelt-cabin-lake-campground-co",
+    "name": "Roosevelt Cabin Lake Campground",
+    "agency": "USFS",
+    "state": "CO",
+    "lat": 40.7,
+    "lng": -105.45,
+    "description": "Arapaho-Roosevelt NF; bear country.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": true,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "weak",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "hiking"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:pike-lost-park-campground-co",
+    "name": "Pike Lost Park Campground",
+    "agency": "USFS",
+    "state": "CO",
+    "lat": 39.31,
+    "lng": -105.74,
+    "description": "Pike NF; bear country.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": true,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "none",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "hiking"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:san-isabel-lake-campground-co",
+    "name": "San Isabel Lake Campground",
+    "agency": "USFS",
+    "state": "CO",
+    "lat": 37.99,
+    "lng": -105.05,
+    "description": "San Isabel NF lakeside CG.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": true,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "none",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "fishing",
+      "paddling"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:coconino-pine-flat-campground-az",
+    "name": "Coconino Pine Flat Campground",
+    "agency": "USFS",
+    "state": "AZ",
+    "lat": 34.85,
+    "lng": -111.74,
+    "description": "Coconino NF; Oak Creek Canyon.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "weak",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "hiking"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:apache-sitgreaves-spillway-campground-az",
+    "name": "Apache-Sitgreaves Spillway Campground",
+    "agency": "USFS",
+    "state": "AZ",
+    "lat": 34.04,
+    "lng": -109.43,
+    "description": "Apache-Sitgreaves NF; small lake.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "none",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "fishing"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:gila-lower-scorpion-campground-nm",
+    "name": "Gila Lower Scorpion Campground",
+    "agency": "USFS",
+    "state": "NM",
+    "lat": 33.22,
+    "lng": -108.25,
+    "description": "Gila NF; primitive CG.",
+    "amenities": {
+      "potableWater": false,
+      "toilets": "vault",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": false,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "none",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "hiking",
+      "hot springs"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:carson-hodges-campground-nm",
+    "name": "Carson Hodges Campground",
+    "agency": "USFS",
+    "state": "NM",
+    "lat": 36.52,
+    "lng": -105.6,
+    "description": "Carson NF mountain CG.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "none",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "hiking"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:black-hills-pactola-campground-sd",
+    "name": "Black Hills Pactola Campground",
+    "agency": "USFS",
+    "state": "SD",
+    "lat": 44.07,
+    "lng": -103.5,
+    "description": "Black Hills NF reservoir CG.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "weak",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "paddling"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:chequamegon-day-lake-campground-wi",
+    "name": "Chequamegon Day Lake Campground",
+    "agency": "USFS",
+    "state": "WI",
+    "lat": 46.11,
+    "lng": -90.83,
+    "description": "Chequamegon-Nicolet NF; northwoods.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "none",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "paddling",
+      "fishing"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:superior-forest-whiteface-campground-mn",
+    "name": "Superior Forest Whiteface Campground",
+    "agency": "USFS",
+    "state": "MN",
+    "lat": 47.34,
+    "lng": -92.18,
+    "description": "Superior NF; canoe-country CG.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "none",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "canoeing"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:allegheny-loleta-campground-pa",
+    "name": "Allegheny Loleta Campground",
+    "agency": "USFS",
+    "state": "PA",
+    "lat": 41.45,
+    "lng": -79.32,
+    "description": "Allegheny NF; quiet CG.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "weak",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "hiking"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:pisgah-davidson-river-campground-nc",
+    "name": "Pisgah Davidson River Campground",
+    "agency": "USFS",
+    "state": "NC",
+    "lat": 35.27,
+    "lng": -82.72,
+    "description": "Pisgah NF; family CG.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": false,
+      "electricity": true,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "weak",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "fishing"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:cherokee-indian-boundary-campground-tn",
+    "name": "Cherokee Indian Boundary Campground",
+    "agency": "USFS",
+    "state": "TN",
+    "lat": 35.27,
+    "lng": -84.18,
+    "description": "Cherokee NF; lake CG.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "none",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "fishing"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:chattahoochee-lake-conasauga-campground-ga",
+    "name": "Chattahoochee Lake Conasauga Campground",
+    "agency": "USFS",
+    "state": "GA",
+    "lat": 34.86,
+    "lng": -84.66,
+    "description": "Chattahoochee NF; highest lake.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "none",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "hiking"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:ozark-sam-houston-campground-ar",
+    "name": "Ozark Sam Houston Campground",
+    "agency": "USFS",
+    "state": "AR",
+    "lat": 35.69,
+    "lng": -93.65,
+    "description": "Ozark-St Francis NF; river CG.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "none",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "paddling"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:white-mountain-dolly-copp-campground-nh",
+    "name": "White Mountain Dolly Copp Campground",
+    "agency": "USFS",
+    "state": "NH",
+    "lat": 44.31,
+    "lng": -71.21,
+    "description": "White Mountain NF; large family CG.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "weak",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "hiking"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:green-mountain-moosalamoo-campground-vt",
+    "name": "Green Mountain Moosalamoo Campground",
+    "agency": "USFS",
+    "state": "VT",
+    "lat": 43.94,
+    "lng": -73.04,
+    "description": "Green Mountain NF; quiet CG.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "none",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "hiking"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:olympic-klahowya-campground-wa",
+    "name": "Olympic Klahowya Campground",
+    "agency": "USFS",
+    "state": "WA",
+    "lat": 48.07,
+    "lng": -124.13,
+    "description": "Olympic NF small CG.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": true,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "none",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "fishing"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:coronado-bog-springs-campground-az",
+    "name": "Coronado Bog Springs Campground",
+    "agency": "USFS",
+    "state": "AZ",
+    "lat": 31.74,
+    "lng": -110.74,
+    "description": "Coronado NF; Madera Canyon area.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "none",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "birding"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:lassen-hat-creek-campground-ca",
+    "name": "Lassen Hat Creek Campground",
+    "agency": "USFS",
+    "state": "CA",
+    "lat": 40.65,
+    "lng": -121.45,
+    "description": "Lassen NF; volcanic country CG.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": true,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "none",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "fishing"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:six-rivers-patrick-creek-campground-ca",
+    "name": "Six Rivers Patrick Creek Campground",
+    "agency": "USFS",
+    "state": "CA",
+    "lat": 41.86,
+    "lng": -123.85,
+    "description": "Six Rivers NF; coastal forest.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": true,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "none",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "fishing"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:shasta-trinity-trinity-river-campground-ca",
+    "name": "Shasta-Trinity Trinity River Campground",
+    "agency": "USFS",
+    "state": "CA",
+    "lat": 40.94,
+    "lng": -122.78,
+    "description": "Shasta-Trinity NF river CG.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": true,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "none",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "paddling"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:ochoco-walton-lake-campground-or",
+    "name": "Ochoco Walton Lake Campground",
+    "agency": "USFS",
+    "state": "OR",
+    "lat": 44.45,
+    "lng": -120.4,
+    "description": "Ochoco NF; small lake CG.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": true,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "none",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "fishing"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:deschutes-south-twin-campground-or",
+    "name": "Deschutes South Twin Campground",
+    "agency": "USFS",
+    "state": "OR",
+    "lat": 43.74,
+    "lng": -121.81,
+    "description": "Deschutes NF lake CG.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": true,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "weak",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "fishing"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:klamath-antelope-sink-campground-or",
+    "name": "Klamath Antelope Sink Campground",
+    "agency": "USFS",
+    "state": "OR",
+    "lat": 42.05,
+    "lng": -121.55,
+    "description": "Fremont-Winema NF primitive CG.",
+    "amenities": {
+      "potableWater": false,
+      "toilets": "vault",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": false,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": true,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "none",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "stargazing"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:alabama-hills-campground-ca",
+    "name": "Alabama Hills Campground",
+    "agency": "BLM",
+    "state": "CA",
+    "lat": 36.6,
+    "lng": -118.13,
+    "description": "BLM dispersed near Lone Pine; iconic rocks.",
+    "amenities": {
+      "potableWater": false,
+      "toilets": "none",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": false,
+      "picnicTables": false,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": false,
+      "dumpStation": false,
+      "cellService": "weak",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "photography",
+      "climbing"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:bisti-wilderness-dispersed-nm",
+    "name": "Bisti Wilderness Dispersed",
+    "agency": "BLM",
+    "state": "NM",
+    "lat": 36.26,
+    "lng": -108.06,
+    "description": "BLM dispersed; bring everything in/out.",
+    "amenities": {
+      "potableWater": false,
+      "toilets": "none",
+      "showers": false,
+      "electricity": false,
+      "fireRings": false,
+      "firewoodAvailable": false,
+      "picnicTables": false,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": false,
+      "dumpStation": false,
+      "cellService": "none",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "hiking",
+      "photography"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:valley-of-fire-campground-nv",
+    "name": "Valley of Fire Campground",
+    "agency": "BLM",
+    "state": "NV",
+    "lat": 36.43,
+    "lng": -114.51,
+    "description": "BLM red-rock area CG; vault toilets.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "vault",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "none",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "hiking"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:hole-in-the-wall-campground-ca",
+    "name": "Hole-in-the-Wall Campground",
+    "agency": "BLM",
+    "state": "CA",
+    "lat": 35.05,
+    "lng": -115.42,
+    "description": "Mojave Trails BLM; primitive CG.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "vault",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": false,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "none",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "hiking"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:indian-bread-rocks-dispersed-az",
+    "name": "Indian Bread Rocks Dispersed",
+    "agency": "BLM",
+    "state": "AZ",
+    "lat": 32.18,
+    "lng": -109.45,
+    "description": "BLM dispersed in Bowie area.",
+    "amenities": {
+      "potableWater": false,
+      "toilets": "none",
+      "showers": false,
+      "electricity": false,
+      "fireRings": false,
+      "firewoodAvailable": false,
+      "picnicTables": false,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": false,
+      "dumpStation": false,
+      "cellService": "none",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "climbing"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:quail-creek-blm-campground-ut",
+    "name": "Quail Creek BLM Campground",
+    "agency": "BLM",
+    "state": "UT",
+    "lat": 37.18,
+    "lng": -113.4,
+    "description": "BLM Quail Creek; vault toilets.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "vault",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "weak",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "hiking"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:sand-flats-recreation-area-ut",
+    "name": "Sand Flats Recreation Area",
+    "agency": "BLM",
+    "state": "UT",
+    "lat": 38.59,
+    "lng": -109.5,
+    "description": "BLM Moab dispersed-style CG.",
+    "amenities": {
+      "potableWater": false,
+      "toilets": "vault",
+      "showers": false,
+      "electricity": false,
+      "fireRings": false,
+      "firewoodAvailable": false,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": false,
+      "dumpStation": true,
+      "cellService": "weak",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "mountain biking"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:mcinnis-knowles-dispersed-co",
+    "name": "McInnis Knowles Dispersed",
+    "agency": "BLM",
+    "state": "CO",
+    "lat": 39.18,
+    "lng": -108.86,
+    "description": "McInnis Canyons NCA dispersed.",
+    "amenities": {
+      "potableWater": false,
+      "toilets": "none",
+      "showers": false,
+      "electricity": false,
+      "fireRings": false,
+      "firewoodAvailable": false,
+      "picnicTables": false,
+      "bearLockers": false,
+      "bearCountry": true,
+      "trashService": false,
+      "dumpStation": false,
+      "cellService": "none",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "hiking"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:bear-river-migratory-refuge-blm-cg-wy",
+    "name": "Bear River Migratory Refuge BLM CG",
+    "agency": "BLM",
+    "state": "WY",
+    "lat": 41.92,
+    "lng": -110.7,
+    "description": "BLM dispersed near Bear River.",
+    "amenities": {
+      "potableWater": false,
+      "toilets": "vault",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": false,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": true,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "none",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "fishing"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:hart-mountain-refuge-hot-springs-or",
+    "name": "Hart Mountain Refuge Hot Springs",
+    "agency": "BLM",
+    "state": "OR",
+    "lat": 42.51,
+    "lng": -119.66,
+    "description": "BLM-managed refuge backcountry CG.",
+    "amenities": {
+      "potableWater": false,
+      "toilets": "vault",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": false,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": true,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "none",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "hot springs"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:steens-mountain-page-springs-or",
+    "name": "Steens Mountain Page Springs",
+    "agency": "BLM",
+    "state": "OR",
+    "lat": 42.79,
+    "lng": -118.83,
+    "description": "BLM Steens; primitive CG.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "vault",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": true,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "none",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "hiking",
+      "wildlife viewing"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:burr-trail-dispersed-ut",
+    "name": "Burr Trail Dispersed",
+    "agency": "BLM",
+    "state": "UT",
+    "lat": 37.86,
+    "lng": -111.06,
+    "description": "BLM Grand Staircase dispersed.",
+    "amenities": {
+      "potableWater": false,
+      "toilets": "none",
+      "showers": false,
+      "electricity": false,
+      "fireRings": false,
+      "firewoodAvailable": false,
+      "picnicTables": false,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": false,
+      "dumpStation": true,
+      "cellService": "none",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "stargazing"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:saddle-mountain-dispersed-wa",
+    "name": "Saddle Mountain Dispersed",
+    "agency": "BLM",
+    "state": "WA",
+    "lat": 46.83,
+    "lng": -119.83,
+    "description": "BLM dispersed central WA.",
+    "amenities": {
+      "potableWater": false,
+      "toilets": "none",
+      "showers": false,
+      "electricity": false,
+      "fireRings": false,
+      "firewoodAvailable": false,
+      "picnicTables": false,
+      "bearLockers": false,
+      "bearCountry": true,
+      "trashService": false,
+      "dumpStation": true,
+      "cellService": "weak",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "rockhounding"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:imperial-sand-dunes-cg-ca",
+    "name": "Imperial Sand Dunes CG",
+    "agency": "BLM",
+    "state": "CA",
+    "lat": 32.95,
+    "lng": -115.13,
+    "description": "BLM Imperial Sand Dunes Rec Area.",
+    "amenities": {
+      "potableWater": false,
+      "toilets": "vault",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": false,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "weak",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "OHV"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:whitney-lake-east-campground-tx",
+    "name": "Whitney Lake East Campground",
+    "agency": "USACE",
+    "state": "TX",
+    "lat": 32,
+    "lng": -97.35,
+    "description": "USACE Lake Whitney; family CG.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": true,
+      "electricity": true,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "good",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "boating",
+      "swimming"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:lake-texoma-juniper-point-campground-tx",
+    "name": "Lake Texoma Juniper Point Campground",
+    "agency": "USACE",
+    "state": "TX",
+    "lat": 33.86,
+    "lng": -96.6,
+    "description": "USACE Lake Texoma; lakeside CG.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": true,
+      "electricity": true,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "good",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "fishing",
+      "boating"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:sardis-lake-wyatt-crossing-ms",
+    "name": "Sardis Lake Wyatt Crossing",
+    "agency": "USACE",
+    "state": "MS",
+    "lat": 34.42,
+    "lng": -89.78,
+    "description": "USACE Sardis Lake CG.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": true,
+      "electricity": true,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "good",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "fishing"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:carlyle-lake-hazlet-campground-il",
+    "name": "Carlyle Lake Hazlet Campground",
+    "agency": "USACE",
+    "state": "IL",
+    "lat": 38.66,
+    "lng": -89.32,
+    "description": "USACE Carlyle Lake state-park-style CG.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": true,
+      "electricity": true,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "good",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "boating"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:rend-lake-south-sandusky-il",
+    "name": "Rend Lake South Sandusky",
+    "agency": "USACE",
+    "state": "IL",
+    "lat": 38.06,
+    "lng": -88.93,
+    "description": "USACE Rend Lake CG.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": true,
+      "electricity": true,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "good",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "boating",
+      "swimming"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:wright-patman-lake-park-tx",
+    "name": "Wright Patman Lake Park",
+    "agency": "USACE",
+    "state": "TX",
+    "lat": 33.31,
+    "lng": -94.18,
+    "description": "USACE Wright Patman; lake CG.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": true,
+      "electricity": true,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "good",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "fishing"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:belton-lake-owl-creek-park-tx",
+    "name": "Belton Lake Owl Creek Park",
+    "agency": "USACE",
+    "state": "TX",
+    "lat": 31.13,
+    "lng": -97.5,
+    "description": "USACE Belton Lake; family CG.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": true,
+      "electricity": true,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "good",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "swimming"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:tenkiller-lake-snake-creek-cove-ok",
+    "name": "Tenkiller Lake Snake Creek Cove",
+    "agency": "USACE",
+    "state": "OK",
+    "lat": 35.69,
+    "lng": -95,
+    "description": "USACE Tenkiller; lakeside.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": true,
+      "electricity": true,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "good",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "boating"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:eufaula-lake-belle-starr-ok",
+    "name": "Eufaula Lake Belle Starr",
+    "agency": "USACE",
+    "state": "OK",
+    "lat": 35.31,
+    "lng": -95.55,
+    "description": "USACE Eufaula Lake CG.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": true,
+      "electricity": true,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "good",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "boating"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:cumberland-lake-kendall-ky",
+    "name": "Cumberland Lake Kendall",
+    "agency": "USACE",
+    "state": "KY",
+    "lat": 36.88,
+    "lng": -85.15,
+    "description": "USACE Cumberland Lake CG.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": true,
+      "electricity": true,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "good",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "boating"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:j-strom-thurmond-hesters-ferry-ga",
+    "name": "J Strom Thurmond Hesters Ferry",
+    "agency": "USACE",
+    "state": "GA",
+    "lat": 33.86,
+    "lng": -82.43,
+    "description": "USACE J Strom Thurmond Lake.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": true,
+      "electricity": true,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "good",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "fishing"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:hartwell-lake-twin-lakes-sc",
+    "name": "Hartwell Lake Twin Lakes",
+    "agency": "USACE",
+    "state": "SC",
+    "lat": 34.36,
+    "lng": -82.86,
+    "description": "USACE Hartwell Lake.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": true,
+      "electricity": true,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "good",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "boating"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:allatoona-lake-old-highway-ga",
+    "name": "Allatoona Lake Old Highway",
+    "agency": "USACE",
+    "state": "GA",
+    "lat": 34.16,
+    "lng": -84.71,
+    "description": "USACE Allatoona Lake.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": true,
+      "electricity": true,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "good",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "boating"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:lake-lanier-bald-ridge-creek-ga",
+    "name": "Lake Lanier Bald Ridge Creek",
+    "agency": "USACE",
+    "state": "GA",
+    "lat": 34.21,
+    "lng": -84,
+    "description": "USACE Lake Lanier; family CG.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": true,
+      "electricity": true,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "good",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "boating"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:big-sur-pfeiffer-state-park-cg-ca",
+    "name": "Big Sur Pfeiffer State Park CG",
+    "agency": "State Park",
+    "state": "CA",
+    "lat": 36.25,
+    "lng": -121.78,
+    "description": "CA State Parks; coastal redwoods.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": true,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": true,
+      "bearCountry": true,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "weak",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "hiking",
+      "beach"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:henry-cowell-redwoods-state-park-cg-ca",
+    "name": "Henry Cowell Redwoods State Park CG",
+    "agency": "State Park",
+    "state": "CA",
+    "lat": 37.04,
+    "lng": -122.07,
+    "description": "CA State Parks; old-growth redwoods.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": true,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": true,
+      "bearCountry": true,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "weak",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "hiking"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:anza-borrego-borrego-palm-canyon-ca",
+    "name": "Anza-Borrego Borrego Palm Canyon",
+    "agency": "State Park",
+    "state": "CA",
+    "lat": 33.27,
+    "lng": -116.41,
+    "description": "CA State Parks largest park.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": true,
+      "electricity": true,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "weak",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "hiking",
+      "stargazing"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:custer-state-park-sylvan-lake-cg-sd",
+    "name": "Custer State Park Sylvan Lake CG",
+    "agency": "State Park",
+    "state": "SD",
+    "lat": 43.85,
+    "lng": -103.55,
+    "description": "SD State Parks; Black Hills.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": true,
+      "electricity": true,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "weak",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "hiking"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:itasca-state-park-pine-ridge-cg-mn",
+    "name": "Itasca State Park Pine Ridge CG",
+    "agency": "State Park",
+    "state": "MN",
+    "lat": 47.22,
+    "lng": -95.21,
+    "description": "MN State Parks; Mississippi headwaters.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": true,
+      "electricity": true,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "good",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "paddling"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:letchworth-state-park-highbanks-cg-ny",
+    "name": "Letchworth State Park Highbanks CG",
+    "agency": "State Park",
+    "state": "NY",
+    "lat": 42.59,
+    "lng": -78.07,
+    "description": "NY State Parks; \"grand canyon of east\".",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": true,
+      "electricity": true,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "good",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "hiking"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:letchworth-highlands-outpost-pa",
+    "name": "Letchworth Highlands Outpost",
+    "agency": "State Park",
+    "state": "PA",
+    "lat": 41,
+    "lng": -75.5,
+    "description": "PA State Parks Promised Land area.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": true,
+      "electricity": true,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "weak",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "hiking"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:tahquamenon-falls-sp-lower-falls-cg-mi",
+    "name": "Tahquamenon Falls SP Lower Falls CG",
+    "agency": "State Park",
+    "state": "MI",
+    "lat": 46.59,
+    "lng": -85.21,
+    "description": "MI State Parks; iconic falls.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": true,
+      "electricity": true,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "weak",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "hiking"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:devils-lake-state-park-northern-lights-wi",
+    "name": "Devils Lake State Park Northern Lights",
+    "agency": "State Park",
+    "state": "WI",
+    "lat": 43.43,
+    "lng": -89.73,
+    "description": "WI State Parks; iconic lake.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": true,
+      "electricity": true,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "good",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "swimming",
+      "climbing"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:hocking-hills-state-park-cg-oh",
+    "name": "Hocking Hills State Park CG",
+    "agency": "State Park",
+    "state": "OH",
+    "lat": 39.43,
+    "lng": -82.55,
+    "description": "OH State Parks; hemlock gorges.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": true,
+      "electricity": true,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "good",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "hiking"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:cumberland-falls-state-park-cg-ky",
+    "name": "Cumberland Falls State Park CG",
+    "agency": "State Park",
+    "state": "KY",
+    "lat": 36.84,
+    "lng": -84.34,
+    "description": "KY State Parks; moonbow.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": true,
+      "electricity": true,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "weak",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "hiking"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:edisto-beach-state-park-cg-sc",
+    "name": "Edisto Beach State Park CG",
+    "agency": "State Park",
+    "state": "SC",
+    "lat": 32.49,
+    "lng": -80.31,
+    "description": "SC State Parks; beachside.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": true,
+      "electricity": true,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "good",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "beach"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:falls-creek-falls-state-park-cg-tn",
+    "name": "Falls Creek Falls State Park CG",
+    "agency": "State Park",
+    "state": "TN",
+    "lat": 35.66,
+    "lng": -85.32,
+    "description": "TN State Parks; cataracts & gorges.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": true,
+      "electricity": true,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "weak",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "hiking"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:bahia-honda-state-park-cg-fl",
+    "name": "Bahia Honda State Park CG",
+    "agency": "State Park",
+    "state": "FL",
+    "lat": 24.66,
+    "lng": -81.27,
+    "description": "FL State Parks; FL keys.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": true,
+      "electricity": true,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "good",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "snorkeling",
+      "beach"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:anastasia-state-park-cg-fl",
+    "name": "Anastasia State Park CG",
+    "agency": "State Park",
+    "state": "FL",
+    "lat": 29.87,
+    "lng": -81.27,
+    "description": "FL State Parks; barrier-island.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": true,
+      "electricity": true,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "good",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "beach",
+      "birding"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:sleeping-bear-dunes-platte-river-mi",
+    "name": "Sleeping Bear Dunes Platte River",
+    "agency": "NPS",
+    "state": "MI",
+    "lat": 44.74,
+    "lng": -86.07,
+    "description": "Sleeping Bear NL; lake CG.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "weak",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "swimming"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:pictured-rocks-twelvemile-beach-mi",
+    "name": "Pictured Rocks Twelvemile Beach",
+    "agency": "NPS",
+    "state": "MI",
+    "lat": 46.65,
+    "lng": -86.13,
+    "description": "Pictured Rocks NL; beach CG.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "none",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "paddling"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:koa-holiday-yellowstone-mt",
+    "name": "KOA Holiday Yellowstone",
+    "agency": "Private",
+    "state": "MT",
+    "lat": 44.99,
+    "lng": -111.07,
+    "description": "Private RV park near Yellowstone west.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": true,
+      "electricity": true,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": true,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "good",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "swimming"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:sequoia-rv-ranch-ca",
+    "name": "Sequoia RV Ranch",
+    "agency": "Private",
+    "state": "CA",
+    "lat": 36.49,
+    "lng": -118.78,
+    "description": "Private RV park near Sequoia NP.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": true,
+      "electricity": true,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": true,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "good",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "hiking"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:john-muir-wilderness-permit-zone-a-ca",
+    "name": "John Muir Wilderness Permit Zone A",
+    "agency": "USFS",
+    "state": "CA",
+    "lat": 37.31,
+    "lng": -118.84,
+    "description": "Inyo NF wilderness permit; backcountry.",
+    "amenities": {
+      "potableWater": false,
+      "toilets": "none",
+      "showers": false,
+      "electricity": false,
+      "fireRings": false,
+      "firewoodAvailable": false,
+      "picnicTables": false,
+      "bearLockers": false,
+      "bearCountry": true,
+      "trashService": false,
+      "dumpStation": false,
+      "cellService": "none",
+      "accessLevel": "backcountry"
+    },
+    "activities": [
+      "backpacking"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:bob-marshall-wilderness-zone-mt",
+    "name": "Bob Marshall Wilderness Zone",
+    "agency": "USFS",
+    "state": "MT",
+    "lat": 47.6,
+    "lng": -113.06,
+    "description": "Bob Marshall Wilderness CG.",
+    "amenities": {
+      "potableWater": false,
+      "toilets": "none",
+      "showers": false,
+      "electricity": false,
+      "fireRings": false,
+      "firewoodAvailable": false,
+      "picnicTables": false,
+      "bearLockers": false,
+      "bearCountry": true,
+      "trashService": false,
+      "dumpStation": false,
+      "cellService": "none",
+      "accessLevel": "backcountry"
+    },
+    "activities": [
+      "backpacking"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:boundary-waters-entry-point-51-mn",
+    "name": "Boundary Waters Entry Point 51",
+    "agency": "USFS",
+    "state": "MN",
+    "lat": 47.95,
+    "lng": -91.06,
+    "description": "Boundary Waters Canoe Area entry CG.",
+    "amenities": {
+      "potableWater": false,
+      "toilets": "none",
+      "showers": false,
+      "electricity": false,
+      "fireRings": false,
+      "firewoodAvailable": false,
+      "picnicTables": false,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": false,
+      "dumpStation": false,
+      "cellService": "none",
+      "accessLevel": "backcountry"
+    },
+    "activities": [
+      "canoeing"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:wind-river-range-permit-site-wy",
+    "name": "Wind River Range Permit Site",
+    "agency": "USFS",
+    "state": "WY",
+    "lat": 43.18,
+    "lng": -109.66,
+    "description": "Bridger-Teton wilderness backcountry.",
+    "amenities": {
+      "potableWater": false,
+      "toilets": "none",
+      "showers": false,
+      "electricity": false,
+      "fireRings": false,
+      "firewoodAvailable": false,
+      "picnicTables": false,
+      "bearLockers": false,
+      "bearCountry": true,
+      "trashService": false,
+      "dumpStation": false,
+      "cellService": "none",
+      "accessLevel": "backcountry"
+    },
+    "activities": [
+      "backpacking"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:grand-canyon-bright-angel-cg-az",
+    "name": "Grand Canyon Bright Angel CG",
+    "agency": "NPS",
+    "state": "AZ",
+    "lat": 36.1,
+    "lng": -112.1,
+    "description": "Backcountry below the rim — permit only.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": false,
+      "electricity": false,
+      "fireRings": false,
+      "firewoodAvailable": false,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": false,
+      "dumpStation": false,
+      "cellService": "none",
+      "accessLevel": "backcountry"
+    },
+    "activities": [
+      "backpacking"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:olympic-coast-sand-point-wa",
+    "name": "Olympic Coast Sand Point",
+    "agency": "NPS",
+    "state": "WA",
+    "lat": 48.13,
+    "lng": -124.7,
+    "description": "Olympic NP coastal walk-in CG.",
+    "amenities": {
+      "potableWater": false,
+      "toilets": "none",
+      "showers": false,
+      "electricity": false,
+      "fireRings": false,
+      "firewoodAvailable": false,
+      "picnicTables": false,
+      "bearLockers": true,
+      "bearCountry": true,
+      "trashService": false,
+      "dumpStation": false,
+      "cellService": "none",
+      "accessLevel": "walk-in"
+    },
+    "activities": [
+      "backpacking",
+      "beachcombing"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:channel-islands-santa-cruz-scorpion-ca",
+    "name": "Channel Islands Santa Cruz Scorpion",
+    "agency": "NPS",
+    "state": "CA",
+    "lat": 34.05,
+    "lng": -119.56,
+    "description": "Channel Islands NP walk-in; bear-free.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "vault",
+      "showers": false,
+      "electricity": false,
+      "fireRings": false,
+      "firewoodAvailable": false,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": false,
+      "dumpStation": false,
+      "cellService": "none",
+      "accessLevel": "walk-in"
+    },
+    "activities": [
+      "kayaking",
+      "hiking"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:isle-royale-daisy-farm-mi",
+    "name": "Isle Royale Daisy Farm",
+    "agency": "NPS",
+    "state": "MI",
+    "lat": 48.06,
+    "lng": -88.61,
+    "description": "Isle Royale NP backcountry shelter.",
+    "amenities": {
+      "potableWater": false,
+      "toilets": "vault",
+      "showers": false,
+      "electricity": false,
+      "fireRings": false,
+      "firewoodAvailable": false,
+      "picnicTables": false,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": false,
+      "dumpStation": false,
+      "cellService": "none",
+      "accessLevel": "backcountry"
+    },
+    "activities": [
+      "backpacking"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:dry-tortugas-garden-key-fl",
+    "name": "Dry Tortugas Garden Key",
+    "agency": "NPS",
+    "state": "FL",
+    "lat": 24.63,
+    "lng": -82.87,
+    "description": "Dry Tortugas NP; remote walk-in.",
+    "amenities": {
+      "potableWater": false,
+      "toilets": "vault",
+      "showers": false,
+      "electricity": false,
+      "fireRings": false,
+      "firewoodAvailable": false,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": false,
+      "dumpStation": false,
+      "cellService": "none",
+      "accessLevel": "walk-in"
+    },
+    "activities": [
+      "snorkeling"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:mount-whitney-trail-camp-ca",
+    "name": "Mount Whitney Trail Camp",
+    "agency": "USFS",
+    "state": "CA",
+    "lat": 36.57,
+    "lng": -118.27,
+    "description": "Inyo NF Whitney trail backcountry.",
+    "amenities": {
+      "potableWater": false,
+      "toilets": "none",
+      "showers": false,
+      "electricity": false,
+      "fireRings": false,
+      "firewoodAvailable": false,
+      "picnicTables": false,
+      "bearLockers": false,
+      "bearCountry": true,
+      "trashService": false,
+      "dumpStation": false,
+      "cellService": "none",
+      "accessLevel": "backcountry"
+    },
+    "activities": [
+      "mountaineering"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:three-sisters-wilderness-permit-or",
+    "name": "Three Sisters Wilderness Permit",
+    "agency": "USFS",
+    "state": "OR",
+    "lat": 44.1,
+    "lng": -121.77,
+    "description": "Deschutes NF wilderness permit.",
+    "amenities": {
+      "potableWater": false,
+      "toilets": "none",
+      "showers": false,
+      "electricity": false,
+      "fireRings": false,
+      "firewoodAvailable": false,
+      "picnicTables": false,
+      "bearLockers": false,
+      "bearCountry": true,
+      "trashService": false,
+      "dumpStation": false,
+      "cellService": "none",
+      "accessLevel": "backcountry"
+    },
+    "activities": [
+      "backpacking"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:ocean-lakes-rv-resort-sc",
+    "name": "Ocean Lakes RV Resort",
+    "agency": "Private",
+    "state": "SC",
+    "lat": 33.66,
+    "lng": -78.94,
+    "description": "Full hookup RV resort on the beach.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": true,
+      "electricity": true,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "good",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "beach",
+      "swimming"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:disney-fort-wilderness-fl",
+    "name": "Disney Fort Wilderness",
+    "agency": "Private",
+    "state": "FL",
+    "lat": 28.41,
+    "lng": -81.55,
+    "description": "Full hookup destination CG.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": true,
+      "electricity": true,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "good",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "family"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:lake-george-rv-park-ny",
+    "name": "Lake George RV Park",
+    "agency": "Private",
+    "state": "NY",
+    "lat": 43.42,
+    "lng": -73.71,
+    "description": "Adirondacks RV park with hookups.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": true,
+      "electricity": true,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "good",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "swimming"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:al-blm-recreation-site-1-al",
+    "name": "AL BLM Recreation Site 1",
+    "agency": "BLM",
+    "state": "AL",
+    "lat": 32.8,
+    "lng": -86.8,
+    "description": "BLM managed CG in AL.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "vault",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": false,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "none",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "hiking",
+      "fishing"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:al-usace-recreation-site-2-al",
+    "name": "AL USACE Recreation Site 2",
+    "agency": "USACE",
+    "state": "AL",
+    "lat": 32.809999999999995,
+    "lng": -86.81,
+    "description": "USACE managed CG in AL.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "weak",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "hiking",
+      "fishing"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:ar-blm-recreation-site-1-ar",
+    "name": "AR BLM Recreation Site 1",
+    "agency": "BLM",
+    "state": "AR",
+    "lat": 34.9,
+    "lng": -92.4,
+    "description": "BLM managed CG in AR.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "vault",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": false,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "none",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "hiking",
+      "fishing"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:ar-usace-recreation-site-2-ar",
+    "name": "AR USACE Recreation Site 2",
+    "agency": "USACE",
+    "state": "AR",
+    "lat": 34.91,
+    "lng": -92.41000000000001,
+    "description": "USACE managed CG in AR.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "weak",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "hiking",
+      "fishing"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:ca-state-park-recreation-site-1-ca",
+    "name": "CA State Park Recreation Site 1",
+    "agency": "State Park",
+    "state": "CA",
+    "lat": 36.8,
+    "lng": -119.4,
+    "description": "State Park managed CG in CA.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "vault",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": false,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "none",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "hiking",
+      "fishing"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:ca-usfs-recreation-site-2-ca",
+    "name": "CA USFS Recreation Site 2",
+    "agency": "USFS",
+    "state": "CA",
+    "lat": 36.809999999999995,
+    "lng": -119.41000000000001,
+    "description": "USFS managed CG in CA.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "weak",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "hiking",
+      "fishing"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:de-usfs-recreation-site-1-de",
+    "name": "DE USFS Recreation Site 1",
+    "agency": "USFS",
+    "state": "DE",
+    "lat": 38.9,
+    "lng": -75.5,
+    "description": "USFS managed CG in DE.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "vault",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": false,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "none",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "hiking",
+      "fishing"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:de-blm-recreation-site-2-de",
+    "name": "DE BLM Recreation Site 2",
+    "agency": "BLM",
+    "state": "DE",
+    "lat": 38.91,
+    "lng": -75.51,
+    "description": "BLM managed CG in DE.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "weak",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "hiking",
+      "fishing"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:ia-blm-recreation-site-1-ia",
+    "name": "IA BLM Recreation Site 1",
+    "agency": "BLM",
+    "state": "IA",
+    "lat": 42,
+    "lng": -93.5,
+    "description": "BLM managed CG in IA.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "vault",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": false,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "none",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "hiking",
+      "fishing"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:ia-usace-recreation-site-2-ia",
+    "name": "IA USACE Recreation Site 2",
+    "agency": "USACE",
+    "state": "IA",
+    "lat": 42.01,
+    "lng": -93.51,
+    "description": "USACE managed CG in IA.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "weak",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "hiking",
+      "fishing"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:in-blm-recreation-site-1-in",
+    "name": "IN BLM Recreation Site 1",
+    "agency": "BLM",
+    "state": "IN",
+    "lat": 40.3,
+    "lng": -86.1,
+    "description": "BLM managed CG in IN.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "vault",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": false,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "none",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "hiking",
+      "fishing"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:in-usace-recreation-site-2-in",
+    "name": "IN USACE Recreation Site 2",
+    "agency": "USACE",
+    "state": "IN",
+    "lat": 40.309999999999995,
+    "lng": -86.11,
+    "description": "USACE managed CG in IN.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "weak",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "hiking",
+      "fishing"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:ks-state-park-recreation-site-1-ks",
+    "name": "KS State Park Recreation Site 1",
+    "agency": "State Park",
+    "state": "KS",
+    "lat": 38.5,
+    "lng": -98.3,
+    "description": "State Park managed CG in KS.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "vault",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": false,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "none",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "hiking",
+      "fishing"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:ks-usfs-recreation-site-2-ks",
+    "name": "KS USFS Recreation Site 2",
+    "agency": "USFS",
+    "state": "KS",
+    "lat": 38.51,
+    "lng": -98.31,
+    "description": "USFS managed CG in KS.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "weak",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "hiking",
+      "fishing"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:la-usfs-recreation-site-1-la",
+    "name": "LA USFS Recreation Site 1",
+    "agency": "USFS",
+    "state": "LA",
+    "lat": 31.1,
+    "lng": -91.9,
+    "description": "USFS managed CG in LA.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "vault",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": false,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "none",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "hiking",
+      "fishing"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:la-blm-recreation-site-2-la",
+    "name": "LA BLM Recreation Site 2",
+    "agency": "BLM",
+    "state": "LA",
+    "lat": 31.110000000000003,
+    "lng": -91.91000000000001,
+    "description": "BLM managed CG in LA.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "weak",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "hiking",
+      "fishing"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:ma-blm-recreation-site-1-ma",
+    "name": "MA BLM Recreation Site 1",
+    "agency": "BLM",
+    "state": "MA",
+    "lat": 42.2,
+    "lng": -71.5,
+    "description": "BLM managed CG in MA.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "vault",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": false,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "none",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "hiking",
+      "fishing"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:ma-usace-recreation-site-2-ma",
+    "name": "MA USACE Recreation Site 2",
+    "agency": "USACE",
+    "state": "MA",
+    "lat": 42.21,
+    "lng": -71.51,
+    "description": "USACE managed CG in MA.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "weak",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "hiking",
+      "fishing"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:md-blm-recreation-site-1-md",
+    "name": "MD BLM Recreation Site 1",
+    "agency": "BLM",
+    "state": "MD",
+    "lat": 39,
+    "lng": -76.8,
+    "description": "BLM managed CG in MD.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "vault",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": false,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "none",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "hiking",
+      "fishing"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:md-usace-recreation-site-2-md",
+    "name": "MD USACE Recreation Site 2",
+    "agency": "USACE",
+    "state": "MD",
+    "lat": 39.01,
+    "lng": -76.81,
+    "description": "USACE managed CG in MD.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "weak",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "hiking",
+      "fishing"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:mo-blm-recreation-site-1-mo",
+    "name": "MO BLM Recreation Site 1",
+    "agency": "BLM",
+    "state": "MO",
+    "lat": 38.5,
+    "lng": -92.3,
+    "description": "BLM managed CG in MO.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "vault",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": false,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "none",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "hiking",
+      "fishing"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:mo-usace-recreation-site-2-mo",
+    "name": "MO USACE Recreation Site 2",
+    "agency": "USACE",
+    "state": "MO",
+    "lat": 38.51,
+    "lng": -92.31,
+    "description": "USACE managed CG in MO.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "weak",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "hiking",
+      "fishing"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:nd-usace-recreation-site-1-nd",
+    "name": "ND USACE Recreation Site 1",
+    "agency": "USACE",
+    "state": "ND",
+    "lat": 47.5,
+    "lng": -100,
+    "description": "USACE managed CG in ND.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "vault",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": false,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "none",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "hiking",
+      "fishing"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:nd-state-park-recreation-site-2-nd",
+    "name": "ND State Park Recreation Site 2",
+    "agency": "State Park",
+    "state": "ND",
+    "lat": 47.51,
+    "lng": -100.01,
+    "description": "State Park managed CG in ND.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "weak",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "hiking",
+      "fishing"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:ne-usace-recreation-site-1-ne",
+    "name": "NE USACE Recreation Site 1",
+    "agency": "USACE",
+    "state": "NE",
+    "lat": 41.1,
+    "lng": -98.3,
+    "description": "USACE managed CG in NE.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "vault",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": false,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "none",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "hiking",
+      "fishing"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:ne-state-park-recreation-site-2-ne",
+    "name": "NE State Park Recreation Site 2",
+    "agency": "State Park",
+    "state": "NE",
+    "lat": 41.11,
+    "lng": -98.31,
+    "description": "State Park managed CG in NE.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "weak",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "hiking",
+      "fishing"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:nj-usace-recreation-site-1-nj",
+    "name": "NJ USACE Recreation Site 1",
+    "agency": "USACE",
+    "state": "NJ",
+    "lat": 40.3,
+    "lng": -74.5,
+    "description": "USACE managed CG in NJ.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "vault",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": false,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "none",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "hiking",
+      "fishing"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:nj-state-park-recreation-site-2-nj",
+    "name": "NJ State Park Recreation Site 2",
+    "agency": "State Park",
+    "state": "NJ",
+    "lat": 40.309999999999995,
+    "lng": -74.51,
+    "description": "State Park managed CG in NJ.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "weak",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "hiking",
+      "fishing"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:ri-usace-recreation-site-1-ri",
+    "name": "RI USACE Recreation Site 1",
+    "agency": "USACE",
+    "state": "RI",
+    "lat": 41.6,
+    "lng": -71.5,
+    "description": "USACE managed CG in RI.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "vault",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": false,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "none",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "hiking",
+      "fishing"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:ri-state-park-recreation-site-2-ri",
+    "name": "RI State Park Recreation Site 2",
+    "agency": "State Park",
+    "state": "RI",
+    "lat": 41.61,
+    "lng": -71.51,
+    "description": "State Park managed CG in RI.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "weak",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "hiking",
+      "fishing"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:vt-usace-recreation-site-1-vt",
+    "name": "VT USACE Recreation Site 1",
+    "agency": "USACE",
+    "state": "VT",
+    "lat": 44,
+    "lng": -72.7,
+    "description": "USACE managed CG in VT.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "vault",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": false,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "none",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "hiking",
+      "fishing"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:vt-state-park-recreation-site-2-vt",
+    "name": "VT State Park Recreation Site 2",
+    "agency": "State Park",
+    "state": "VT",
+    "lat": 44.01,
+    "lng": -72.71000000000001,
+    "description": "State Park managed CG in VT.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "weak",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "hiking",
+      "fishing"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:wv-state-park-recreation-site-1-wv",
+    "name": "WV State Park Recreation Site 1",
+    "agency": "State Park",
+    "state": "WV",
+    "lat": 38.5,
+    "lng": -80.9,
+    "description": "State Park managed CG in WV.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "vault",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": false,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "none",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "hiking",
+      "fishing"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:wv-usfs-recreation-site-2-wv",
+    "name": "WV USFS Recreation Site 2",
+    "agency": "USFS",
+    "state": "WV",
+    "lat": 38.51,
+    "lng": -80.91000000000001,
+    "description": "USFS managed CG in WV.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "weak",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "hiking",
+      "fishing"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:wy-state-park-recreation-site-1-wy",
+    "name": "WY State Park Recreation Site 1",
+    "agency": "State Park",
+    "state": "WY",
+    "lat": 42.8,
+    "lng": -107.3,
+    "description": "State Park managed CG in WY.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "vault",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": false,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "none",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "hiking",
+      "fishing"
+    ],
+    "source": "seed"
+  },
+  {
+    "id": "seed:wy-usfs-recreation-site-2-wy",
+    "name": "WY USFS Recreation Site 2",
+    "agency": "USFS",
+    "state": "WY",
+    "lat": 42.809999999999995,
+    "lng": -107.31,
+    "description": "USFS managed CG in WY.",
+    "amenities": {
+      "potableWater": true,
+      "toilets": "flush",
+      "showers": false,
+      "electricity": false,
+      "fireRings": true,
+      "firewoodAvailable": true,
+      "picnicTables": true,
+      "bearLockers": false,
+      "bearCountry": false,
+      "trashService": true,
+      "dumpStation": true,
+      "cellService": "weak",
+      "accessLevel": "drive-in"
+    },
+    "activities": [
+      "hiking",
+      "fishing"
+    ],
+    "source": "seed"
+  }
+]
