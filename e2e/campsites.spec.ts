@@ -14,6 +14,7 @@
 import { test, expect } from '@playwright/test'
 import { instant } from '@next/playwright'
 import { fixtures } from '../lib/campsites/fixtures'
+import { SEARCH_PAGE_SIZE_MAX } from '../lib/limits'
 import { campsite as campsiteRoute, campsites as campsitesRoute } from '../lib/routes'
 
 // Helpers ----------------------------------------------------------------
@@ -50,16 +51,17 @@ test.describe('T5.4 browse — /campsites', () => {
   })
 
   test('pagination — pageSize cap is enforced server-side (DR-23)', async ({ page }) => {
-    // The server clamps pageSize to SEARCH_PAGE_SIZE_MAX (50). Even if a
-    // user crafts ?pageSize=500, no more than 50 cards may render.
+    // The server clamps pageSize to SEARCH_PAGE_SIZE_MAX. Even if a user
+    // crafts ?pageSize=500, no more than SEARCH_PAGE_SIZE_MAX cards may
+    // render. We import the cap from lib/limits to avoid restating it
+    // here (DR-43 / T0.15 — the page-size literal lives in one place).
     await page.goto(`/campsites?pageSize=500`)
-    const links = page.getByRole('link', { name: /(?!filter|page|prev|next)/i })
     // Loose upper bound: page renders at most SEARCH_PAGE_SIZE_MAX cards.
     // We assert with a generous count to avoid false positives from chrome
     // links — the assertion is about the *list* container.
-    const cards = page.locator('[data-slot="campsite-card"], article')
+    const cards = page.locator('[data-slot="campsite-card"]')
     const count = await cards.count()
-    expect(count).toBeLessThanOrEqual(50)
+    expect(count).toBeLessThanOrEqual(SEARCH_PAGE_SIZE_MAX)
   })
 
   test('skeleton renders before results stream in', async ({ page }) => {
