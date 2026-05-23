@@ -1,82 +1,65 @@
-// Composition root / swap seam — WS-0.12.
-// Defaults to memory + fixtures; WS-8 flips defaults via BEARCAMP_BACKEND.
+// Composition root / swap seam — WS-0.12 (default) + WS-8.1 (flip).
+//
+// WS-8.1 flipped the seam: the default backend is now `prisma` (WS-2
+// Prisma/Neon storage + WS-3 seed catalog). When `BEARCAMP_BACKEND` is
+// unset, `getStorage()` returns a Prisma-backed adapter (built via
+// `createPrismaStorage()` from `lib/db/storage.prisma`) and
+// `getCampsiteSource()` returns the seed-backed source
+// (`createSeedSource()` from `lib/campsites/seed`).
+//
+// An explicit `BEARCAMP_BACKEND=memory` still selects the in-memory fake
+// + fixtures — the fallback for quick local runs and the test suite. The
+// vitest run pins `BEARCAMP_BACKEND=memory` via `vitest.config.ts`
+// (`test.env`) so tests never touch Prisma (WS-8.1 DoD: "tests still use
+// fakes").
+//
+// The prisma + seed factory modules are imported statically — they're
+// import-safe even without a live DB (the Prisma client is lazily
+// instantiated via a Proxy, see `lib/db/prisma.ts`; the seed source
+// only loads `data/campsites.seed.json` when its methods are called).
+//
+// Tests in `lib/__tests__/services.flip.test.ts` `vi.doMock(...)` the
+// factory modules then `await import('../services')`, so the static
+// imports below resolve to the mocks (Vitest hoists doMock + clears
+// the module registry per `vi.resetModules()`).
 
 import type { StorageAdapter } from './db/storage'
 import type { CampsiteSource } from './campsites/source'
 import { memoryStorage } from './db/storage.memory'
 import { createFixtureSource } from './campsites/fixtures'
+import { createPrismaStorage } from './db/storage.prisma'
+import { createSeedSource } from './campsites/seed'
 
 export type Backend = 'memory' | 'prisma'
 
 export function getBackend(): Backend {
+  // WS-8.1: prisma is the default. Only an explicit `memory` opts out
+  // (the test suite + quick local in-process runs).
   const b = process.env.BEARCAMP_BACKEND
-  return b === 'prisma' ? 'prisma' : 'memory'
+  return b === 'memory' ? 'memory' : 'prisma'
 }
 
 let prismaStorageSingleton: StorageAdapter | null = null
-
-// Prisma factory is intentionally a not-configured throw at WS-0 — WS-2
-// wires the real implementation. Returns a distinct object identity from
-// the memory singleton so the services seam test (T0.8) sees a different
-// factory selection rather than silently falling through to memory.
-function makePrismaStorage(): StorageAdapter {
-  const notWired = (method: string) => () => {
-    throw new Error(
-      `prisma storage backend not configured in WS-0 (WS-2 wires this); called ${method}`,
-    )
-  }
-  return {
-    campsites: {
-      upsertMany: notWired('campsites.upsertMany'),
-      search: notWired('campsites.search'),
-      getById: notWired('campsites.getById'),
-    },
-    trips: {
-      create: notWired('trips.create'),
-      getById: notWired('trips.getById'),
-      rename: notWired('trips.rename'),
-      updateSettings: notWired('trips.updateSettings'),
-      delete: notWired('trips.delete'),
-      byOwnerToken: notWired('trips.byOwnerToken'),
-    },
-    items: {
-      listByTrip: notWired('items.listByTrip'),
-      add: notWired('items.add'),
-      update: notWired('items.update'),
-      softRemove: notWired('items.softRemove'),
-      restore: notWired('items.restore'),
-      reorder: notWired('items.reorder'),
-    },
-    participants: {
-      listByTrip: notWired('participants.listByTrip'),
-      add: notWired('participants.add'),
-      byToken: notWired('participants.byToken'),
-      count: notWired('participants.count'),
-    },
-    claims: {
-      listByTrip: notWired('claims.listByTrip'),
-      upsert: notWired('claims.upsert'),
-      remove: notWired('claims.remove'),
-    },
-    view: {
-      buildTripView: notWired('view.buildTripView'),
-    },
-  }
-}
+let fixtureSourceSingleton: CampsiteSource | null = null
+let seedSourceSingleton: CampsiteSource | null = null
 
 export function getStorage(): StorageAdapter {
   if (getBackend() === 'prisma') {
     if (!prismaStorageSingleton) {
-      prismaStorageSingleton = makePrismaStorage()
+      prismaStorageSingleton = createPrismaStorage()
     }
     return prismaStorageSingleton
   }
   return memoryStorage
 }
 
-let fixtureSourceSingleton: CampsiteSource | null = null
-
 export function getCampsiteSource(): CampsiteSource {
+  if (getBackend() === 'prisma') {
+    if (!seedSourceSingleton) {
+      seedSourceSingleton = createSeedSource()
+    }
+    return seedSourceSingleton
+  }
   if (!fixtureSourceSingleton) {
     fixtureSourceSingleton = createFixtureSource()
   }

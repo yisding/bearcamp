@@ -112,11 +112,10 @@ test.describe('T5.5 detail — /campsites/[id]', () => {
       await expect(page.getByText(/potable\s*water|drinking\s*water/i)).toBeVisible()
     }
 
-    // StylePicker placeholder (I-1). Implementation marker — the
-    // placeholder must announce itself so WS-8.2 can find it by selector
-    // when swapping in the real component.
+    // StylePicker (seam I-1). WS-8.2 wired the real WS-6 component in;
+    // it renders with the `[data-slot="style-picker"]` marker.
     await expect(
-      page.locator('[data-slot="style-picker-placeholder"], [data-testid="style-picker-placeholder"]'),
+      page.locator('[data-slot="style-picker"]'),
     ).toBeVisible()
   })
 
@@ -173,15 +172,13 @@ test.describe('T5.6 instant() — prefetched static shells', () => {
       // the detail page render in the instant shell:
       //   - the campsite name heading
       //   - the AmenityGrid section
-      //   - the StylePicker placeholder
+      //   - the StylePicker
       await expect(page.getByRole('heading', { name: c.name })).toBeVisible()
       await expect(
         page.locator('[data-slot="amenity-grid"], [data-testid="amenity-grid"]'),
       ).toBeVisible()
       await expect(
-        page.locator(
-          '[data-slot="style-picker-placeholder"], [data-testid="style-picker-placeholder"]',
-        ),
+        page.locator('[data-slot="style-picker"]'),
       ).toBeVisible()
     })
   })

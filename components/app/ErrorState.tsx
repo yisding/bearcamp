@@ -14,7 +14,13 @@ export interface ErrorStateProps {
 /**
  * Assertive error surface — renders inside `role="alert"` so screen readers
  * announce the failure. Use for recoverable inline errors (failed fetch,
- * mutation rejected). For full-page crashes, render `app/error.tsx` instead.
+ * mutation rejected).
+ *
+ * It is also the fallback UI for the route error boundaries (WS-8): the
+ * `error.tsx` files at `app/`, `app/campsites/`, and `app/trips/[tripId]/`
+ * render this component with a "Try again" button wired into the `action`
+ * slot. Root-layout crashes are covered separately by `app/global-error.tsx`,
+ * which cannot use this component (it replaces the layout that styles it).
  */
 export function ErrorState({
   title,

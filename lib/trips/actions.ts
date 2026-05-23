@@ -87,8 +87,10 @@ import type {
 import type { TripItem, Amenities } from '../db/types'
 
 // Canonical UI copy. Single source of truth (DR-46) — WS-6 references it
-// verbatim. Tests assert the exact string.
-const TRIP_FULL_MESSAGE = 'This trip is full (50 people).'
+// verbatim. Tests assert the exact string. Built from the canonical
+// PARTICIPANT_CAP_PER_TRIP constant (lib/limits.ts) so the cap number is
+// never restated as a literal.
+const TRIP_FULL_MESSAGE = `This trip is full (${PARTICIPANT_CAP_PER_TRIP} people).`
 
 // ---- Lazy module resolvers ------------------------------------------------
 // See header comment for the rationale.
@@ -152,7 +154,17 @@ function mapThrown(
     logFailure({ action, tripId, code: 'unauthorized', err: e })
     return err('unauthorized', 'You do not have permission to do that.')
   }
-  if (e instanceof Error && e.message === 'participant_cap_reached') {
+  // Cap error shape differs by backend: the memory backend throws
+  // `new Error('participant_cap_reached')` (discriminator in `.message`),
+  // the Prisma backend throws `ParticipantCapReachedError` whose
+  // discriminator is `.name === 'participant_cap_reached'` and whose
+  // `.message` is the longer `'participant_cap_reached: trip <id> ...'`.
+  // Match BOTH so the real DB doesn't fall through to `internal`.
+  if (
+    e instanceof Error &&
+    (e.name === 'participant_cap_reached' ||
+      e.message.startsWith('participant_cap_reached'))
+  ) {
     logFailure({ action, tripId, code: 'participant_cap_reached', err: e })
     return err('participant_cap_reached', TRIP_FULL_MESSAGE)
   }

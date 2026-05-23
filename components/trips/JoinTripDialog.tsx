@@ -67,6 +67,7 @@ export function JoinTripDialog({
       const result = await joinTripAction({ tripId, name: trimmed })
       if (result.ok) {
         setJoined(true)
+        toast.success("You joined the trip")
         router.refresh()
       } else {
         // Surface error.message verbatim — canonical strings live action-side

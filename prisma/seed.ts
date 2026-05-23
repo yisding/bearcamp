@@ -19,7 +19,10 @@ import { createPrismaClient } from '../lib/db/prisma'
 import { createCampsitesRepo } from '../lib/db/campsites'
 import { loadSeed } from './seed.fixture'
 
-async function main(): Promise<void> {
+// Exported so tests can drive the seed entrypoint without a process exit
+// (mirrors `scripts/import-ridb.ts` exporting `importRidb`). The CLI
+// invocation at the bottom of the file runs `main()` directly.
+export async function main(): Promise<void> {
   const prisma = createPrismaClient()
   try {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -62,7 +65,19 @@ async function main(): Promise<void> {
   }
 }
 
-main().catch((err) => {
-  console.error('[bc.seed] Failed:', err)
-  process.exit(1)
-})
+// CLI wrapper — `prisma db seed` invokes this file directly. Guarded so
+// importing the module for tests (mirroring `scripts/import-ridb.ts`)
+// doesn't trigger a real seed run / `process.exit`.
+const isDirectInvocation =
+  typeof process !== 'undefined' &&
+  Array.isArray(process.argv) &&
+  process.argv[1]?.endsWith('seed.ts')
+
+if (isDirectInvocation) {
+  main().catch((err) => {
+    console.error('[bc.seed] Failed:', err)
+    process.exit(1)
+  })
+}
+
+export default main

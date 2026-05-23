@@ -83,33 +83,30 @@ export function PackingList({
         </button>
       ) : null}
 
-      {presentCategories.map((cat) => (
-        <Section key={cat} title={cat}>
-          <ul className="flex flex-col gap-2">
-            {byCategory.get(cat)!.map((item) =>
-              itemActions ? (
+      {presentCategories.map((cat) => {
+        const rows = byCategory.get(cat)!
+        return (
+          <Section key={cat} title={cat}>
+            <ul className="flex flex-col gap-2">
+              {rows.map((item, idx) => (
+                // `prev/nextItemId` are the in-category neighbours — they
+                // drive the owner-only Up/Down reorder controls in ItemRow
+                // (disabled at the section ends). `NOOP_ACTIONS` is used when
+                // no actions are wired so tests still see the right grouping.
                 <ItemRow
                   key={item.id}
                   item={item}
                   currentParticipant={currentParticipant}
                   isOwner={isOwner}
-                  actions={itemActions}
+                  prevItemId={idx > 0 ? rows[idx - 1].id : null}
+                  nextItemId={idx < rows.length - 1 ? rows[idx + 1].id : null}
+                  actions={itemActions ?? NOOP_ACTIONS}
                 />
-              ) : (
-                // No actions wired yet — render a static row so tests that
-                // mock ItemRow still see the right grouping.
-                <ItemRow
-                  key={item.id}
-                  item={item}
-                  currentParticipant={currentParticipant}
-                  isOwner={isOwner}
-                  actions={NOOP_ACTIONS}
-                />
-              ),
-            )}
-          </ul>
-        </Section>
-      ))}
+              ))}
+            </ul>
+          </Section>
+        )
+      })}
     </div>
   )
 }
@@ -132,6 +129,10 @@ const NOOP_ACTIONS: ItemRowActions = {
     error: { code: "internal", message: "no action wired" },
   }),
   restoreItem: async () => ({
+    ok: false,
+    error: { code: "internal", message: "no action wired" },
+  }),
+  reorderItem: async () => ({
     ok: false,
     error: { code: "internal", message: "no action wired" },
   }),

@@ -82,6 +82,17 @@ export function StylePicker({
         {isPending ? "Creating…" : "Create trip"}
       </Button>
 
+      {/*
+        Feedback channel — deliberately differs from the other mutating
+        client components (ItemRow/AddItemForm/NoLongerNeeded/TripSettings/
+        JoinTripDialog), which `toast.success`/`toast.error`. StylePicker is a
+        create-and-redirect FORM: on success `createTrip` `redirect()`s to the
+        new trip, so the navigation itself IS the success feedback (no toast).
+        Its only non-redirect outcome is a validation/internal error, surfaced
+        inline next to the form via `role="alert"` — the conventional pattern
+        for form-level validation errors, which keeps the message anchored to
+        the form the user is still looking at.
+      */}
       {state && !state.ok ? (
         <p role="alert" className="text-sm text-destructive">
           {state.error.message}

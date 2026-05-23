@@ -91,17 +91,17 @@ Phased and checkable. Each phase is independently demoable. Read the relevant
 
 ## Phase 5 — Polish & hardening
 
-- [ ] Empty/loading/error states; `not-found` for trips; skeletons.
-- [ ] a11y pass (keyboard, labels, contrast) — see chrome-devtools a11y skill.
-- [ ] Optional `scripts/import-ridb.ts` (RIDB_API_KEY) backfilling the DB +
+- [x] Empty/loading/error states; `not-found` for trips; skeletons.
+- [x] a11y pass (keyboard, labels, contrast) — see chrome-devtools a11y skill.
+- [x] Optional `scripts/import-ridb.ts` (RIDB_API_KEY) backfilling the DB +
       `pnpm` script; documented, off by default.
-- [ ] Build check: `next build` passes; `unstable_instant` validation green;
+- [x] Build check: `next build` passes; `unstable_instant` validation green;
       no "uncached data outside Suspense" errors.
-- [ ] Trip page `generateMetadata` returns `robots: { index:false,
+- [x] Trip page `generateMetadata` returns `robots: { index:false,
       follow:false }` (review-2 G-robots).
-- [ ] `next.config.ts` pins `experimental.serverActions.allowedOrigins` for
+- [x] `next.config.ts` pins `experimental.serverActions.allowedOrigins` for
       production (review-2 G-csrf).
-- [ ] README: run instructions, data-source/identity/liveness caveats
+- [x] README: run instructions, data-source/identity/liveness caveats
       (D1–D9).
 
 ## Definition of done (maps to the 6 requirements)

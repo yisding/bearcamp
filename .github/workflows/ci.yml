@@ -1,0 +1,127 @@
+# WS-8.10 — CI pipeline.
+#
+# Four checks on every PR:
+#   1. typecheck — `tsc --noEmit`.
+#   2. test      — vitest, including the build-gated cache audit. The
+#                  Postgres integration suites self-provision their own
+#                  ephemeral database via Testcontainers (postgres:16) and
+#                  ignore DATABASE_URL, so this job needs no DB service.
+#   3. build     — `next build`.
+#   4. e2e       — Playwright specs (e2e/*) against the production build on a
+#                  real postgres:16 service container with the prisma backend.
+#
+# Local devs without Docker still skip the Testcontainers integration
+# suites; CI runs them by default. The e2e job is the only one that needs a
+# real, app-facing Postgres service (the Playwright run boots `next start`
+# with BEARCAMP_BACKEND=prisma, so it cannot self-provision).
+
+name: ci
+
+on:
+  pull_request:
+    branches: [main, "ws-*"]
+  push:
+    branches: [main]
+
+env:
+  NODE_VERSION: "20"
+  PNPM_VERSION: "10"
+
+jobs:
+  typecheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec prisma generate
+      - run: pnpm exec tsc --noEmit
+
+  test:
+    runs-on: ubuntu-latest
+    # No Postgres service: the integration suites (lib/db/__tests__) start
+    # their own postgres:16 Testcontainer and ignore DATABASE_URL.
+    env:
+      BEARCAMP_BACKEND: memory
+      BEARCAMP_RUN_BUILD_TESTS: "0"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec prisma generate
+      - run: pnpm test
+
+  build:
+    runs-on: ubuntu-latest
+    needs: [typecheck]
+    env:
+      DATABASE_URL: postgresql://bearcamp:bearcamp@localhost:5432/bearcamp
+      DIRECT_URL: postgresql://bearcamp:bearcamp@localhost:5432/bearcamp
+      BEARCAMP_BACKEND: memory
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec prisma generate
+      - run: pnpm exec next build
+
+  e2e:
+    runs-on: ubuntu-latest
+    # Runs the Playwright specs (e2e/*) against the production build. The
+    # webServer in playwright.config.ts runs `pnpm build && pnpm start`, so
+    # this job needs a real, app-facing Postgres service.
+    needs: [typecheck, test, build]
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: bearcamp
+          POSTGRES_PASSWORD: bearcamp
+          POSTGRES_DB: bearcamp
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U bearcamp -d bearcamp"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      DATABASE_URL: postgresql://bearcamp:bearcamp@localhost:5432/bearcamp
+      DIRECT_URL: postgresql://bearcamp:bearcamp@localhost:5432/bearcamp
+      BEARCAMP_BACKEND: prisma
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec prisma generate
+      # Provision the real DB: apply migrations, then load the seed catalog.
+      - run: pnpm exec prisma migrate deploy
+      - run: pnpm exec prisma db seed
+      - run: pnpm exec playwright install --with-deps chromium
+      # playwright.config.ts boots `pnpm build && pnpm start` as its
+      # webServer; BEARCAMP_BACKEND=prisma (from job env) reaches that process.
+      - run: pnpm exec playwright test

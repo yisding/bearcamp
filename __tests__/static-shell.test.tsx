@@ -6,12 +6,10 @@
 // `unstable_instant` prefetch contract on `/`, `/campsites`, and
 // `/campsites/[id]`.
 //
-// Playwright (the canonical harness from `plan/tasks/ws-4-design-system-app-shell.md`)
-// is NOT yet wired in this repo, so the implementer should add it as part of
-// turning this red phase green — see `e2e/static-shell.spec.ts` for the
-// Playwright stub. In the meantime we approximate the assertion by
-// server-rendering the root layout with a representative landing-page child
-// and verifying:
+// Real end-to-end coverage of the static shell lives in the Playwright
+// suite (`e2e/campsites.spec.ts`, which exercises the prefetched static
+// shells). This vitest test complements it by server-rendering the root
+// layout with a representative landing-page child and verifying:
 //   - the output is non-empty
 //   - the child content arrives in the initial HTML (not behind a fallback)
 //   - there is no top-level <body> containing only a <template/$> Suspense

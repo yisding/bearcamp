@@ -24,6 +24,7 @@ import { cn } from "@/lib/utils"
 import type {
   ClaimItemResult,
   RemoveItemResult,
+  ReorderItemResult,
   RestoreItemResult,
   UnclaimItemResult,
   UpdateItemResult,
@@ -86,6 +87,18 @@ export interface ItemRowActions {
     tripId: string
     itemId: string
   }) => Promise<RestoreItemResult>
+  /**
+   * Optional — moves an item relative to its siblings. Surfaced as owner-only
+   * Up/Down controls. Optional so callers that pre-date the reorder affordance
+   * (and older tests) keep working; the control simply does not render when it
+   * is absent.
+   */
+  reorderItem?: (input: {
+    tripId: string
+    itemId: string
+    beforeItemId?: string
+    newIndex?: number
+  }) => Promise<ReorderItemResult>
 }
 
 export interface ItemRowProps {
@@ -95,6 +108,18 @@ export interface ItemRowProps {
   actions: ItemRowActions
   /** "default" (the live PackingList row) or "removed" (NoLongerNeeded row). */
   variant?: "default" | "removed"
+  /**
+   * Id of the visible sibling immediately ABOVE this row in its category, or
+   * `null`/undefined when this row is first. Drives the owner-only "Move up"
+   * control (and disables it at the top).
+   */
+  prevItemId?: string | null
+  /**
+   * Id of the visible sibling immediately BELOW this row in its category, or
+   * `null`/undefined when this row is last. Drives the owner-only "Move down"
+   * control (and disables it at the bottom).
+   */
+  nextItemId?: string | null
   className?: string
 }
 
@@ -110,6 +135,8 @@ export function ItemRow({
   isOwner,
   actions,
   variant = "default",
+  prevItemId,
+  nextItemId,
   className,
 }: ItemRowProps) {
   const router = useRouter()
@@ -169,6 +196,7 @@ export function ItemRow({
         return
       }
       setClaimMode(false)
+      toast.success("Claim updated")
       router.refresh()
     })
   }
@@ -183,6 +211,7 @@ export function ItemRow({
         toast.error(result.error.message)
         return
       }
+      toast.success("Claim removed")
       router.refresh()
     })
   }
@@ -224,6 +253,7 @@ export function ItemRow({
         return
       }
       setEditing(false)
+      toast.success("Item updated")
       router.refresh()
     })
   }
@@ -238,6 +268,7 @@ export function ItemRow({
         toast.error(result.error.message)
         return
       }
+      toast.success("Item removed")
       router.refresh()
     })
   }
@@ -252,6 +283,36 @@ export function ItemRow({
         toast.error(result.error.message)
         return
       }
+      toast.success("Item restored")
+      router.refresh()
+    })
+  }
+
+  // Owner-only reorder. The `reorderItem` action moves a single item relative
+  // to its siblings via `beforeItemId` (storage.items.reorder). "Move up"
+  // re-anchors THIS item before its previous sibling. "Move down" re-anchors
+  // the NEXT sibling before THIS item — an equivalent swap that the contract
+  // expresses with a single `beforeItemId`. Both are no-ops at the list ends
+  // (the buttons are disabled there anyway).
+  function runReorder(direction: "up" | "down") {
+    const reorderItem = actions.reorderItem
+    if (!reorderItem) return
+    const input =
+      direction === "up"
+        ? prevItemId
+          ? { tripId: item.tripId, itemId: item.id, beforeItemId: prevItemId }
+          : null
+        : nextItemId
+          ? { tripId: item.tripId, itemId: nextItemId, beforeItemId: item.id }
+          : null
+    if (!input) return
+    startTransition(async () => {
+      const result = await reorderItem(input)
+      if (!result.ok) {
+        toast.error(result.error.message)
+        return
+      }
+      toast.success("Item moved")
       router.refresh()
     })
   }
@@ -400,6 +461,30 @@ export function ItemRow({
 
           {isOwner && !editing ? (
             <>
+              {actions.reorderItem ? (
+                <>
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="ghost"
+                    aria-label="Move up"
+                    onClick={() => runReorder("up")}
+                    disabled={pending || !prevItemId}
+                  >
+                    ↑
+                  </Button>
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="ghost"
+                    aria-label="Move down"
+                    onClick={() => runReorder("down")}
+                    disabled={pending || !nextItemId}
+                  >
+                    ↓
+                  </Button>
+                </>
+              ) : null}
               <Button
                 type="button"
                 size="sm"
