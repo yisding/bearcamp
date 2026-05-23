@@ -20,10 +20,19 @@ const geistMono = Geist_Mono({
 
 // WS-4.2: keep `title` starting with "Bearcamp" so per-route templates can
 // extend it (e.g. `Bearcamp · Campsites`) via `metadata.title.template` later.
+//
+// WS-5.9: the icon is declared as a STATIC `icons` entry pointing at
+// `public/favicon.ico`, NOT as file-based `app/favicon.ico`. Under Cache
+// Components + `unstable_instant`, file-based metadata (an `app/favicon.ico`
+// route) is resolved through a metadata subtree that produces a dynamic hole
+// during instant validation — it fails the build-time instant check for `/`
+// with E1085 (next-prerender-dynamic-metadata). A static `icons` URL is plain
+// prerenderable metadata and keeps `/` instant-clean.
 export const metadata: Metadata = {
   title: "Bearcamp",
   description:
     "Plan camping trips together — find a campsite, generate a tailored packing list, share with the group.",
+  icons: { icon: "/favicon.ico" },
 };
 
 // WS-4.5: do NOT wrap `<body>` in an app-wide empty deferred-render boundary
