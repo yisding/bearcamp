@@ -148,6 +148,25 @@ describe('T6.4 JoinTripDialog', () => {
     expect(keys).not.toContain('token')
   })
 
+  it('stays open when the user presses Escape (non-dismissible until join)', async () => {
+    const JoinTripDialog = await loadJoinDialog()
+    const joinTrip = vi.fn<() => Promise<JoinTripResult>>()
+    const user = userEvent.setup()
+    render(
+      <JoinTripDialog
+        tripId="trip_x"
+        isParticipant={false}
+        joinTripAction={joinTrip}
+      />,
+    )
+    expect(screen.getByRole('dialog')).toBeInTheDocument()
+    await user.keyboard('{Escape}')
+    // Dialog must still be present — there is no affordance to reopen it
+    // and a stuck non-participant cannot claim items (Codex P2 on PR #7).
+    expect(screen.getByRole('dialog')).toBeInTheDocument()
+    expect(joinTrip).not.toHaveBeenCalled()
+  })
+
   it('surfaces the canonical cap-reached message via toast (DR-46)', async () => {
     const JoinTripDialog = await loadJoinDialog()
     const CANONICAL = 'This trip is full (50 people).'

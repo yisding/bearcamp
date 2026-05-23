@@ -7,6 +7,11 @@
 // DIFFERENT trip, the path-scoped cookie isn't sent on this trip's path, so
 // `isParticipant` is false here — DR-35).
 //
+// The dialog is non-dismissible until the join succeeds — there is no
+// affordance to reopen it from the page, so allowing Escape / outside-click
+// to close it would leave a non-participant stuck unable to claim items
+// until a full reload (Codex P2 on PR #7).
+//
 // On `error.code === 'participant_cap_reached'`, surfaces `error.message`
 // verbatim via toast (canonical string lives in WS-7.6 — DR-46).
 
@@ -45,9 +50,14 @@ export function JoinTripDialog({
   const router = useRouter()
   const [name, setName] = React.useState("")
   const [pending, startTransition] = React.useTransition()
-  const [open, setOpen] = React.useState(true)
+  // `joined` flips to true only when the action succeeds, at which point
+  // the dialog unmounts. Escape / outside-click are no-ops (see
+  // `onOpenChange` below + `onEscapeKeyDown` / `onPointerDownOutside` on
+  // the content) so a non-participant can't accidentally lock themselves
+  // out of joining without a full reload.
+  const [joined, setJoined] = React.useState(false)
 
-  if (isParticipant) return null
+  if (isParticipant || joined) return null
 
   function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -56,7 +66,7 @@ export function JoinTripDialog({
     startTransition(async () => {
       const result = await joinTripAction({ tripId, name: trimmed })
       if (result.ok) {
-        setOpen(false)
+        setJoined(true)
         router.refresh()
       } else {
         // Surface error.message verbatim — canonical strings live action-side
@@ -67,8 +77,20 @@ export function JoinTripDialog({
   }
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent showCloseButton={false}>
+    <Dialog
+      open
+      // Swallow any close attempt — only a successful join unmounts this
+      // dialog (via `joined` above). No-op `onOpenChange` keeps Radix
+      // happy without letting the dialog enter a closed-but-still-mounted
+      // state.
+      onOpenChange={() => {}}
+    >
+      <DialogContent
+        showCloseButton={false}
+        onEscapeKeyDown={(e) => e.preventDefault()}
+        onPointerDownOutside={(e) => e.preventDefault()}
+        onInteractOutside={(e) => e.preventDefault()}
+      >
         <DialogHeader>
           <DialogTitle>Join this trip</DialogTitle>
           <DialogDescription>
