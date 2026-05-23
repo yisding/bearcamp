@@ -892,6 +892,153 @@ describe('T7.8 security', () => {
     }
   })
 
+  // Cross-trip item isolation (DR-34 at the action layer). Without the
+  // assertItemBelongsToTrip check, an owner authorized for trip A could
+  // mutate an item belonging to trip B by passing trip A's tripId + trip
+  // B's itemId — the storage's items.update / softRemove / restore repos
+  // are keyed on itemId alone. Each branch below proves the gap is closed
+  // and the leak-safe envelope is `not_found`.
+  describe('cross-trip item isolation: owner of A cannot mutate items in B', () => {
+    async function setupTwoOwnedTrips(): Promise<{
+      aId: string
+      bId: string
+      aItemId: string
+      bItemId: string
+      aOwnerCookie: string
+    }> {
+      // Trip A — owner cookie ends up in the jar.
+      const aId = await setupOwnedTrip('A')
+      const aItems = await memoryStorage.items.listByTrip(aId)
+      const aItemId = aItems[0].id
+      const aOwnerEntry = jarStore.get(OWNER_COOKIE)!
+      const aOwnerCookie = aOwnerEntry.value
+      // Trip B — fresh jar so B's create issues a separate owner cookie.
+      jarStore.clear()
+      const bId = await setupOwnedTrip('B')
+      const bItems = await memoryStorage.items.listByTrip(bId)
+      const bItemId = bItems[0].id
+      // Restore A's owner cookie — we're now acting AS A's owner.
+      jarStore.clear()
+      jarStore.set(OWNER_COOKIE, {
+        name: OWNER_COOKIE,
+        value: aOwnerCookie,
+      })
+      return { aId, bId, aItemId, bItemId, aOwnerCookie }
+    }
+
+    it('updateItem rejects cross-trip itemId with not_found', async () => {
+      const { aId, bId, bItemId } = await setupTwoOwnedTrips()
+      const bBefore = (await memoryStorage.items.listByTrip(bId)).find(
+        (i) => i.id === bItemId,
+      )!
+      const r = await updateItem({
+        tripId: aId,
+        itemId: bItemId,
+        patch: { name: 'hacked' },
+      })
+      expect(r.ok).toBe(false)
+      if (!r.ok) expect(r.error.code).toBe('not_found')
+      // B's item is unchanged — name still the original.
+      const bAfter = (await memoryStorage.items.listByTrip(bId)).find(
+        (i) => i.id === bItemId,
+      )!
+      expect(bAfter.name).toBe(bBefore.name)
+    })
+
+    it('removeItem rejects cross-trip itemId with not_found', async () => {
+      const { aId, bId, bItemId } = await setupTwoOwnedTrips()
+      const r = await removeItem({ tripId: aId, itemId: bItemId })
+      expect(r.ok).toBe(false)
+      if (!r.ok) expect(r.error.code).toBe('not_found')
+      // B's item still present and not removed.
+      const bItem = (await memoryStorage.items.listByTrip(bId)).find(
+        (i) => i.id === bItemId,
+      )
+      expect(bItem).toBeDefined()
+      expect(bItem!.removed).toBe(false)
+    })
+
+    it('restoreItem rejects cross-trip itemId with not_found', async () => {
+      const { aId, bId, bItemId } = await setupTwoOwnedTrips()
+      // Soft-remove B's item directly so a restore would be a real change.
+      await memoryStorage.items.softRemove(bItemId)
+      const r = await restoreItem({ tripId: aId, itemId: bItemId })
+      expect(r.ok).toBe(false)
+      if (!r.ok) expect(r.error.code).toBe('not_found')
+      // B's item is still removed.
+      const bItem = (await memoryStorage.items.listByTrip(bId)).find(
+        (i) => i.id === bItemId,
+      )
+      expect(bItem!.removed).toBe(true)
+    })
+  })
+
+  // Cross-trip claim isolation. A participant of trip A who learns an
+  // itemId in trip B must not be able to claim/unclaim it via the trip A
+  // identity. Without the assertItemBelongsToTrip check, claims.upsert
+  // would happily write a row keyed on (itemId, participantId) and even
+  // touch trip A's cache tag for data that lives in trip B.
+  describe('cross-trip claim isolation: participant of A cannot claim items in B', () => {
+    it('claimItem rejects cross-trip itemId with not_found', async () => {
+      // Trip A — creator is participant #1, bc_participant cookie set.
+      const aId = await setupOwnedTrip('A')
+      const aParticipantEntry = jarStore.get(PARTICIPANT_COOKIE)!
+      const aParticipantCookie = aParticipantEntry.value
+      // Trip B — fresh jar.
+      jarStore.clear()
+      const bId = await setupOwnedTrip('B')
+      const bItems = await memoryStorage.items.listByTrip(bId)
+      const bItemId = bItems[0].id
+      // Restore A's participant cookie — actor is now A's participant.
+      jarStore.clear()
+      jarStore.set(PARTICIPANT_COOKIE, {
+        name: PARTICIPANT_COOKIE,
+        value: aParticipantCookie,
+      })
+
+      const r = await claimItem({ tripId: aId, itemId: bItemId, qty: 1 })
+      expect(r.ok).toBe(false)
+      if (!r.ok) expect(r.error.code).toBe('not_found')
+      // No claim was written against B's item.
+      const bClaims = await memoryStorage.claims.listByTrip(bId)
+      expect(bClaims.some((c) => c.itemId === bItemId)).toBe(false)
+    })
+
+    it('unclaimItem rejects cross-trip itemId with not_found', async () => {
+      const aId = await setupOwnedTrip('A')
+      const aParticipantCookie = jarStore.get(PARTICIPANT_COOKIE)!.value
+      jarStore.clear()
+      const bId = await setupOwnedTrip('B')
+      const bItems = await memoryStorage.items.listByTrip(bId)
+      const bItemId = bItems[0].id
+      // Plant a legitimate claim on B's item by B's owner so we can verify
+      // the cross-trip unclaim attempt does NOT delete it.
+      const bOwners = await memoryStorage.participants.listByTrip(bId)
+      await memoryStorage.claims.upsert(bItemId, bOwners[0].id, 1)
+      expect(
+        (await memoryStorage.claims.listByTrip(bId)).some(
+          (c) => c.itemId === bItemId,
+        ),
+      ).toBe(true)
+
+      jarStore.clear()
+      jarStore.set(PARTICIPANT_COOKIE, {
+        name: PARTICIPANT_COOKIE,
+        value: aParticipantCookie,
+      })
+
+      const r = await unclaimItem({ tripId: aId, itemId: bItemId })
+      expect(r.ok).toBe(false)
+      if (!r.ok) expect(r.error.code).toBe('not_found')
+      // B's claim is untouched.
+      expect(
+        (await memoryStorage.claims.listByTrip(bId)).some(
+          (c) => c.itemId === bItemId,
+        ),
+      ).toBe(true)
+    })
+  })
+
   it('createTrip: redirect() throw is NOT swallowed (Form A — DR-45)', async () => {
     // Successful createTrip must let the RedirectSentinel propagate.
     let caught: unknown

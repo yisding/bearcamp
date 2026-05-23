@@ -164,6 +164,24 @@ function mapThrown(
   return err('internal', 'Something went wrong.')
 }
 
+// Trip-scope check for item-keyed mutations (DR-34 boundary at the action
+// layer). The storage `items.update / softRemove / restore` and
+// `claims.upsert / claims.remove` repos are keyed on itemId alone — without
+// this guard, an actor authorized for trip A could mutate an item belonging
+// to trip B by passing trip A's tripId + trip B's itemId. We list the
+// trip's items and verify the itemId is present; otherwise throw a
+// `not found`-shaped Error that `mapThrown` translates to `not_found` so
+// we never leak existence of items in other trips.
+async function assertItemBelongsToTrip(
+  tripId: string,
+  itemId: string,
+): Promise<void> {
+  const items = await getStorage().items.listByTrip(tripId)
+  if (!items.some((i) => i.id === itemId)) {
+    throw new Error(`item not found in trip: ${itemId}`)
+  }
+}
+
 // Synthetic default snapshot for campsites the catalog doesn't carry —
 // keeps the action working in tests/dev where seeds aren't loaded. WS-3+
 // catalogs always resolve the lookup in production.
@@ -384,6 +402,7 @@ export async function updateItem(
     const parsed = UpdateItemSchema.parse(input)
     tripId = parsed.tripId
     await assertOwner(parsed.tripId)
+    await assertItemBelongsToTrip(parsed.tripId, parsed.itemId)
     const item = await getStorage().items.update(parsed.itemId, parsed.patch)
     await touchTripTag(parsed.tripId)
     return ok(item)
@@ -401,6 +420,7 @@ export async function removeItem(
     const parsed = RemoveItemSchema.parse(input)
     tripId = parsed.tripId
     await assertOwner(parsed.tripId)
+    await assertItemBelongsToTrip(parsed.tripId, parsed.itemId)
     const item: TripItem = await getStorage().items.softRemove(parsed.itemId)
     await touchTripTag(parsed.tripId)
     return ok(item)
@@ -418,6 +438,7 @@ export async function restoreItem(
     const parsed = RestoreItemSchema.parse(input)
     tripId = parsed.tripId
     await assertOwner(parsed.tripId)
+    await assertItemBelongsToTrip(parsed.tripId, parsed.itemId)
     const item: TripItem = await getStorage().items.restore(parsed.itemId)
     await touchTripTag(parsed.tripId)
     return ok(item)
@@ -497,6 +518,7 @@ export async function claimItem(
     const parsed = ClaimItemSchema.parse(input)
     tripId = parsed.tripId
     const participant = await assertParticipant(parsed.tripId)
+    await assertItemBelongsToTrip(parsed.tripId, parsed.itemId)
     const claim = await getStorage().claims.upsert(
       parsed.itemId,
       participant.id,
@@ -518,6 +540,7 @@ export async function unclaimItem(
     const parsed = UnclaimItemSchema.parse(input)
     tripId = parsed.tripId
     const participant = await assertParticipant(parsed.tripId)
+    await assertItemBelongsToTrip(parsed.tripId, parsed.itemId)
     await getStorage().claims.remove(parsed.itemId, participant.id)
     await touchTripTag(parsed.tripId)
     return ok({ itemId: parsed.itemId })
