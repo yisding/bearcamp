@@ -183,10 +183,18 @@ describe.skipIf(skipUnlessDocker())(
 
     it('EXPLAIN of an ILIKE %q% query uses the GIN index, not Seq Scan', async () => {
       await withPgClient(async (client) => {
+        // At 200 rows the planner still picks Seq Scan because the table is
+        // tiny and the estimated cost is lower. The load-bearing assertion
+        // is that the GIN index *can* serve the ILIKE — disable seqscan so
+        // the planner is forced to consider the index path. If the index is
+        // missing or wrong opclass, the EXPLAIN will fall back to Seq Scan
+        // anyway (or fail), which is what we're guarding against (DR-11).
+        await client.query('SET enable_seqscan = off')
         const r = await client.query<{ 'QUERY PLAN': string }>(
           `EXPLAIN SELECT "id" FROM "Campsite"
             WHERE "name" ILIKE '%pinecrest%'`,
         )
+        await client.query('RESET enable_seqscan')
         const plan = r.rows.map((row) => row['QUERY PLAN']).join('\n')
         // The combination of pg_trgm + gin_trgm_ops yields a Bitmap Index Scan
         // on the GIN index. The negative assertion is the load-bearing one:

@@ -51,7 +51,10 @@ describe.skipIf(skipUnlessDocker())('T2.1 migrate (real Postgres)', () => {
       const def = r.rows[0].indexdef
       expect(def).toMatch(/USING gin/i)
       expect(def).toMatch(/gin_trgm_ops/)
-      expect(def).toMatch(/"name"/)
+      // Postgres reports `pg_indexes.indexdef` with quotes stripped from
+      // lowercase identifiers (`pg_get_indexdef`), so the migration's
+      // `"name"` becomes `name` in the readback. Accept either.
+      expect(def).toMatch(/(?:"name"|\bname\b)\s+gin_trgm_ops/)
     })
   })
 
@@ -67,7 +70,9 @@ describe.skipIf(skipUnlessDocker())('T2.1 migrate (real Postgres)', () => {
       const def = r.rows[0].indexdef
       expect(def).toMatch(/USING gin/i)
       expect(def).toMatch(/gin_trgm_ops/)
-      expect(def).toMatch(/"description"/)
+      // See above — lowercase identifiers come back unquoted from
+      // `pg_get_indexdef`.
+      expect(def).toMatch(/(?:"description"|\bdescription\b)\s+gin_trgm_ops/)
     })
   })
 
