@@ -133,6 +133,14 @@ async function CampsiteDetail({ id }: { id: string }) {
   )
 }
 
+function decodeRouteParam(value: string): string {
+  try {
+    return decodeURIComponent(value)
+  } catch {
+    return value
+  }
+}
+
 export default function CampsiteDetailPage({
   params,
 }: {
@@ -144,7 +152,7 @@ export default function CampsiteDetailPage({
   return (
     <Suspense fallback={<ListSkeleton rows={4} label="Loading campsite…" />}>
       {params.then(({ id }) => (
-        <CampsiteDetail id={id} />
+        <CampsiteDetail id={decodeRouteParam(id)} />
       ))}
     </Suspense>
   )

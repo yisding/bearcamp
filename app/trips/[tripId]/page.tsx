@@ -170,8 +170,17 @@ async function TripContent({ tripId }: { tripId: string }) {
   )
 }
 
+function decodeRouteParam(value: string): string {
+  try {
+    return decodeURIComponent(value)
+  } catch {
+    return value
+  }
+}
+
 export default async function TripPage({ params }: PageProps) {
-  const { tripId } = await params
+  const { tripId: rawTripId } = await params
+  const tripId = decodeRouteParam(rawTripId)
 
   // The trip view is uncached/per-user — fetch it INSIDE the Suspense
   // boundary (WS-6.2) via <TripContent>, so the `await buildTripView` streams

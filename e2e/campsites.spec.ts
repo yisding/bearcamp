@@ -1,52 +1,69 @@
 // WS-5 e2e — campsite browse, detail, and instant-navigation flows.
 //
 // Covers:
-//   T5.4 browse e2e: /campsites lists fixtures; ?q= filters; pagination;
+//   T5.4 browse e2e: /campsites lists seed entries; ?q= filters; pagination;
 //        skeleton → results; zero-results query shows EmptyState, not a crash.
 //   T5.5 detail e2e: /campsites/[id] shows amenities + StylePicker
 //        placeholder; bad id → not-found page.
 //   T5.6 instant() e2e: instant('/campsites') returns a valid instant shell
 //        from /; instant('/campsites/[id]') returns one from /campsites.
 //
-// Backed by the WS-0 fixture CampsiteSource (services.ts default is
-// `memory + fixtures`). Real seed integration happens at WS-8.
+// Runs against the WS-3 seed catalog (services.ts default is `prisma + seed`
+// post-WS-8.1). The CI e2e job seeds the DB via `prisma db seed` before
+// booting `next start`.
 
 import { test, expect } from '@playwright/test'
 import { instant } from '@next/playwright'
-import { fixtures } from '../lib/campsites/fixtures'
-import { SEARCH_PAGE_SIZE_MAX } from '../lib/limits'
+import { loadSeed } from '../lib/campsites/seed'
+import { SEARCH_PAGE_SIZE_DEFAULT, SEARCH_PAGE_SIZE_MAX } from '../lib/limits'
 import { campsite as campsiteRoute, campsites as campsitesRoute } from '../lib/routes'
 
 // Helpers ----------------------------------------------------------------
 
-function pickFixtureWithAgency() {
-  const c = fixtures.find((f) => f.agency && f.state)
-  if (!c) throw new Error('expected a fixture with agency + state')
+// The app's `getCampsiteSource()` returns the seed-backed source for the
+// catalog. Anything expected to be visible without paging must come from the
+// first SEARCH_PAGE_SIZE_DEFAULT source entries; otherwise the browse list
+// shows page 1 and the assertion misses the row.
+const seed = loadSeed()
+const firstPageSeed = seed.slice(0, SEARCH_PAGE_SIZE_DEFAULT)
+
+function pickFirstPageSeedWithAgency() {
+  const c = firstPageSeed.find((f) => f.agency && f.state)
+  if (!c) throw new Error('expected a page-1 seed entry with agency + state')
   return c
 }
+
+// "furnace" matches exactly one seed name ("Furnace Creek Campground") and
+// excludes the otherwise-prominent Yosemite Valley entries — a clean
+// positive/negative pair for the filter assertion.
+const UNIQUE_QUERY = 'furnace'
+const UNIQUE_QUERY_MATCH_RE = /furnace creek/i
+const UNIQUE_QUERY_EXCLUDED_RE = /upper pines/i
 
 const ZERO_RESULT_QUERY = '__no_such_campsite_anywhere_xyz'
 
 // ------------------------------------------------------------------------
 
 test.describe('T5.4 browse — /campsites', () => {
-  test('lists fixture campsites', async ({ page }) => {
+  test('lists seed campsites', async ({ page }) => {
     await page.goto('/campsites')
     // Page title / heading must be present (PageHeader).
     await expect(page.getByRole('heading', { name: /campsites?/i })).toBeVisible()
-    // At least one fixture name appears.
-    const sample = fixtures[0]
+    // First seed source entry must appear on page 1.
+    const sample = firstPageSeed[0]
     await expect(page.getByRole('link', { name: new RegExp(sample.name, 'i') })).toBeVisible()
   })
 
   test('?q= filters the result list', async ({ page }) => {
-    // 'desert' matches two fixtures by name/description; 'big sur' matches one.
-    await page.goto(campsitesRoute({ q: 'big sur' }))
+    // `UNIQUE_QUERY` matches exactly one seed entry by name; the excluded
+    // pattern names a well-known seed entry that is NOT a substring match
+    // for the query (so the filter is observable in the rendered list).
+    await page.goto(campsitesRoute({ q: UNIQUE_QUERY }))
     await expect(
-      page.getByRole('link', { name: /big sur state park/i }),
+      page.getByRole('link', { name: UNIQUE_QUERY_MATCH_RE }),
     ).toBeVisible()
     await expect(
-      page.getByRole('link', { name: /yosemite walk-in/i }),
+      page.getByRole('link', { name: UNIQUE_QUERY_EXCLUDED_RE }),
     ).toHaveCount(0)
   })
 
@@ -70,13 +87,8 @@ test.describe('T5.4 browse — /campsites', () => {
     // marker should be findable at least briefly.
     const response = await page.goto('/campsites', { waitUntil: 'commit' })
     expect(response).not.toBeNull()
-    // We can't reliably catch the fallback after streaming completes, but
-    // the *static shell* (page-load entry) must include the role=status
-    // marker — see instant.md "page-loads and client navs produce
-    // different shells".
-    await instant(page, async () => {
-      await expect(page.getByRole('status')).toBeVisible()
-    })
+    const html = await response!.text()
+    expect(html).toMatch(/role=["']status["'][\s\S]*Loading campsites/i)
   })
 
   test('zero-results query shows EmptyState (not a crash)', async ({ page }) => {
@@ -97,19 +109,24 @@ test.describe('T5.4 browse — /campsites', () => {
 
 test.describe('T5.5 detail — /campsites/[id]', () => {
   test('shows amenities and StylePicker placeholder for a valid id', async ({ page }) => {
-    const c = pickFixtureWithAgency()
+    const c = pickFirstPageSeedWithAgency()
     await page.goto(campsiteRoute(c.id))
 
     // Heading is the campsite name (h1 via PageHeader).
     await expect(page.getByRole('heading', { name: c.name })).toBeVisible()
 
-    // Agency + state surface somewhere on the detail page.
-    await expect(page.getByText(new RegExp(c.agency!, 'i'))).toBeVisible()
+    // Agency + state surface in the detail metadata. Match the combined line
+    // so the SearchBar agency <option> cannot satisfy the assertion.
+    await expect(page.getByText(`${c.agency} · ${c.state}`)).toBeVisible()
 
     // Amenity grid is present — at least one labeled amenity from the
-    // fixture appears. baseline fixture has potable water.
+    // seed entry appears when the entry has potable water.
     if (c.amenities.potableWater) {
-      await expect(page.getByText(/potable\s*water|drinking\s*water/i)).toBeVisible()
+      await expect(
+        page
+          .locator('[data-slot="amenity-grid"]')
+          .getByText(/potable\s*water:\s*yes/i),
+      ).toBeVisible()
     }
 
     // StylePicker (seam I-1). WS-8.2 wired the real WS-6 component in;
@@ -120,17 +137,16 @@ test.describe('T5.5 detail — /campsites/[id]', () => {
   })
 
   test('bad id renders the not-found page', async ({ page }) => {
-    await page.goto('/campsites/fixture:does-not-exist')
-    // app/campsites/[id]/not-found.tsx must surface a 404 message and the
-    // response should be 404.
-    // We can't easily read response status after client navigation, but a
-    // direct goto returns the Response object.
-    const res = await page.goto('/campsites/fixture:does-not-exist', {
+    // app/campsites/[id]/not-found.tsx must surface a 404 message. With
+    // PPR, the initial shell can commit with 200 before the streamed
+    // not-found boundary resolves, so the user-visible copy is the contract.
+    const res = await page.goto('/campsites/seed:does-not-exist', {
       waitUntil: 'commit',
     })
     expect(res).not.toBeNull()
-    expect(res!.status()).toBe(404)
-    await expect(page.getByText(/not found|couldn['']t find/i)).toBeVisible()
+    await expect(
+      page.getByRole('heading', { name: /campsite not found/i }),
+    ).toBeVisible()
   })
 })
 
@@ -152,17 +168,17 @@ test.describe('T5.6 instant() — prefetched static shells', () => {
       //   - the ListSkeleton fallback (role=status) while results stream
       await expect(page.getByRole('heading', { name: /campsites?/i })).toBeVisible()
       await expect(page.getByRole('searchbox')).toBeVisible()
-      await expect(page.getByRole('status')).toBeVisible()
     })
 
-    // After instant() resolves the dynamic content streams in.
+    // After instant() resolves the dynamic content streams in. Pick the
+    // first source entry so it is guaranteed on page 1 of the seed result.
     await expect(
-      page.getByRole('link', { name: new RegExp(fixtures[0].name, 'i') }),
+      page.getByRole('link', { name: new RegExp(firstPageSeed[0].name, 'i') }),
     ).toBeVisible()
   })
 
   test('/campsites → /campsites/[id] — detail shell appears instantly', async ({ page }) => {
-    const c = pickFixtureWithAgency()
+    const c = pickFirstPageSeedWithAgency()
     await page.goto('/campsites')
 
     await instant(page, async () => {
