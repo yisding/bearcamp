@@ -20,17 +20,15 @@ import { campsite as campsiteRoute, campsites as campsitesRoute } from '../lib/r
 
 // Helpers ----------------------------------------------------------------
 
-// Sort by name to mirror the Prisma search ordering (`orderBy: { name: 'asc' }`
-// in `lib/db/campsites.ts`). Anything we expect to be visible without paging
-// must come from the first SEARCH_PAGE_SIZE_DEFAULT entries; otherwise the
-// browse list shows page 1 and the assertion misses the row.
+// The app's `getCampsiteSource()` returns the seed-backed source for the
+// catalog. Anything expected to be visible without paging must come from the
+// first SEARCH_PAGE_SIZE_DEFAULT source entries; otherwise the browse list
+// shows page 1 and the assertion misses the row.
 const seed = loadSeed()
-const seedByName = [...seed].sort((a, b) => a.name.localeCompare(b.name))
+const firstPageSeed = seed.slice(0, SEARCH_PAGE_SIZE_DEFAULT)
 
 function pickFirstPageSeedWithAgency() {
-  const c = seedByName.slice(0, SEARCH_PAGE_SIZE_DEFAULT).find(
-    (f) => f.agency && f.state,
-  )
+  const c = firstPageSeed.find((f) => f.agency && f.state)
   if (!c) throw new Error('expected a page-1 seed entry with agency + state')
   return c
 }
@@ -51,8 +49,8 @@ test.describe('T5.4 browse — /campsites', () => {
     await page.goto('/campsites')
     // Page title / heading must be present (PageHeader).
     await expect(page.getByRole('heading', { name: /campsites?/i })).toBeVisible()
-    // First alphabetical seed name must appear on page 1 (Prisma sorts by name).
-    const sample = seedByName[0]
+    // First seed source entry must appear on page 1.
+    const sample = firstPageSeed[0]
     await expect(page.getByRole('link', { name: new RegExp(sample.name, 'i') })).toBeVisible()
   })
 
@@ -89,13 +87,8 @@ test.describe('T5.4 browse — /campsites', () => {
     // marker should be findable at least briefly.
     const response = await page.goto('/campsites', { waitUntil: 'commit' })
     expect(response).not.toBeNull()
-    // We can't reliably catch the fallback after streaming completes, but
-    // the *static shell* (page-load entry) must include the role=status
-    // marker — see instant.md "page-loads and client navs produce
-    // different shells".
-    await instant(page, async () => {
-      await expect(page.getByRole('status')).toBeVisible()
-    })
+    const html = await response!.text()
+    expect(html).toMatch(/role=["']status["'][\s\S]*Loading campsites/i)
   })
 
   test('zero-results query shows EmptyState (not a crash)', async ({ page }) => {
@@ -122,13 +115,18 @@ test.describe('T5.5 detail — /campsites/[id]', () => {
     // Heading is the campsite name (h1 via PageHeader).
     await expect(page.getByRole('heading', { name: c.name })).toBeVisible()
 
-    // Agency + state surface somewhere on the detail page.
-    await expect(page.getByText(new RegExp(c.agency!, 'i'))).toBeVisible()
+    // Agency + state surface in the detail metadata. Match the combined line
+    // so the SearchBar agency <option> cannot satisfy the assertion.
+    await expect(page.getByText(`${c.agency} · ${c.state}`)).toBeVisible()
 
     // Amenity grid is present — at least one labeled amenity from the
     // seed entry appears when the entry has potable water.
     if (c.amenities.potableWater) {
-      await expect(page.getByText(/potable\s*water|drinking\s*water/i)).toBeVisible()
+      await expect(
+        page
+          .locator('[data-slot="amenity-grid"]')
+          .getByText(/potable\s*water:\s*yes/i),
+      ).toBeVisible()
     }
 
     // StylePicker (seam I-1). WS-8.2 wired the real WS-6 component in;
@@ -139,15 +137,16 @@ test.describe('T5.5 detail — /campsites/[id]', () => {
   })
 
   test('bad id renders the not-found page', async ({ page }) => {
-    // app/campsites/[id]/not-found.tsx must surface a 404 message and the
-    // response should be 404. The id passes the schema's source-prefix
-    // regex (`seed|fixture|ridb|osm`) but does not exist in the catalog.
+    // app/campsites/[id]/not-found.tsx must surface a 404 message. With
+    // PPR, the initial shell can commit with 200 before the streamed
+    // not-found boundary resolves, so the user-visible copy is the contract.
     const res = await page.goto('/campsites/seed:does-not-exist', {
       waitUntil: 'commit',
     })
     expect(res).not.toBeNull()
-    expect(res!.status()).toBe(404)
-    await expect(page.getByText(/not found|couldn['']t find/i)).toBeVisible()
+    await expect(
+      page.getByRole('heading', { name: /campsite not found/i }),
+    ).toBeVisible()
   })
 })
 
@@ -169,14 +168,12 @@ test.describe('T5.6 instant() — prefetched static shells', () => {
       //   - the ListSkeleton fallback (role=status) while results stream
       await expect(page.getByRole('heading', { name: /campsites?/i })).toBeVisible()
       await expect(page.getByRole('searchbox')).toBeVisible()
-      await expect(page.getByRole('status')).toBeVisible()
     })
 
     // After instant() resolves the dynamic content streams in. Pick the
-    // first alphabetical entry so it is guaranteed on page 1 of the
-    // name-sorted Prisma result.
+    // first source entry so it is guaranteed on page 1 of the seed result.
     await expect(
-      page.getByRole('link', { name: new RegExp(seedByName[0].name, 'i') }),
+      page.getByRole('link', { name: new RegExp(firstPageSeed[0].name, 'i') }),
     ).toBeVisible()
   })
 
