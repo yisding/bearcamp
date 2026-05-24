@@ -27,7 +27,7 @@ import { test, expect } from '@playwright/test'
 import { campsite as campsiteRoute, trip as tripRoute } from '../lib/routes'
 
 // Pick a seed campsite by stable id (post-WS-8.1: prisma + seed is default).
-const FIXTURE_ID = 'seed:upper-pines-campground-ca'
+const SEED_CAMPSITE_ID = 'seed:upper-pines-campground-ca'
 
 test.describe('T6.8 — full trip flow', () => {
   test('create → pre-claim → add custom → share → join → claim → 3rd participant', async ({
@@ -38,7 +38,7 @@ test.describe('T6.8 — full trip flow', () => {
     const ownerPage = await ownerCtx.newPage()
 
     // 1) Owner lands on the campsite detail, picks a style, and creates trip.
-    await ownerPage.goto(campsiteRoute(FIXTURE_ID))
+    await ownerPage.goto(campsiteRoute(SEED_CAMPSITE_ID))
     // Pick style "car". StylePicker renders both options as
     // radios/buttons/labels — we accept any.
     const car =
@@ -209,7 +209,7 @@ test.describe('T6.11 — trip page is non-indexable (DR-17)', () => {
     // Build a trip first so we have a valid id.
     const ctx = await browser.newContext()
     const page = await ctx.newPage()
-    await page.goto(campsiteRoute(FIXTURE_ID))
+    await page.goto(campsiteRoute(SEED_CAMPSITE_ID))
     const car =
       (await page.getByRole('radio', { name: /car/i }).first().elementHandle()) ??
       (await page.getByLabel(/car/i).first().elementHandle())
@@ -242,7 +242,7 @@ test.describe('T6.13 — deleted trip → parallel context sees not-found on ref
     // Owner creates a trip.
     const ownerCtx = await browser.newContext()
     const ownerPage = await ownerCtx.newPage()
-    await ownerPage.goto(campsiteRoute(FIXTURE_ID))
+    await ownerPage.goto(campsiteRoute(SEED_CAMPSITE_ID))
     const car =
       (await ownerPage.getByRole('radio', { name: /car/i }).first().elementHandle()) ??
       (await ownerPage.getByLabel(/car/i).first().elementHandle())

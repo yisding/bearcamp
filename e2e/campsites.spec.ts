@@ -15,16 +15,23 @@
 import { test, expect } from '@playwright/test'
 import { instant } from '@next/playwright'
 import { loadSeed } from '../lib/campsites/seed'
-import { SEARCH_PAGE_SIZE_MAX } from '../lib/limits'
+import { SEARCH_PAGE_SIZE_DEFAULT, SEARCH_PAGE_SIZE_MAX } from '../lib/limits'
 import { campsite as campsiteRoute, campsites as campsitesRoute } from '../lib/routes'
 
 // Helpers ----------------------------------------------------------------
 
+// Sort by name to mirror the Prisma search ordering (`orderBy: { name: 'asc' }`
+// in `lib/db/campsites.ts`). Anything we expect to be visible without paging
+// must come from the first SEARCH_PAGE_SIZE_DEFAULT entries; otherwise the
+// browse list shows page 1 and the assertion misses the row.
 const seed = loadSeed()
+const seedByName = [...seed].sort((a, b) => a.name.localeCompare(b.name))
 
-function pickSeedWithAgency() {
-  const c = seed.find((f) => f.agency && f.state)
-  if (!c) throw new Error('expected a seed entry with agency + state')
+function pickFirstPageSeedWithAgency() {
+  const c = seedByName.slice(0, SEARCH_PAGE_SIZE_DEFAULT).find(
+    (f) => f.agency && f.state,
+  )
+  if (!c) throw new Error('expected a page-1 seed entry with agency + state')
   return c
 }
 
@@ -44,8 +51,8 @@ test.describe('T5.4 browse — /campsites', () => {
     await page.goto('/campsites')
     // Page title / heading must be present (PageHeader).
     await expect(page.getByRole('heading', { name: /campsites?/i })).toBeVisible()
-    // At least one seed name appears.
-    const sample = seed[0]
+    // First alphabetical seed name must appear on page 1 (Prisma sorts by name).
+    const sample = seedByName[0]
     await expect(page.getByRole('link', { name: new RegExp(sample.name, 'i') })).toBeVisible()
   })
 
@@ -109,7 +116,7 @@ test.describe('T5.4 browse — /campsites', () => {
 
 test.describe('T5.5 detail — /campsites/[id]', () => {
   test('shows amenities and StylePicker placeholder for a valid id', async ({ page }) => {
-    const c = pickSeedWithAgency()
+    const c = pickFirstPageSeedWithAgency()
     await page.goto(campsiteRoute(c.id))
 
     // Heading is the campsite name (h1 via PageHeader).
@@ -165,14 +172,16 @@ test.describe('T5.6 instant() — prefetched static shells', () => {
       await expect(page.getByRole('status')).toBeVisible()
     })
 
-    // After instant() resolves the dynamic content streams in.
+    // After instant() resolves the dynamic content streams in. Pick the
+    // first alphabetical entry so it is guaranteed on page 1 of the
+    // name-sorted Prisma result.
     await expect(
-      page.getByRole('link', { name: new RegExp(seed[0].name, 'i') }),
+      page.getByRole('link', { name: new RegExp(seedByName[0].name, 'i') }),
     ).toBeVisible()
   })
 
   test('/campsites → /campsites/[id] — detail shell appears instantly', async ({ page }) => {
-    const c = pickSeedWithAgency()
+    const c = pickFirstPageSeedWithAgency()
     await page.goto('/campsites')
 
     await instant(page, async () => {
