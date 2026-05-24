@@ -1,3 +1,13 @@
+allowBuilds:
+  '@prisma/engines': true
+  cpu-features: true
+  esbuild: true
+  msw: true
+  prisma: true
+  protobufjs: true
+  sharp: true
+  ssh2: false
+  unrs-resolver: true
 ignoredBuiltDependencies:
   - sharp
   - unrs-resolver
