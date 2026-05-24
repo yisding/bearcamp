@@ -3,11 +3,8 @@
 // Idempotent: only writes when the Campsite table is empty. Re-running this
 // against an already-seeded DB is a no-op (same row count, no duplicates).
 //
-// **WS-3 dependency note:** the real seed dataset (≥150 entries) lives in
-// `data/campsites.seed.json` and is loaded by WS-3's `loadSeed()` helper.
-// That stream is not yet on this branch, so we consume a temporary local
-// fixture (`prisma/seed.fixture.ts`) instead. WS-8's integration step
-// swaps the import to `loadSeed()` from WS-3 — one line, no other change.
+// The real seed dataset (178 entries) lives in `data/campsites.seed.json`
+// and is loaded by WS-3's `loadSeed()` helper from `lib/campsites/seed`.
 //
 // After write, if the dev server is running (`BC_DEV_URL` is set), we POST
 // the dev-only `/api/revalidate-campsites` Route Handler so the catalog
@@ -17,7 +14,7 @@
 
 import { createPrismaClient } from '../lib/db/prisma'
 import { createCampsitesRepo } from '../lib/db/campsites'
-import { loadSeed } from './seed.fixture'
+import { loadSeed } from '../lib/campsites/seed'
 
 // Exported so tests can drive the seed entrypoint without a process exit
 // (mirrors `scripts/import-ridb.ts` exporting `importRidb`). The CLI

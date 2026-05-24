@@ -1,52 +1,64 @@
 // WS-5 e2e — campsite browse, detail, and instant-navigation flows.
 //
 // Covers:
-//   T5.4 browse e2e: /campsites lists fixtures; ?q= filters; pagination;
+//   T5.4 browse e2e: /campsites lists seed entries; ?q= filters; pagination;
 //        skeleton → results; zero-results query shows EmptyState, not a crash.
 //   T5.5 detail e2e: /campsites/[id] shows amenities + StylePicker
 //        placeholder; bad id → not-found page.
 //   T5.6 instant() e2e: instant('/campsites') returns a valid instant shell
 //        from /; instant('/campsites/[id]') returns one from /campsites.
 //
-// Backed by the WS-0 fixture CampsiteSource (services.ts default is
-// `memory + fixtures`). Real seed integration happens at WS-8.
+// Runs against the WS-3 seed catalog (services.ts default is `prisma + seed`
+// post-WS-8.1). The CI e2e job seeds the DB via `prisma db seed` before
+// booting `next start`.
 
 import { test, expect } from '@playwright/test'
 import { instant } from '@next/playwright'
-import { fixtures } from '../lib/campsites/fixtures'
+import { loadSeed } from '../lib/campsites/seed'
 import { SEARCH_PAGE_SIZE_MAX } from '../lib/limits'
 import { campsite as campsiteRoute, campsites as campsitesRoute } from '../lib/routes'
 
 // Helpers ----------------------------------------------------------------
 
-function pickFixtureWithAgency() {
-  const c = fixtures.find((f) => f.agency && f.state)
-  if (!c) throw new Error('expected a fixture with agency + state')
+const seed = loadSeed()
+
+function pickSeedWithAgency() {
+  const c = seed.find((f) => f.agency && f.state)
+  if (!c) throw new Error('expected a seed entry with agency + state')
   return c
 }
+
+// "furnace" matches exactly one seed name ("Furnace Creek Campground") and
+// excludes the otherwise-prominent Yosemite Valley entries — a clean
+// positive/negative pair for the filter assertion.
+const UNIQUE_QUERY = 'furnace'
+const UNIQUE_QUERY_MATCH_RE = /furnace creek/i
+const UNIQUE_QUERY_EXCLUDED_RE = /upper pines/i
 
 const ZERO_RESULT_QUERY = '__no_such_campsite_anywhere_xyz'
 
 // ------------------------------------------------------------------------
 
 test.describe('T5.4 browse — /campsites', () => {
-  test('lists fixture campsites', async ({ page }) => {
+  test('lists seed campsites', async ({ page }) => {
     await page.goto('/campsites')
     // Page title / heading must be present (PageHeader).
     await expect(page.getByRole('heading', { name: /campsites?/i })).toBeVisible()
-    // At least one fixture name appears.
-    const sample = fixtures[0]
+    // At least one seed name appears.
+    const sample = seed[0]
     await expect(page.getByRole('link', { name: new RegExp(sample.name, 'i') })).toBeVisible()
   })
 
   test('?q= filters the result list', async ({ page }) => {
-    // 'desert' matches two fixtures by name/description; 'big sur' matches one.
-    await page.goto(campsitesRoute({ q: 'big sur' }))
+    // `UNIQUE_QUERY` matches exactly one seed entry by name; the excluded
+    // pattern names a well-known seed entry that is NOT a substring match
+    // for the query (so the filter is observable in the rendered list).
+    await page.goto(campsitesRoute({ q: UNIQUE_QUERY }))
     await expect(
-      page.getByRole('link', { name: /big sur state park/i }),
+      page.getByRole('link', { name: UNIQUE_QUERY_MATCH_RE }),
     ).toBeVisible()
     await expect(
-      page.getByRole('link', { name: /yosemite walk-in/i }),
+      page.getByRole('link', { name: UNIQUE_QUERY_EXCLUDED_RE }),
     ).toHaveCount(0)
   })
 
@@ -97,7 +109,7 @@ test.describe('T5.4 browse — /campsites', () => {
 
 test.describe('T5.5 detail — /campsites/[id]', () => {
   test('shows amenities and StylePicker placeholder for a valid id', async ({ page }) => {
-    const c = pickFixtureWithAgency()
+    const c = pickSeedWithAgency()
     await page.goto(campsiteRoute(c.id))
 
     // Heading is the campsite name (h1 via PageHeader).
@@ -107,7 +119,7 @@ test.describe('T5.5 detail — /campsites/[id]', () => {
     await expect(page.getByText(new RegExp(c.agency!, 'i'))).toBeVisible()
 
     // Amenity grid is present — at least one labeled amenity from the
-    // fixture appears. baseline fixture has potable water.
+    // seed entry appears when the entry has potable water.
     if (c.amenities.potableWater) {
       await expect(page.getByText(/potable\s*water|drinking\s*water/i)).toBeVisible()
     }
@@ -120,12 +132,10 @@ test.describe('T5.5 detail — /campsites/[id]', () => {
   })
 
   test('bad id renders the not-found page', async ({ page }) => {
-    await page.goto('/campsites/fixture:does-not-exist')
     // app/campsites/[id]/not-found.tsx must surface a 404 message and the
-    // response should be 404.
-    // We can't easily read response status after client navigation, but a
-    // direct goto returns the Response object.
-    const res = await page.goto('/campsites/fixture:does-not-exist', {
+    // response should be 404. The id passes the schema's source-prefix
+    // regex (`seed|fixture|ridb|osm`) but does not exist in the catalog.
+    const res = await page.goto('/campsites/seed:does-not-exist', {
       waitUntil: 'commit',
     })
     expect(res).not.toBeNull()
@@ -157,12 +167,12 @@ test.describe('T5.6 instant() — prefetched static shells', () => {
 
     // After instant() resolves the dynamic content streams in.
     await expect(
-      page.getByRole('link', { name: new RegExp(fixtures[0].name, 'i') }),
+      page.getByRole('link', { name: new RegExp(seed[0].name, 'i') }),
     ).toBeVisible()
   })
 
   test('/campsites → /campsites/[id] — detail shell appears instantly', async ({ page }) => {
-    const c = pickFixtureWithAgency()
+    const c = pickSeedWithAgency()
     await page.goto('/campsites')
 
     await instant(page, async () => {

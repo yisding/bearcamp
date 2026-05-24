@@ -26,8 +26,8 @@
 import { test, expect } from '@playwright/test'
 import { campsite as campsiteRoute, trip as tripRoute } from '../lib/routes'
 
-// Pick a fixture by stable id.
-const FIXTURE_ID = 'fixture:big-sur-state'
+// Pick a seed campsite by stable id (post-WS-8.1: prisma + seed is default).
+const FIXTURE_ID = 'seed:upper-pines-campground-ca'
 
 test.describe('T6.8 — full trip flow', () => {
   test('create → pre-claim → add custom → share → join → claim → 3rd participant', async ({
