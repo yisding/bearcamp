@@ -108,6 +108,31 @@ SQLite single-node constraint is gone:
 
 `prisma migrate deploy` runs as a release step (CI), never at request time.
 
+### Vercel + Neon checklist (preview + production)
+
+To make Vercel deploys reliable, configure **both** runtime and migration
+URLs in Vercel project env vars:
+
+1. In Vercel Project → **Settings → Environment Variables**, add:
+   - `DATABASE_URL` = Neon **pooled** connection string
+   - `DIRECT_URL` = Neon **direct/unpooled** connection string
+   - `BEARCAMP_BACKEND=prisma`
+   - `BEARCAMP_ALLOWED_ORIGINS=https://<your-production-domain>`
+2. Set each variable for **Preview** and **Production** environments.
+3. If your Neon project requires channel binding, include
+   `channel_binding=require` in both Neon URLs.
+4. Run `prisma migrate deploy` as a CI/release step before (or as part of)
+   production rollout; do **not** run migrations in request handlers.
+5. Seed only when needed (`pnpm prisma db seed`) and target the same DB branch
+   your deploy reads from.
+
+Example:
+
+```bash
+DATABASE_URL='postgresql://USER:PASSWORD@<pooled-host>.neon.tech/DB?sslmode=require&channel_binding=require'
+DIRECT_URL='postgresql://USER:PASSWORD@<direct-host>.neon.tech/DB?sslmode=require&channel_binding=require'
+```
+
 ### Docker
 
 The repo ships a multi-stage `Dockerfile` that runs `next build` and then
